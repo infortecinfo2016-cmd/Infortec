@@ -2,10 +2,10 @@
 
 ## Identidade visual
 - Azul da logo: `#0042D7` (cor principal)
-- Fundos escuros: `#050B1F` (azul-marinho) e `#0B1736` (superfícies)
-- Branco `#F4F7FF` e faixa clara `#F2F5FC` para contraste
-- Hexágono da logo usado como elemento gráfico (ícones, moldura do topo)
-- Fontes: Unbounded (títulos), Plus Jakarta Sans (texto), JetBrains Mono (detalhes)
+- Conceito: **manual técnico**. Desenho de vista explodida, índice de serviços, formulário em forma de ordem de serviço
+- Papel frio `#EEF1F6`, tinta `#0A1022` e azul da logo em campos chapados, sem gradientes nem brilhos
+- Hexágono da logo (silhueta de uma caixa isométrica) usado com moderação: marcadores e etapas
+- Fontes: Archivo expandida (títulos), Archivo (texto), IBM Plex Mono (legendas técnicas)
 
 ## Tecnologias
 Next.js + React + TypeScript, Tailwind CSS + shadcn/ui, Framer Motion, hospedagem na Vercel.
