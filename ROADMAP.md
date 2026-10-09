@@ -1,14 +1,14 @@
 # Site Infortec — Roadmap
 
 ## Identidade visual
-- Azul da logo: `#0042D7` (cor principal)
-- Conceito: **manual técnico**. Desenho de vista explodida, índice de serviços, formulário em forma de ordem de serviço
-- Papel frio `#EEF1F6`, tinta `#0A1022` e azul da logo em campos chapados, sem gradientes nem brilhos
-- Hexágono da logo (silhueta de uma caixa isométrica) usado com moderação: marcadores e etapas
-- Fontes: Archivo expandida (títulos), Archivo (texto), IBM Plex Mono (legendas técnicas)
+- Azul da logo: `#0042D7` (cor principal), usado como luz e brilho
+- Conceito: **laboratório Infortec**. Fundo azul-noite `#030817`, superfícies `#0B1838`, destaques `#5B93FF` e ciano `#74E4FF`
+- Herói em 3D (Three.js): a logo em um hexágono 3D flutuando sobre um piso de hexágonos que reage ao mouse
+- Painel de diagnóstico animado, editor de código que digita sozinho, trilha de circuito que acende na rolagem
+- Fontes: Archivo expandida (títulos), Archivo (texto), JetBrains Mono (detalhes técnicos)
 
 ## Tecnologias
-Next.js + React + TypeScript, Tailwind CSS + shadcn/ui, Framer Motion, hospedagem na Vercel.
+Next.js + React + TypeScript, Tailwind CSS, Framer Motion, Three.js (React Three Fiber) para o 3D, hospedagem na Vercel.
 
 ## Fases
 | Fase | Entrega | Prazo estimado |
