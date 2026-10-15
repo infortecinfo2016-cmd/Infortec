@@ -1,6 +1,6 @@
 import type * as React from 'react';
 
-export type IconName = 'home' | 'users' | 'user-plus' | 'clock' | 'calendar' | 'wallet' | 'gift' | 'star' | 'chart' | 'file' | 'check' | 'x' | 'plus' | 'search' | 'filter' | 'download' | 'bell' | 'chevron-right' | 'chevron-down' | 'arrow-up' | 'arrow-down' | 'info' | 'alert' | 'check-circle' | 'x-circle' | 'logout';
+export type IconName = 'home' | 'users' | 'user-plus' | 'clock' | 'calendar' | 'wallet' | 'gift' | 'star' | 'chart' | 'file' | 'check' | 'x' | 'plus' | 'search' | 'filter' | 'download' | 'bell' | 'chevron-right' | 'chevron-down' | 'arrow-up' | 'arrow-down' | 'info' | 'alert' | 'check-circle' | 'x-circle' | 'menu' | 'logout';
 export type Status = 'ativo' | 'experiencia' | 'admissao' | 'ferias' | 'licenca' | 'afastado' | 'desligado' | 'pendente' | 'analise' | 'aprovado' | 'recusado' | 'atraso' | 'falta' | 'regular';
 export type Tone = 'success' | 'warning' | 'danger' | 'leave' | 'people' | 'brand' | 'neutral';
 

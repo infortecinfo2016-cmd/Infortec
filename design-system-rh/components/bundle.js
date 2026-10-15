@@ -34,6 +34,7 @@
     alert: [['path', { d: 'M12 4 21 19.5H3z' }], ['path', { d: 'M12 10v4.5M12 17v.2' }]],
     'check-circle': [['circle', { cx: 12, cy: 12, r: 8.5 }], ['path', { d: 'm8 12.3 2.8 2.7L16 9.5' }]],
     'x-circle': [['circle', { cx: 12, cy: 12, r: 8.5 }], ['path', { d: 'm9 9 6 6M15 9l-6 6' }]],
+    menu: [['path', { d: 'M4 7h16M4 12h16M4 17h16' }]],
     logout: [['path', { d: 'M14 4.5H6a1 1 0 0 0-1 1v13a1 1 0 0 0 1 1h8M10 12h10M16.5 8.5 20 12l-3.5 3.5' }]]
   };
 

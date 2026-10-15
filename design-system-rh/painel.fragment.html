@@ -1,0 +1,273 @@
+<title>Painel Infortec RH</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Archivo:wdth,wght@100..125,400..800&family=JetBrains+Mono:wght@400;500;600&display=swap">
+<link rel="stylesheet" href="tokens.css">
+<link rel="stylesheet" href="components/bundle.css">
+<style>
+/* Tela de exemplo: barra lateral fixa + conteúdo. Todas as cores vêm de tokens.css (Infortec RH). */
+html, body { background: var(--surface); }
+body::before { content: ""; position: fixed; inset: 0 0 auto; height: env(safe-area-inset-top, 0px); z-index: 30; background: var(--surface-raised); }
+.app { display: grid; grid-template-columns: var(--sidebar) minmax(0, 1fr); min-height: 100vh; }
+.side { position: sticky; top: 0; height: 100vh; overflow-y: auto; background: var(--nav); z-index: 40; }
+.side .irh-nav { min-height: 100%; padding-top: max(var(--space-5), env(safe-area-inset-top, 0px)); padding-left: max(var(--space-3), env(safe-area-inset-left, 0px)); }
+.main { min-width: 0; display: flex; flex-direction: column; }
+.top { position: sticky; top: env(safe-area-inset-top, 0px); z-index: 20; display: flex; align-items: center; gap: var(--space-3); height: 64px; background: var(--surface-raised); border-bottom: 1px solid var(--line); padding-left: max(var(--space-8), env(safe-area-inset-left, 0px)); padding-right: max(var(--space-8), env(safe-area-inset-right, 0px)); }
+.top .search { flex: 1; max-width: 420px; }
+.top .search .irh-field__label { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); }
+.top .spacer { flex: 1; }
+.chip { font-family: var(--font-mono); font-size: 11.5px; color: var(--ink-muted); border: 1px dashed var(--line-strong); border-radius: var(--radius-full); padding: 3px 10px; white-space: nowrap; }
+.icon-btn { position: relative; display: inline-flex; align-items: center; justify-content: center; width: 40px; height: 40px; border-radius: var(--radius-sm); border: 0; background: none; color: var(--ink); cursor: pointer; }
+.icon-btn:hover { background: var(--surface-sunken); }
+.icon-btn:focus-visible { outline: 2px solid transparent; box-shadow: var(--focus-ring); }
+.icon-btn .dot { position: absolute; top: 6px; right: 6px; min-width: 16px; height: 16px; padding: 0 4px; border-radius: var(--radius-full); background: var(--danger); color: var(--on-danger); font-size: 10px; font-weight: 700; line-height: 16px; text-align: center; }
+.menu-btn { display: none; }
+.content { width: 100%; max-width: var(--content-max); box-sizing: border-box; margin: 0 auto; display: grid; gap: var(--space-6); padding-block: var(--space-8) var(--space-12); padding-left: max(var(--space-8), env(safe-area-inset-left, 0px)); padding-right: max(var(--space-8), env(safe-area-inset-right, 0px)); }
+.hello { display: flex; flex-wrap: wrap; align-items: flex-end; justify-content: space-between; gap: var(--space-4); }
+.hello > div { min-width: 0; }
+.overline { margin: 0 0 var(--space-1); font-size: 11px; line-height: 16px; font-weight: 700; letter-spacing: .08em; text-transform: uppercase; color: var(--ink-muted); }
+.display { margin: 0; font-size: 32px; line-height: 40px; font-weight: 700; font-stretch: 112%; letter-spacing: -.02em; text-wrap: balance; }
+.lead { margin: var(--space-1) 0 0; font-size: 16px; line-height: 24px; color: var(--ink-muted); max-width: 62ch; }
+.actions { display: flex; flex-wrap: wrap; gap: var(--space-2); }
+.kpis { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: var(--space-4); }
+.cols { display: grid; grid-template-columns: minmax(0, 2fr) minmax(0, 1fr); gap: var(--space-6); align-items: start; }
+.stack { display: grid; gap: var(--space-6); min-width: 0; }
+.panel { background: var(--surface-raised); border: 1px solid var(--line); border-radius: var(--radius-md); box-shadow: var(--shadow-sm); min-width: 0; }
+.panel-head { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: var(--space-3); padding: var(--space-5) var(--space-5) 0; }
+.panel-head h2 { margin: 0; font-size: 18px; line-height: 26px; font-weight: 650; font-stretch: 112%; letter-spacing: -.01em; }
+.panel-head p { margin: 2px 0 0; color: var(--ink-muted); font-size: 13px; }
+.panel .irh-tabs { margin: var(--space-3) var(--space-5) 0; }
+.req-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(260px, 1fr)); gap: var(--space-4); padding: var(--space-5); }
+.req-grid .irh-req { box-shadow: none; }
+.empty { padding: var(--space-12) var(--space-5); text-align: center; color: var(--ink-muted); }
+.empty b { display: block; color: var(--ink); font-size: 16px; margin-bottom: var(--space-1); }
+.list { list-style: none; margin: 0; padding: var(--space-3) var(--space-5) var(--space-5); display: grid; }
+.list li { display: flex; align-items: center; gap: var(--space-3); padding: var(--space-3) 0; border-bottom: 1px solid var(--line); min-width: 0; }
+.list li:last-child { border-bottom: 0; }
+.list .who { flex: 1; min-width: 0; }
+.list .who b { display: block; font-weight: 600; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.list .who small { display: block; font-size: 12px; line-height: 16px; color: var(--ink-muted); }
+.num { font-family: var(--font-mono); font-size: 13px; font-weight: 600; font-variant-numeric: tabular-nums; }
+.sent { display: inline-flex; align-items: center; gap: 4px; font-size: 13px; font-weight: 600; color: var(--success); height: 32px; padding: 0 var(--space-3); }
+.ponto-total { padding: var(--space-3) var(--space-5) 0; font-size: 13px; color: var(--ink-muted); }
+.ponto-total b { color: var(--ink); }
+.table-tools { display: flex; flex-wrap: wrap; gap: var(--space-3); align-items: flex-end; padding: var(--space-4) var(--space-5); }
+.table-tools .irh-field { flex: 1; min-width: 200px; max-width: 360px; }
+.panel .irh-table-wrap { border: 0; border-top: 1px solid var(--line); border-radius: 0 0 var(--radius-md) var(--radius-md); }
+.toast { position: fixed; z-index: 60; right: max(var(--space-6), env(safe-area-inset-right, 0px)); bottom: max(var(--space-6), env(safe-area-inset-bottom, 0px)); display: flex; align-items: center; gap: var(--space-3); max-width: min(420px, calc(100vw - 32px)); padding: 12px var(--space-4); border-radius: var(--radius-md); background: var(--ink); color: var(--surface); box-shadow: var(--shadow-lg); font-weight: 500; }
+.scrim { position: fixed; inset: 0; z-index: 50; background: #0b183880; display: grid; place-items: center; padding: max(16px, env(safe-area-inset-top, 0px)) max(16px, env(safe-area-inset-right, 0px)) max(16px, env(safe-area-inset-bottom, 0px)) max(16px, env(safe-area-inset-left, 0px)); }
+.dialog { width: min(480px, 100%); box-sizing: border-box; background: var(--surface-raised); border-radius: var(--radius-lg); box-shadow: var(--shadow-lg); padding: var(--space-6); display: grid; gap: var(--space-4); }
+.dialog h2 { margin: 0; font-size: 18px; line-height: 26px; font-weight: 650; font-stretch: 112%; }
+.dialog p { margin: 0; color: var(--ink-muted); }
+.dialog footer { display: flex; justify-content: flex-end; gap: var(--space-2); flex-wrap: wrap; }
+.drawer-scrim { display: none; }
+@media (max-width: 1180px) { .kpis { grid-template-columns: repeat(2, minmax(0, 1fr)); } .cols { grid-template-columns: minmax(0, 1fr); } }
+@media (max-width: 960px) {
+  .app { grid-template-columns: minmax(0, 1fr); }
+  .side { position: fixed; left: 0; top: 0; bottom: 0; height: auto; transform: translateX(-100%); transition: transform .2s; box-shadow: var(--shadow-lg); }
+  .app.nav-open .side { transform: none; }
+  .app.nav-open .drawer-scrim { display: block; position: fixed; inset: 0; z-index: 35; background: #0b183866; }
+  .menu-btn { display: inline-flex; }
+  .top, .content { padding-left: max(16px, env(safe-area-inset-left, 0px)); padding-right: max(16px, env(safe-area-inset-right, 0px)); }
+  .content { padding-block: var(--space-6) var(--space-12); }
+  .chip { display: none; }
+}
+@media (max-width: 560px) { .kpis { grid-template-columns: minmax(0, 1fr); } .display { font-size: 26px; line-height: 32px; } .top .avatar-top { display: none; } }
+@media (prefers-reduced-motion: reduce) { .side { transition: none; } }
+</style>
+
+<div id="app"></div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/react/18.3.1/umd/react.production.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/react-dom/18.3.1/umd/react-dom.production.min.js"></script>
+<script src="components/bundle.js"></script>
+<script>
+(function () {
+  var R = window.InfortecRH, h = React.createElement, useState = React.useState, useEffect = React.useEffect;
+
+  /* Dados de exemplo (fictícios) */
+  var REQUESTS = [
+    { id: 1, kind: 'Férias', name: 'João Pedro Lima', role: 'Desenvolvedor Pleno · Tecnologia', period: '06/01/2027 a 25/01/2027', amount: '20 dias', amountLabel: 'Duração', note: 'Gostaria de vender 10 dias do período.', submitted: 'Enviada em 14/10/2026' },
+    { id: 2, kind: 'Férias', name: 'Camila Rocha', role: 'Analista Comercial · Comercial', period: '03/11/2026 a 22/11/2026', amount: '20 dias', amountLabel: 'Duração', submitted: 'Enviada em 13/10/2026' },
+    { id: 3, kind: 'Banco de horas', name: 'Beatriz Souza', role: 'Assistente Financeiro · Financeiro', period: '31/10/2026', amount: '4h00', amountLabel: 'Folga', note: 'Consulta médica no período da tarde.', submitted: 'Enviada em 15/10/2026' },
+    { id: 4, kind: 'Férias', name: 'Rafael Mendes', role: 'Gerente de Tecnologia · Tecnologia', period: '14/12/2026 a 28/12/2026', amount: '15 dias', amountLabel: 'Duração', submitted: 'Enviada em 12/10/2026' },
+    { id: 5, kind: 'Atestado', name: 'Carlos Henrique da Silva', role: 'Supervisor de Operações · Operações', period: '13/10/2026 a 15/10/2026', amount: '3 dias', amountLabel: 'Afastamento', submitted: 'Enviado em 13/10/2026' }
+  ];
+  var BIRTHDAYS = [
+    { name: 'Ana Ribeiro', dept: 'Comercial', date: '18/10' },
+    { name: 'Lucas Ferreira', dept: 'Operações', date: '22/10' },
+    { name: 'Juliana Martins', dept: 'Financeiro', date: '27/10' },
+    { name: 'Paulo Oliveira', dept: 'Tecnologia', date: '30/10' }
+  ];
+  var PONTO = [
+    { label: 'Presentes', status: 'regular', tone: 'success', n: 231 },
+    { label: 'Atrasos', status: 'atraso', tone: 'warning', n: 9, text: 'Atrasos' },
+    { label: 'Ausências', status: 'falta', tone: 'danger', n: 4, text: 'Ausentes' },
+    { label: 'Em férias', status: 'ferias', tone: 'leave', n: 4 }
+  ];
+  var ADMISSOES = [
+    { id: 1, name: 'Ana Ribeiro', role: 'Executiva de Contas', dept: 'Comercial', start: '03/11/2026', stage: ['Documentos pendentes', 'warning'] },
+    { id: 2, name: 'Thiago Barbosa', role: 'Analista de Suporte', dept: 'Tecnologia', start: '03/11/2026', stage: ['Exame admissional', 'brand'] },
+    { id: 3, name: 'Fernanda Dias', role: 'Auxiliar Administrativo', dept: 'Operações', start: '27/10/2026', stage: ['Assinatura do contrato', 'people'] },
+    { id: 4, name: 'Marcos Vieira', role: 'Técnico de Campo', dept: 'Operações', start: '19/10/2026', stage: ['Concluída', 'success'] },
+    { id: 5, name: 'Larissa Gomes', role: 'Analista de DP', dept: 'Recursos Humanos', start: '19/10/2026', stage: ['Concluída', 'success'] }
+  ];
+  var NAV = [
+    { items: [{ id: 'painel', label: 'Painel', icon: 'home' }] },
+    { title: 'Pessoas', items: [{ id: 'colaboradores', label: 'Colaboradores', icon: 'users' }, { id: 'admissao', label: 'Admissão', icon: 'user-plus', badge: 3 }, { id: 'avaliacoes', label: 'Avaliações', icon: 'star' }] },
+    { title: 'Departamento Pessoal', items: [{ id: 'ponto', label: 'Ponto', icon: 'clock' }, { id: 'ferias', label: 'Férias', icon: 'calendar' }, { id: 'folha', label: 'Folha de pagamento', icon: 'wallet' }, { id: 'beneficios', label: 'Benefícios', icon: 'gift' }] },
+    { title: 'Gestão', items: [{ id: 'relatorios', label: 'Relatórios', icon: 'chart' }, { id: 'documentos', label: 'Documentos', icon: 'file' }] }
+  ];
+  var KIND_TAB = { 'Férias': 'ferias', 'Banco de horas': 'horas', 'Atestado': 'atestados' };
+
+  function first(name) { return name.split(' ')[0]; }
+
+  function App() {
+    var s1 = useState({}), decisions = s1[0], setDecisions = s1[1];
+    var s2 = useState('todas'), tab = s2[0], setTab = s2[1];
+    var s3 = useState(null), rejecting = s3[0], setRejecting = s3[1];
+    var s4 = useState(''), reason = s4[0], setReason = s4[1];
+    var s5 = useState(false), reasonErr = s5[0], setReasonErr = s5[1];
+    var s6 = useState(null), toast = s6[0], setToast = s6[1];
+    var s7 = useState({}), congrats = s7[0], setCongrats = s7[1];
+    var s8 = useState(''), q = s8[0], setQ = s8[1];
+    var s9 = useState(false), navOpen = s9[0], setNavOpen = s9[1];
+
+    useEffect(function () { if (!toast) return; var t = setTimeout(function () { setToast(null); }, 3600); return function () { clearTimeout(t); }; }, [toast]);
+    useEffect(function () {
+      function onKey(e) { if (e.key === 'Escape') { setRejecting(null); setNavOpen(false); } }
+      document.addEventListener('keydown', onKey); return function () { document.removeEventListener('keydown', onKey); };
+    }, []);
+
+    var pending = REQUESTS.filter(function (r) { return !decisions[r.id]; });
+    function count(t) { return pending.filter(function (r) { return t === 'todas' || KIND_TAB[r.kind] === t; }).length; }
+    var shown = REQUESTS.filter(function (r) { return tab === 'todas' || KIND_TAB[r.kind] === tab; });
+
+    function approve(r) {
+      setDecisions(Object.assign({}, decisions, { [r.id]: { status: 'aprovado', by: 'Aprovada por você agora' } }));
+      setToast(r.kind === 'Férias' ? 'Férias de ' + r.name + ' aprovadas.' : r.kind + ' de ' + r.name + ' aprovado.');
+    }
+    function confirmReject(e) {
+      e.preventDefault();
+      if (reason.trim().length < 5) { setReasonErr(true); return; }
+      var r = rejecting;
+      setDecisions(Object.assign({}, decisions, { [r.id]: { status: 'recusado', by: 'Recusada por você agora · Motivo: ' + reason.trim() } }));
+      setToast('Solicitação recusada. ' + first(r.name) + ' vai receber o motivo.');
+      setRejecting(null); setReason(''); setReasonErr(false);
+    }
+
+    var rows = ADMISSOES.filter(function (a) {
+      var t = q.trim().toLowerCase();
+      return !t || (a.name + ' ' + a.role + ' ' + a.dept).toLowerCase().indexOf(t) !== -1;
+    });
+    var totalPonto = PONTO.reduce(function (s, p) { return s + p.n; }, 0);
+
+    return h('div', { className: 'app' + (navOpen ? ' nav-open' : '') },
+      h('aside', { className: 'side', id: 'menu' },
+        h(R.SideNav, { logoSrc: 'assets/logo-branca.png', defaultActive: 'painel', groups: NAV, user: { name: 'Paula Nunes', role: 'Gerente de RH' }, onSelect: function () { setNavOpen(false); } })),
+      h('div', { className: 'drawer-scrim', onClick: function () { setNavOpen(false); } }),
+      h('div', { className: 'main' },
+        h('header', { className: 'top' },
+          h('button', { type: 'button', className: 'icon-btn menu-btn', 'aria-label': 'Abrir menu', 'aria-controls': 'menu', 'aria-expanded': navOpen, onClick: function () { setNavOpen(true); } }, h(R.Icon, { name: 'menu' })),
+          h('div', { className: 'search' }, h(R.TextField, { id: 'busca-global', label: 'Buscar', icon: 'search', placeholder: 'Buscar colaborador, matrícula ou CPF' })),
+          h('div', { className: 'spacer' }),
+          h('span', { className: 'chip' }, 'Dados de exemplo'),
+          h('button', { type: 'button', className: 'icon-btn', 'aria-label': 'Notificações: 4 novas' }, h(R.Icon, { name: 'bell' }), h('span', { className: 'dot', 'aria-hidden': true }, '4')),
+          h('span', { className: 'avatar-top' }, h(R.Avatar, { name: 'Paula Nunes', size: 'md', tone: 'people' }))),
+
+        h('main', { className: 'content' },
+          h('section', { className: 'hello' },
+            h('div', null,
+              h('p', { className: 'overline' }, 'Quinta-feira, 15 de outubro de 2026'),
+              h('h1', { className: 'display' }, 'Bom dia, Paula'),
+              h('p', { className: 'lead' }, pending.length
+                ? 'Você tem ' + pending.length + (pending.length === 1 ? ' solicitação para revisar' : ' solicitações para revisar') + ' e a folha de outubro fecha em 10 dias.'
+                : 'Nenhuma solicitação pendente. A folha de outubro fecha em 10 dias.')),
+            h('div', { className: 'actions' },
+              h(R.Button, { variant: 'secondary', icon: 'download', onClick: function () { setToast('Relatório de outubro em preparação. Ele aparece em Relatórios em alguns minutos.'); } }, 'Exportar relatório'),
+              h(R.Button, { variant: 'primary', icon: 'user-plus' }, 'Admitir colaborador'))),
+
+          h(R.Alert, { tone: 'info', title: 'Competência 10/2026 aberta', action: h(R.Button, { size: 'sm', variant: 'secondary' }, 'Abrir folha') }, 'Lance horas extras, faltas e comissões até 25/10 para entrarem no holerite de outubro.'),
+
+          h('section', { className: 'kpis', 'aria-label': 'Indicadores do mês' },
+            h(R.StatCard, { label: 'Headcount', value: '248', icon: 'users', trend: 'up', delta: '+6', deltaLabel: 'admissões no mês' }),
+            h(R.StatCard, { label: 'Turnover', value: '2,1', unit: '%', icon: 'chart', trend: 'down', goodWhen: 'down', delta: '−0,4 p.p.', deltaLabel: 'vs. setembro' }),
+            h(R.StatCard, { label: 'Absenteísmo', value: '3,8', unit: '%', icon: 'clock', trend: 'up', goodWhen: 'down', delta: '+0,9 p.p.', deltaLabel: 'vs. setembro' }),
+            h(R.StatCard, { label: 'Férias vencendo', value: '12', icon: 'calendar', trend: 'flat', delta: 'Nos próximos 60 dias' })),
+
+          h('div', { className: 'cols' },
+            h('section', { className: 'panel', 'aria-labelledby': 'aprov-t' },
+              h('div', { className: 'panel-head' },
+                h('div', null, h('h2', { id: 'aprov-t' }, 'Aprovações pendentes'), h('p', null, 'Pedidos das suas equipes, do mais antigo para o mais novo.'))),
+              h(R.Tabs, { label: 'Tipo de solicitação', value: tab, onChange: setTab, items: [
+                { id: 'todas', label: 'Todas', count: count('todas') },
+                { id: 'ferias', label: 'Férias', count: count('ferias') },
+                { id: 'horas', label: 'Banco de horas', count: count('horas') },
+                { id: 'atestados', label: 'Atestados', count: count('atestados') }] }),
+              shown.length ? h('div', { className: 'req-grid' }, shown.map(function (r) {
+                var d = decisions[r.id];
+                return h(R.RequestCard, Object.assign({ key: r.id }, r, {
+                  status: d ? d.status : 'pendente', submitted: d ? d.by : r.submitted,
+                  onApprove: function () { approve(r); }, onReject: function () { setRejecting(r); setReason(''); setReasonErr(false); }
+                }));
+              })) : h('div', { className: 'empty' }, h('b', null, 'Nada por aqui'), 'Nenhuma solicitação deste tipo.')),
+
+            h('div', { className: 'stack' },
+              h('section', { className: 'panel', 'aria-labelledby': 'ponto-t' },
+                h('div', { className: 'panel-head' }, h('div', null, h('h2', { id: 'ponto-t' }, 'Ponto de hoje'), h('p', null, 'Atualizado às 09:42'))),
+                h('p', { className: 'ponto-total' }, h('b', { className: 'num' }, totalPonto), ' colaboradores com jornada hoje'),
+                h('ul', { className: 'list' }, PONTO.map(function (p) {
+                  return h('li', { key: p.label },
+                    h('div', { className: 'who' }, h(R.StatusBadge, { status: p.status }, p.label)),
+                    h('span', { className: 'num' }, p.n));
+                })),
+                h('div', { style: { padding: '0 var(--space-5) var(--space-5)' } }, h(R.Button, { variant: 'ghost', size: 'sm', iconRight: 'chevron-right' }, 'Ver espelho de ponto'))),
+
+              h('section', { className: 'panel', 'aria-labelledby': 'aniv-t' },
+                h('div', { className: 'panel-head' }, h('div', null, h('h2', { id: 'aniv-t' }, 'Aniversariantes de outubro'), h('p', null, BIRTHDAYS.length + ' pessoas'))),
+                h('ul', { className: 'list' }, BIRTHDAYS.map(function (b) {
+                  return h('li', { key: b.name },
+                    h(R.Avatar, { name: b.name, size: 'md', tone: 'people' }),
+                    h('div', { className: 'who' }, h('b', null, b.name), h('small', null, b.dept + ' · ', h('span', { className: 'num' }, b.date))),
+                    congrats[b.name] ? h('span', { className: 'sent' }, h(R.Icon, { name: 'check', size: 16 }), 'Enviado')
+                      : h(R.Button, { variant: 'ghost', size: 'sm', icon: 'gift', onClick: function () {
+                          setCongrats(Object.assign({}, congrats, { [b.name]: true }));
+                          setToast('Mensagem de parabéns enviada para ' + first(b.name) + '.');
+                        } }, 'Parabenizar'));
+                }))))),
+
+          h('section', { className: 'panel', 'aria-labelledby': 'adm-t' },
+            h('div', { className: 'panel-head' },
+              h('div', null, h('h2', { id: 'adm-t' }, 'Admissões em andamento'), h('p', null, 'Próximas entradas e etapas do processo.')),
+              h(R.Button, { variant: 'secondary', size: 'sm', icon: 'plus' }, 'Nova admissão')),
+            h('div', { className: 'table-tools' },
+              h(R.TextField, { id: 'busca-adm', label: 'Filtrar admissões', icon: 'search', placeholder: 'Nome, cargo ou departamento', value: q, onChange: function (e) { setQ(e.target.value); } })),
+            h(R.DataTable, {
+              caption: 'Admissões em andamento',
+              empty: 'Nenhuma admissão com esse termo. Limpe o filtro para ver todas.',
+              columns: [
+                { key: 'name', label: 'Pessoa', render: function (r) { return h('div', { className: 'irh-cell-person' }, h(R.Avatar, { name: r.name, size: 'sm' }), h('div', null, h('b', null, r.name), h('small', null, r.role))); } },
+                { key: 'dept', label: 'Departamento' },
+                { key: 'start', label: 'Início', mono: true },
+                { key: 'stage', label: 'Etapa', render: function (r) { return h(R.StatusBadge, { tone: r.stage[1], size: 'sm' }, r.stage[0]); } }
+              ],
+              rows: rows
+            }))),
+
+        rejecting ? h('div', { className: 'scrim', onClick: function (e) { if (e.target === e.currentTarget) setRejecting(null); } },
+          h('form', { className: 'dialog', role: 'dialog', 'aria-modal': true, 'aria-labelledby': 'rej-t', noValidate: true, onSubmit: confirmReject },
+            h('h2', { id: 'rej-t' }, 'Recusar ' + rejecting.kind.toLowerCase() + ' de ' + rejecting.name + '?'),
+            h('p', null, first(rejecting.name) + ' vai receber o motivo por e-mail e no portal do colaborador.'),
+            h(R.TextField, { id: 'motivo', label: 'Motivo da recusa', required: true, autoFocus: true, value: reason,
+              placeholder: 'Ex.: período coincide com o fechamento do trimestre',
+              error: reasonErr ? 'Escreva o motivo com pelo menos 5 caracteres.' : undefined,
+              onChange: function (e) { setReason(e.target.value); if (reasonErr) setReasonErr(false); } }),
+            h('footer', null,
+              h(R.Button, { variant: 'secondary', onClick: function () { setRejecting(null); } }, 'Cancelar'),
+              h(R.Button, { variant: 'danger', type: 'submit' }, 'Recusar solicitação')))) : null,
+
+        toast ? h('div', { className: 'toast', role: 'status' }, h(R.Icon, { name: 'check-circle' }), h('span', null, toast)) : null));
+  }
+
+  ReactDOM.createRoot(document.getElementById('app')).render(h(App));
+})();
+</script>

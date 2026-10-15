@@ -2,6 +2,8 @@
 
 Versão navegável (com prévias ao vivo): https://claude.ai/artifact/7Do4RhGBQgmSDYSRLY7Y5K
 
+Tela de exemplo: `painel.html` (abra no navegador) · versão online: https://claude.ai/artifact/QBU7E4En2jFv2EQehV69AN
+
 Arquivos: `tokens.json` (fonte), `tokens.css` (variáveis CSS, temas claro e escuro), `components/bundle.js` + `bundle.css` (componentes React em `window.InfortecRH`), `components/index.d.ts` (props) e um README por componente.
 
 Infortec RH é o sistema de recursos humanos da Infortec: admissão, cadastro de colaboradores, ponto, férias, folha de pagamento, benefícios e avaliações. Quem usa são analistas de RH e Departamento Pessoal o dia inteiro, gestores que aprovam pedidos e colaboradores no autoatendimento. O sistema precisa passar confiança (é salário e dado pessoal), ser rápido de ler e tratar pessoas como pessoas.
