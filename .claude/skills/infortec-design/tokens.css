@@ -29,6 +29,7 @@
   --info-soft: #DBEAFE;
   --warn: #F59E0B;
   --warn-soft: #FEF0D9;
+  --warn-fg: #B45309;         /* texto sobre --warn-soft */
   --danger: #EF4444;
   --danger-soft: #FEE2E2;
   --danger-fg: #B42318;

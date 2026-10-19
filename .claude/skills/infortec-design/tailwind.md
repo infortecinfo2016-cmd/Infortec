@@ -20,6 +20,7 @@ Os snippets de `componentes.md` usam estes nomes de classe. Se o projeto já usa
   --secondary-foreground: #171A17;
   --muted: #FAFBFA;
   --muted-foreground: #6B716C;
+  --subtle-foreground: #8F948F;
   --accent: #F1F4F1;
   --accent-foreground: #171A17;
   --destructive: #EF4444;
@@ -35,8 +36,10 @@ Os snippets de `componentes.md` usam estes nomes de classe. Se o projeto já usa
   --info-2: #75A8F9;
   --warn: #F59E0B;
   --warn-soft: #FEF0D9;
+  --warn-fg: #B45309;
   --danger: #EF4444;
   --danger-soft: #FEE2E2;
+  --danger-fg: #B42318;
   --track: #F1F4F1;
   --divider: #EEF0EE;
 
@@ -57,6 +60,7 @@ Os snippets de `componentes.md` usam estes nomes de classe. Se o projeto já usa
   --color-primary-hover: var(--primary-hover);
   --color-muted: var(--muted);
   --color-muted-foreground: var(--muted-foreground);
+  --color-subtle-foreground: var(--subtle-foreground);
   --color-accent: var(--accent);
   --color-border: var(--border);
   --color-input: var(--input);
@@ -69,8 +73,10 @@ Os snippets de `componentes.md` usam estes nomes de classe. Se o projeto já usa
   --color-info-2: var(--info-2);
   --color-warn: var(--warn);
   --color-warn-soft: var(--warn-soft);
+  --color-warn-fg: var(--warn-fg);
   --color-danger: var(--danger);
   --color-danger-soft: var(--danger-soft);
+  --color-danger-fg: var(--danger-fg);
   --color-track: var(--track);
   --color-divider: var(--divider);
   --radius-lg: var(--radius);
@@ -102,12 +108,12 @@ export default {
       colors: {
         background: "#F4F7F4", foreground: "#171A17", card: "#FFFFFF",
         border: "#E3E7E3", divider: "#EEF0EE", track: "#F1F4F1",
-        muted: { DEFAULT: "#FAFBFA", foreground: "#6B716C" },
+        muted: { DEFAULT: "#FAFBFA", foreground: "#6B716C" }, subtle: { foreground: "#8F948F" },
         primary: { DEFAULT: "#0B7155", foreground: "#FFFFFF", hover: "#095E47" },
         brand: { DEFAULT: "#25D366", soft: "#D9F7E6", border: "#9BE7BA" },
         info: { DEFAULT: "#3B82F6", 2: "#75A8F9" },
-        warn: { DEFAULT: "#F59E0B", soft: "#FEF0D9" },
-        danger: { DEFAULT: "#EF4444", soft: "#FEE2E2" },
+        warn: { DEFAULT: "#F59E0B", soft: "#FEF0D9", fg: "#B45309" },
+        danger: { DEFAULT: "#EF4444", soft: "#FEE2E2", fg: "#B42318" },
       },
       borderRadius: { lg: "8px", md: "6px", sm: "4px" },
     },
@@ -129,4 +135,5 @@ export default {
 | Botão primário | `h-8 rounded-md bg-primary px-3 text-xs font-semibold text-primary-foreground inline-flex items-center gap-1.5 hover:bg-primary-hover` |
 | Ícone-bloco | `size-8 rounded-lg grid place-items-center text-white` + `bg-[cor do sistema]` |
 | Badge % | `rounded px-1.5 py-0.5 font-mono text-[10px] font-semibold bg-brand-soft text-primary` |
+| Aviso / status | `bg-brand-soft text-primary` · `bg-warn-soft text-warn-fg` · `bg-danger-soft text-danger-fg` |
 | Caixinha interna | `rounded-md bg-muted px-3 py-2` |
