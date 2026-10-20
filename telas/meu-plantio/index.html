@@ -1,0 +1,526 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Meu Plantio no Infortec Design</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600;700&display=swap">
+<style>
+/* Infortec Design — tokens (de .claude/skills/infortec-design/tokens.css) */
+:root{
+  --bg:#F4F7F4;--card:#FFFFFF;--muted:#FAFBFA;--track:#F1F4F1;--border:#E3E7E3;--border-soft:#EEF0EE;
+  --text:#171A17;--text-muted:#6B716C;--text-subtle:#8F948F;
+  --primary:#0B7155;--primary-hover:#095E47;--brand:#25D366;--brand-soft:#D9F7E6;--brand-border:#9BE7BA;
+  --info:#3B82F6;--info-soft:#DBEAFE;--warn:#F59E0B;--warn-soft:#FEF0D9;--warn-fg:#B45309;
+  --danger:#EF4444;--danger-soft:#FEE2E2;--danger-fg:#B42318;
+  --c1:#25D366;--c2:#3B82F6;--c3:#F59E0B;--c4:#8B5CF6;--c5:#EC4899;--c6:#14B8A6;--c10:#64748B;
+  --violet-soft:#EDE9FE;--violet-fg:#6D28D9;
+  --font-sans:"Plus Jakarta Sans",ui-sans-serif,system-ui,"Segoe UI",sans-serif;
+  --font-mono:"JetBrains Mono",ui-monospace,Consolas,monospace;
+  --radius:8px;--radius-sm:6px;
+}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--text);font-family:var(--font-sans);font-size:13px;line-height:1.45;-webkit-font-smoothing:antialiased}
+p,h1,h2,h3{margin:0}
+button{font:inherit;color:inherit}
+.num{font-family:var(--font-mono);font-variant-numeric:tabular-nums}
+.ico{width:16px;height:16px;fill:none;stroke:currentColor;stroke-width:2;stroke-linecap:round;stroke-linejoin:round;flex-shrink:0}
+.ico.sm{width:14px;height:14px}.ico.xs{width:12px;height:12px}.ico.lg{width:20px;height:20px}
+.label{font-size:10.5px;text-transform:uppercase;letter-spacing:.04em;color:var(--text-muted);font-weight:500}
+.cap{font-size:10.5px;color:var(--text-muted)}
+
+/* ---------- página da prévia ---------- */
+.page{max-width:1240px;margin:0 auto;padding:24px 20px 48px}
+.page-h{margin-bottom:20px}
+.page-h .ctx{font-size:12px;color:var(--text-muted)}
+.page-h h1{font-size:24px;font-weight:700;letter-spacing:-.02em}
+.page-h p.lead{font-size:13px;color:var(--text-muted);max-width:720px;margin-top:4px}
+.screen{background:var(--card);border:1px solid var(--border);border-radius:var(--radius);padding:16px;margin-bottom:12px}
+.screen-h{display:flex;flex-wrap:wrap;align-items:baseline;justify-content:space-between;gap:8px;margin-bottom:16px}
+.screen-h h2{font-size:14px;font-weight:600}
+.screen-h p{font-size:12px;color:var(--text-muted)}
+.compare{display:grid;grid-template-columns:auto auto minmax(0,1fr);gap:28px;align-items:start}
+@media (max-width:1100px){.compare{grid-template-columns:auto auto}.changes{grid-column:1/-1}}
+@media (max-width:860px){.compare{grid-template-columns:minmax(0,1fr);justify-items:center}.changes{justify-self:stretch}}
+.side .tag{display:inline-flex;align-items:center;gap:6px;font-size:10.5px;font-weight:600;text-transform:uppercase;letter-spacing:.04em;margin-bottom:8px;color:var(--text-muted)}
+.side .tag i{width:8px;height:8px;border-radius:50%;background:var(--c10)}
+.side.new .tag{color:var(--primary)}.side.new .tag i{background:var(--brand)}
+.before{display:block;height:780px;width:auto;max-width:100%}
+.changes h3{font-size:12px;font-weight:600;margin-bottom:8px}
+.changes ul{margin:0;padding:0;list-style:none;display:grid;gap:8px}
+.changes li{display:flex;gap:8px;font-size:12px;color:var(--text-muted)}
+.changes li b{color:var(--text);font-weight:600}
+.changes li .ico{color:var(--primary);margin-top:2px}
+
+/* ---------- celular ---------- */
+.phone{width:390px;height:780px;border:10px solid #1C1F1C;border-radius:46px;background:#1C1F1C;position:relative;overflow:hidden;box-shadow:0 1px 2px rgb(0 0 0 / .06)}
+@media (max-width:430px){.phone{width:calc(100vw - 32px);}}
+.app{position:absolute;inset:0;border-radius:36px;overflow:hidden;background:var(--bg);display:flex;flex-direction:column}
+.status{height:40px;flex-shrink:0;background:var(--card);display:flex;align-items:center;justify-content:space-between;padding:0 26px 0 30px;font-size:13px;font-weight:600}
+.status .island{width:96px;height:26px;border-radius:14px;background:#1C1F1C}
+.status .sig{display:flex;gap:5px;align-items:center}
+.status .sig i{display:block;width:3px;border-radius:1px;background:var(--text)}
+.status .bat{width:22px;height:11px;border:1.5px solid var(--text);border-radius:3px;padding:1px}
+.status .bat::after{content:"";display:block;height:100%;width:75%;background:var(--text);border-radius:1px}
+
+.appbar{height:52px;flex-shrink:0;background:var(--card);border-bottom:1px solid var(--border);display:flex;align-items:center;gap:8px;padding:0 8px 0 12px}
+.appbar .t{font-size:15px;font-weight:700;letter-spacing:-.01em;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.appbar .r{margin-left:auto;display:flex;align-items:center;gap:2px}
+.ib{width:40px;height:40px;display:grid;place-items:center;border-radius:var(--radius-sm);border:0;background:none;position:relative;color:var(--text)}
+.ib .badge{position:absolute;right:6px;top:6px;min-width:16px;height:16px;border-radius:8px;background:var(--danger);color:#fff;font:700 9px/16px var(--font-mono);text-align:center;padding:0 3px}
+.avatar{width:30px;height:30px;border-radius:50%;background:var(--brand-soft);color:var(--primary);display:grid;place-items:center;margin:0 4px}
+
+.scroll{flex:1;overflow-y:auto;overflow-x:hidden;padding:14px 14px 96px;display:grid;gap:10px;align-content:start}
+.scroll::-webkit-scrollbar{display:none}
+.ph .ctx{font-size:11.5px;color:var(--text-muted)}
+.ph h1{font-size:22px;font-weight:700;letter-spacing:-.02em;line-height:1.2}
+.row{display:flex;align-items:center;gap:8px}
+
+.card{background:var(--card);border:1px solid var(--border);border-radius:var(--radius);padding:14px;min-width:0}
+.card-h{display:flex;justify-content:space-between;align-items:flex-start;gap:8px;margin-bottom:12px}
+.card-h h2{font-size:14px;font-weight:600}
+.card-h p{font-size:11.5px;color:var(--text-muted)}
+.btn{height:32px;display:inline-flex;align-items:center;justify-content:center;gap:6px;padding:0 10px;border-radius:var(--radius-sm);border:1px solid var(--border);background:var(--card);font-weight:600;font-size:12px;white-space:nowrap}
+.btn.lg{height:40px}
+.btn.block{width:100%}
+.btn.primary{background:var(--primary);border-color:var(--primary);color:#fff}
+.tile{width:32px;height:32px;border-radius:var(--radius);display:grid;place-items:center;color:#fff;flex-shrink:0}
+.tile.lg{width:44px;height:44px;border-radius:10px}
+
+/* atalhos */
+.shortcuts{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:6px}
+.shortcut{display:grid;justify-items:center;gap:6px;padding:10px 2px;border-radius:var(--radius);background:var(--card);border:1px solid var(--border);font-size:10.5px;font-weight:500;text-align:center;line-height:1.2}
+
+/* KPI */
+.kpis{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}
+.kpi{position:relative;background:var(--card);border:1px solid var(--border);border-radius:var(--radius);padding:12px;min-width:0}
+.kpi .v{font:700 18px var(--font-mono);margin-top:4px;white-space:nowrap}
+.kpi .s{font-size:10.5px;color:var(--text-muted)}
+.kpi .tile{position:absolute;right:10px;top:10px;width:28px;height:28px}
+.kpi .tile .ico{width:14px;height:14px}
+.kpi.wide{grid-column:1/-1}
+
+/* números do dia */
+.trio{display:grid;grid-template-columns:repeat(3,minmax(0,1fr))}
+.trio>div{padding:0 10px;border-left:1px solid var(--border-soft)}
+.trio>div:first-child{padding-left:0;border-left:0}
+.trio .v{font:700 20px var(--font-mono);margin-top:2px}
+
+/* chips */
+.chip{display:inline-flex;align-items:center;gap:5px;height:22px;padding:0 8px;border-radius:999px;font-size:10.5px;font-weight:600;white-space:nowrap}
+.chip.dot::before{content:"";width:6px;height:6px;border-radius:50%;background:currentColor}
+.chip.ok{background:var(--brand-soft);color:var(--primary)}
+.chip.violet{background:var(--violet-soft);color:var(--violet-fg)}
+.chip.line{border:1px solid var(--border);background:var(--muted);color:var(--text-muted);font:500 10.5px var(--font-mono)}
+.chip.warn{background:var(--warn-soft);color:var(--warn-fg)}
+.chip.bad{background:var(--danger-soft);color:var(--danger-fg);font-family:var(--font-mono)}
+
+/* lista de plantios */
+.list{display:grid}
+.item{display:flex;align-items:center;gap:10px;padding:10px 0;border-bottom:1px solid var(--border-soft)}
+.item:last-child{border-bottom:0;padding-bottom:0}
+.item:first-child{padding-top:0}
+.item .body{flex:1;min-width:0}
+.item .nm{font-size:13px;font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.item .sub{font-size:11px;color:var(--text-muted)}
+.bar{height:4px;border-radius:9px;background:var(--track);overflow:hidden;flex:1}
+.bar i{display:block;height:100%;border-radius:9px}
+.col{text-align:right;flex-shrink:0;min-width:46px}
+.col b{display:block;font:700 13px var(--font-mono)}
+
+/* segmentado */
+.seg{display:flex;flex-shrink:0;min-height:38px;padding:2px;border:1px solid var(--border);background:var(--muted);border-radius:var(--radius-sm);overflow-x:auto}
+.seg::-webkit-scrollbar{display:none}
+.seg button{flex:1 0 auto;height:32px;padding:0 12px;border:0;border-radius:4px;background:none;font-weight:500;font-size:12px;color:var(--text-muted);white-space:nowrap}
+.seg button.on{background:var(--card);color:var(--text);box-shadow:0 1px 2px rgb(16 24 16 / .08)}
+
+.search{display:flex;align-items:center;gap:8px;height:40px;padding:0 12px;border:1px solid var(--border);border-radius:var(--radius-sm);background:var(--card);color:var(--text-muted);font-size:13px}
+
+/* fases do ciclo */
+.steps{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:4px}
+.steps i{display:block;height:4px;border-radius:9px;background:var(--track)}
+.steps .done i,.steps .cur i{background:var(--brand)}
+.steps span{display:block;margin-top:5px;font-size:10px;color:var(--text-muted)}
+.steps .cur span{color:var(--primary);font-weight:600}
+
+/* caixinhas */
+.boxes{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:6px}
+.box{background:var(--muted);border-radius:var(--radius-sm);padding:8px 10px;min-width:0}
+.box b{display:block;font:700 13px var(--font-mono);white-space:nowrap}
+.box b.warn{color:var(--warn-fg)}
+
+/* plantio card */
+.pl-h{display:flex;align-items:flex-start;gap:8px;margin-bottom:12px}
+.pl-h .body{flex:1;min-width:0}
+.pl-h h3{font-size:14px;font-weight:600}
+.sep{height:1px;background:var(--border-soft);margin:12px 0}
+
+/* gauge */
+.gauge{position:relative;display:grid;place-items:center;flex-shrink:0}
+.gauge svg{position:absolute;inset:0;transform:rotate(135deg)}
+.gauge span{font:700 12px var(--font-mono)}
+
+/* tabbar + fab */
+.tabbar{position:absolute;left:0;right:0;bottom:0;height:72px;background:var(--card);border-top:1px solid var(--border);display:grid;grid-template-columns:repeat(5,1fr);padding:6px 6px 14px}
+.tab{display:grid;justify-items:center;align-content:center;gap:3px;font-size:10px;font-weight:500;color:var(--text-muted);position:relative;border-radius:var(--radius)}
+.tab .pill{width:52px;height:28px;border-radius:14px;display:grid;place-items:center}
+.tab.on{color:var(--primary);font-weight:600}
+.tab.on .pill{background:var(--brand-soft)}
+.tab .badge{position:absolute;left:calc(50% + 6px);top:0;min-width:16px;height:16px;border-radius:8px;background:var(--danger);color:#fff;font:700 9px/16px var(--font-mono);text-align:center;padding:0 3px}
+.fab{position:absolute;right:14px;bottom:86px;height:44px;padding:0 16px;border-radius:var(--radius);background:var(--primary);color:#fff;display:flex;align-items:center;gap:8px;font-weight:600;font-size:13px;box-shadow:0 4px 12px rgb(11 113 85 / .22);border:0}
+.fab.nobar{bottom:18px}
+
+.split{display:flex;height:8px;border-radius:9px;overflow:hidden;gap:2px;margin:12px 0 10px}
+.split i{display:block;height:100%}
+.legend{display:grid;gap:8px}
+.legend .li{display:flex;align-items:center;gap:8px;font-size:12px}
+.legend .li .d{width:8px;height:8px;border-radius:50%}
+.legend .li .val{margin-left:auto;text-align:right}
+.legend .li .val b{display:block;font:700 12px var(--font-mono)}
+</style>
+</head>
+<body>
+<svg width="0" height="0" style="position:absolute" aria-hidden="true">
+  <symbol id="i-menu" viewBox="0 0 24 24"><path d="M4 6h16M4 12h16M4 18h16"/></symbol>
+  <symbol id="i-search" viewBox="0 0 24 24"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/></symbol>
+  <symbol id="i-bell" viewBox="0 0 24 24"><path d="M6 8a6 6 0 0 1 12 0c0 7 3 9 3 9H3s3-2 3-9"/><path d="M10.3 21a1.94 1.94 0 0 0 3.4 0"/></symbol>
+  <symbol id="i-user" viewBox="0 0 24 24"><circle cx="12" cy="8" r="4"/><path d="M20 21a8 8 0 0 0-16 0"/></symbol>
+  <symbol id="i-sprout" viewBox="0 0 24 24"><path d="M7 20h10"/><path d="M10 20c5.5-2.5.8-6.4 3-10"/><path d="M9.5 9.4c1.1.8 1.8 2.2 2.3 3.7-2 .4-3.5.4-4.8-.3-1.2-.6-2.3-1.9-3-4.2 2.8-.5 4.4 0 5.5.8z"/><path d="M14.1 6a7 7 0 0 0-1.1 4c1.9-.1 3.3-.6 4.3-1.4 1-1 1.6-2.3 1.7-4.6-2.7.1-4 1-4.9 2z"/></symbol>
+  <symbol id="i-plus" viewBox="0 0 24 24"><path d="M5 12h14M12 5v14"/></symbol>
+  <symbol id="i-users" viewBox="0 0 24 24"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M22 21v-2a4 4 0 0 0-3-3.87M16 3.13a4 4 0 0 1 0 7.75"/></symbol>
+  <symbol id="i-tractor" viewBox="0 0 24 24"><circle cx="7" cy="16" r="4"/><circle cx="18" cy="17.5" r="2.5"/><path d="M4 12.5V7h7l2.5 6.5"/><path d="M11 16h4.5"/><path d="M13.5 13.5H20V15"/><path d="M8 7V4h3"/></symbol>
+  <symbol id="i-wallet" viewBox="0 0 24 24"><path d="M19 7V4a1 1 0 0 0-1-1H5a2 2 0 0 0 0 4h15a1 1 0 0 1 1 1v4h-3a2 2 0 0 0 0 4h3a1 1 0 0 0 1-1v-2"/><path d="M3 5v14a2 2 0 0 0 2 2h15a1 1 0 0 0 1-1v-4"/></symbol>
+  <symbol id="i-cal" viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="18" rx="2"/><path d="M16 2v4M8 2v4M3 10h18"/></symbol>
+  <symbol id="i-home" viewBox="0 0 24 24"><path d="m3 9 9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><path d="M9 22V12h6v10"/></symbol>
+  <symbol id="i-store" viewBox="0 0 24 24"><path d="M3 9l1.5-5h15L21 9"/><path d="M4 9v11h16V9"/><path d="M3 9h18"/><path d="M9 20v-6h6v6"/></symbol>
+  <symbol id="i-back" viewBox="0 0 24 24"><path d="m12 19-7-7 7-7"/><path d="M19 12H5"/></symbol>
+  <symbol id="i-more" viewBox="0 0 24 24"><circle cx="12" cy="5" r="1"/><circle cx="12" cy="12" r="1"/><circle cx="12" cy="19" r="1"/></symbol>
+  <symbol id="i-refresh" viewBox="0 0 24 24"><path d="M3 12a9 9 0 0 1 9-9 9.75 9.75 0 0 1 6.74 2.74L21 8"/><path d="M21 3v5h-5"/><path d="M21 12a9 9 0 0 1-9 9 9.75 9.75 0 0 1-6.74-2.74L3 16"/><path d="M8 16H3v5"/></symbol>
+  <symbol id="i-chev" viewBox="0 0 24 24"><path d="m9 18 6-6-6-6"/></symbol>
+  <symbol id="i-down" viewBox="0 0 24 24"><path d="m6 9 6 6 6-6"/></symbol>
+  <symbol id="i-map" viewBox="0 0 24 24"><path d="M14.1 6.1 9 3 3 6v15l6-3 6 3 6-3V3z"/><path d="M9 3v15M15 6v15"/></symbol>
+  <symbol id="i-scan" viewBox="0 0 24 24"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/><path d="m8 11 2 2 4-4"/></symbol>
+  <symbol id="i-alert" viewBox="0 0 24 24"><path d="m21.73 18-8-14a2 2 0 0 0-3.48 0l-8 14A2 2 0 0 0 4 21h16a2 2 0 0 0 1.73-3"/><path d="M12 9v4M12 17h.01"/></symbol>
+  <symbol id="i-check" viewBox="0 0 24 24"><path d="M20 6 9 17l-5-5"/></symbol>
+  <symbol id="i-clock" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><path d="M12 6v6l4 2"/></symbol>
+  <symbol id="i-tag" viewBox="0 0 24 24"><path d="M12.6 2.6A2 2 0 0 0 11.2 2H4a2 2 0 0 0-2 2v7.2a2 2 0 0 0 .6 1.4l8.7 8.7a2.4 2.4 0 0 0 3.4 0l6.6-6.6a2.4 2.4 0 0 0 0-3.4z"/><circle cx="7.5" cy="7.5" r=".5"/></symbol>
+  <symbol id="i-up" viewBox="0 0 24 24"><path d="M22 7 13.5 15.5 8.5 10.5 2 17"/><path d="M16 7h6v6"/></symbol>
+  <symbol id="i-dn" viewBox="0 0 24 24"><path d="M22 17l-8.5-8.5-5 5L2 7"/><path d="M16 17h6v-6"/></symbol>
+  <symbol id="i-file" viewBox="0 0 24 24"><path d="M15 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7Z"/><path d="M14 2v4a2 2 0 0 0 2 2h4M8 13h8M8 17h5"/></symbol>
+  <symbol id="i-drop" viewBox="0 0 24 24"><path d="M12 22a7 7 0 0 0 7-7c0-2-1-3.9-3-5.5s-3.5-4-4-6.5c-.5 2.5-2 4.9-4 6.5S5 13 5 15a7 7 0 0 0 7 7z"/></symbol>
+  <symbol id="i-flask" viewBox="0 0 24 24"><path d="M10 2v7.5L4 20a1 1 0 0 0 .9 1.5h14.2A1 1 0 0 0 20 20l-6-10.5V2"/><path d="M8.5 2h7M7 16h10"/></symbol>
+  <symbol id="i-receipt" viewBox="0 0 24 24"><path d="M4 2v20l2-1 2 1 2-1 2 1 2-1 2 1 2-1 2 1V2l-2 1-2-1-2 1-2-1-2 1-2-1-2 1Z"/><path d="M8 7h8M8 11h8M8 15h5"/></symbol>
+  <symbol id="i-leaf" viewBox="0 0 24 24"><path d="M11 20A7 7 0 0 1 9.8 6.1C15.5 5 17 4.48 19 2c1 2 2 4.18 2 8 0 5.5-4.78 10-10 10Z"/><path d="M2 21c0-3 1.85-5.36 5.08-6C9.5 14.52 12 13 13 12"/></symbol>
+  <symbol id="i-ok" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><path d="m9 12 2 2 4-4"/></symbol>
+</svg>
+
+<template id="status-bar">
+  <div class="status"><span class="num">23:27</span><span class="island"></span><span class="sig"><i style="height:5px"></i><i style="height:7px"></i><i style="height:9px"></i><i style="height:11px"></i><span class="bat"></span></span></div>
+</template>
+
+<div class="page">
+  <div class="page-h">
+    <p class="ctx">Prévia · Meu Plantio · antes e depois</p>
+    <h1>Meu Plantio no Infortec Design</h1>
+    <p class="lead">As mesmas quatro telas, com os mesmos dados dos seus prints, refeitas no padrão dos outros sistemas Infortec. Dá para rolar dentro de cada celular.</p>
+  </div>
+
+  <!-- ===================== INÍCIO ===================== -->
+  <section class="screen">
+    <div class="screen-h"><h2>Início</h2><p>O que precisa de atenção hoje, atalhos e como está cada plantio</p></div>
+    <div class="compare">
+      <div class="side"><p class="tag"><i></i>Antes</p><img class="before" src="antes/inicio.png" alt="Tela Início atual do Meu Plantio"></div>
+      <div class="side new"><p class="tag"><i></i>Infortec Design</p>
+        <div class="phone"><div class="app">
+          <div data-status></div>
+          <div class="appbar">
+            <button class="ib" aria-label="Menu"><svg class="ico"><use href="#i-menu"/></svg></button>
+            <span class="t">Meu Plantio</span>
+            <div class="r">
+              <button class="ib" aria-label="Buscar"><svg class="ico"><use href="#i-search"/></svg></button>
+              <button class="ib" aria-label="Notificações"><svg class="ico"><use href="#i-bell"/></svg><span class="badge">4</span></button>
+              <span class="avatar"><svg class="ico sm"><use href="#i-user"/></svg></span>
+            </div>
+          </div>
+          <div class="scroll">
+            <div class="ph"><p class="ctx">Segunda, 19 de outubro · 3 plantios ativos</p><h1>Início</h1></div>
+
+            <div class="card">
+              <div class="card-h"><div><h2>Agenda de hoje</h2><p>O que precisa da sua atenção no campo</p></div><button class="btn">Ver agenda<svg class="ico xs"><use href="#i-chev"/></svg></button></div>
+              <div class="trio">
+                <div><p class="label">Tarefas hoje</p><p class="v">0</p></div>
+                <div><p class="label">Atrasadas</p><p class="v" style="color:var(--danger-fg)">4</p></div>
+                <div><p class="label">Programadas</p><p class="v">5</p></div>
+              </div>
+            </div>
+
+            <div class="shortcuts">
+              <div class="shortcut"><span class="tile" style="background:var(--primary)"><svg class="ico"><use href="#i-plus"/></svg></span>Novo plantio</div>
+              <div class="shortcut"><span class="tile" style="background:var(--c4)"><svg class="ico"><use href="#i-users"/></svg></span>Mão de obra</div>
+              <div class="shortcut"><span class="tile" style="background:var(--c3)"><svg class="ico"><use href="#i-tractor"/></svg></span>Colheitas</div>
+              <div class="shortcut"><span class="tile" style="background:var(--c2)"><svg class="ico"><use href="#i-wallet"/></svg></span>Financeiro</div>
+              <div class="shortcut"><span class="tile" style="background:var(--c6)"><svg class="ico"><use href="#i-cal"/></svg></span>Agenda</div>
+            </div>
+
+            <div class="kpis">
+              <div class="kpi"><p class="label">Plantios ativos</p><p class="v">3</p><p class="s">em crescimento ou indução</p><span class="tile" style="background:var(--brand)"><svg class="ico"><use href="#i-sprout"/></svg></span></div>
+              <div class="kpi"><p class="label">Mudas</p><p class="v">446 mil</p><p class="s">em 3 plantios</p><span class="tile" style="background:var(--c2)"><svg class="ico"><use href="#i-leaf"/></svg></span></div>
+              <div class="kpi wide"><p class="label">Custo por linha</p><p class="v">R$ 1.761,28</p><p class="s">média de 36 linhas</p><span class="tile" style="background:var(--c3)"><svg class="ico"><use href="#i-tag"/></svg></span></div>
+            </div>
+
+            <div class="card">
+              <div class="card-h"><div><h2>Meus plantios</h2><p>Quanto do ciclo cada um já andou</p></div><button class="btn">Ver todos</button></div>
+              <div class="list">
+                <div class="item">
+                  <span class="tile" style="background:var(--brand)"><svg class="ico"><use href="#i-sprout"/></svg></span>
+                  <div class="body"><p class="nm">Plantio 4,41 linhas</p><p class="sub">Pérola · Em crescimento</p>
+                    <div class="row" style="margin-top:6px"><div class="bar"><i style="width:44%;background:var(--brand)"></i></div><span class="cap num">44%</span></div></div>
+                  <div class="col"><b>140</b><span class="cap">dias</span></div>
+                </div>
+                <div class="item">
+                  <span class="tile" style="background:var(--brand)"><svg class="ico"><use href="#i-sprout"/></svg></span>
+                  <div class="body"><p class="nm">Talhão 7 linhas</p><p class="sub">Pérola · Em crescimento</p>
+                    <div class="row" style="margin-top:6px"><div class="bar"><i style="width:44%;background:var(--brand)"></i></div><span class="cap num">44%</span></div></div>
+                  <div class="col"><b>283</b><span class="cap">dias</span></div>
+                </div>
+                <div class="item">
+                  <span class="tile" style="background:var(--c4)"><svg class="ico"><use href="#i-sprout"/></svg></span>
+                  <div class="body"><p class="nm">Plantio 29 linhas</p><p class="sub">Pérola · Indução</p>
+                    <div class="row" style="margin-top:6px"><div class="bar"><i style="width:66%;background:var(--c4)"></i></div><span class="cap num">66%</span></div></div>
+                  <div class="col"><b>140</b><span class="cap">dias</span></div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <button class="fab"><svg class="ico"><use href="#i-plus"/></svg>Lançar</button>
+          <nav class="tabbar">
+            <div class="tab on"><span class="pill"><svg class="ico"><use href="#i-home"/></svg></span>Início</div>
+            <div class="tab"><span class="pill"><svg class="ico"><use href="#i-sprout"/></svg></span>Plantios</div>
+            <div class="tab"><span class="pill"><svg class="ico"><use href="#i-wallet"/></svg></span>Financeiro</div>
+            <div class="tab"><span class="pill"><svg class="ico"><use href="#i-store"/></svg></span>Vendas</div>
+            <div class="tab"><span class="pill"><svg class="ico"><use href="#i-cal"/></svg></span>Agenda<span class="badge">4</span></div>
+          </nav>
+        </div></div>
+      </div>
+      <div class="changes"><h3>O que mudou</h3><ul>
+        <li><svg class="ico sm"><use href="#i-check"/></svg><span><b>Topo branco e fundo claro</b> no lugar do verde escuro: a tela respira e o verde fica só onde importa.</span></li>
+        <li><svg class="ico sm"><use href="#i-check"/></svg><span><b>Números em fonte mono</b> (0, 4, 5, 446 mil, R$ 1.761,28), como nos outros sistemas. Nada mais cortado ("Plantios ativ…").</span></li>
+        <li><svg class="ico sm"><use href="#i-check"/></svg><span><b>Atrasadas em vermelho</b>, o resto neutro: a cor avisa só quando é problema.</span></li>
+        <li><svg class="ico sm"><use href="#i-check"/></svg><span><b>Plantios em lista</b> em vez de cartões com foto lado a lado: cabem os três, com nome inteiro, fase, % do ciclo e dias.</span></li>
+        <li><svg class="ico sm"><use href="#i-check"/></svg><span><b>Atalhos com ícone colorido</b> da paleta Infortec, os cinco visíveis sem rolar.</span></li>
+      </ul></div>
+    </div>
+  </section>
+
+  <!-- ===================== MEUS PLANTIOS ===================== -->
+  <section class="screen">
+    <div class="screen-h"><h2>Meus plantios</h2><p>Lista com busca, filtro por situação e a fase de cada um</p></div>
+    <div class="compare">
+      <div class="side"><p class="tag"><i></i>Antes</p><img class="before" src="antes/plantios.png" alt="Tela Meus Plantios atual"></div>
+      <div class="side new"><p class="tag"><i></i>Infortec Design</p>
+        <div class="phone"><div class="app">
+          <div data-status></div>
+          <div class="appbar">
+            <button class="ib" aria-label="Voltar"><svg class="ico"><use href="#i-back"/></svg></button>
+            <span class="t">Meus plantios</span>
+            <div class="r"><button class="ib" aria-label="Atualizar"><svg class="ico"><use href="#i-refresh"/></svg></button></div>
+          </div>
+          <div class="scroll">
+            <div class="search"><svg class="ico sm"><use href="#i-search"/></svg>Buscar plantio ou variedade</div>
+            <div class="seg"><button class="on">Todos (5)</button><button>Ativos</button><button>Colhidos</button><button>Encerrados</button></div>
+
+            <div class="card">
+              <div class="pl-h">
+                <div class="body"><h3>Plantio 4,41 linhas</h3><p class="cap" style="font-size:11.5px">Pérola · Fazenda Sol Nascente</p></div>
+                <span class="chip ok dot">Em crescimento</span>
+                <button class="ib" style="width:28px;height:28px;margin:-4px -6px 0 0" aria-label="Mais opções"><svg class="ico sm"><use href="#i-more"/></svg></button>
+              </div>
+              <div class="row" style="justify-content:space-between;margin-bottom:6px"><span class="label">Fase do ciclo</span><span class="cap">há 5 meses</span></div>
+              <div class="steps"><div class="done"><i></i><span>Preparo</span></div><div class="cur"><i></i><span>Crescimento</span></div><div><i></i><span>Manutenção</span></div><div><i></i><span>Colheita</span></div></div>
+              <div class="row" style="margin:12px 0;flex-wrap:wrap;gap:6px"><span class="chip line"><svg class="ico xs"><use href="#i-sprout"/></svg>49 mil mudas</span><span class="chip line"><svg class="ico xs"><use href="#i-clock"/></svg>140 dias</span></div>
+              <div class="boxes"><div class="box"><p class="cap">Investido</p><b>R$ 3.480,00</b></div><div class="box"><p class="cap">Receitas</p><b>R$ 0,00</b></div></div>
+            </div>
+
+            <div class="card">
+              <div class="pl-h">
+                <div class="body"><h3>Talhão 7 linhas</h3><p class="cap" style="font-size:11.5px">Pérola · Sítio Bom Jesus</p></div>
+                <span class="chip ok dot">Em crescimento</span>
+                <button class="ib" style="width:28px;height:28px;margin:-4px -6px 0 0" aria-label="Mais opções"><svg class="ico sm"><use href="#i-more"/></svg></button>
+              </div>
+              <div class="row" style="justify-content:space-between;margin-bottom:6px"><span class="label">Fase do ciclo</span><span class="cap">há 13 meses</span></div>
+              <div class="steps"><div class="done"><i></i><span>Preparo</span></div><div class="cur"><i></i><span>Crescimento</span></div><div><i></i><span>Manutenção</span></div><div><i></i><span>Colheita</span></div></div>
+              <div class="row" style="margin:12px 0;flex-wrap:wrap;gap:6px"><span class="chip line"><svg class="ico xs"><use href="#i-sprout"/></svg>76 mil mudas</span><span class="chip line"><svg class="ico xs"><use href="#i-clock"/></svg>283 dias</span><span class="chip warn"><svg class="ico xs"><use href="#i-cal"/></svg><span class="num">26/11/27</span></span></div>
+              <div class="boxes"><div class="box"><p class="cap">Investido</p><b>R$ 5,9 mil</b></div><div class="box"><p class="cap">Receitas</p><b>R$ 0,00</b></div></div>
+            </div>
+
+            <div class="card">
+              <div class="pl-h">
+                <div class="body"><h3>Plantio 29 linhas</h3><p class="cap" style="font-size:11.5px">Pérola</p></div>
+                <span class="chip violet dot">Induzido (TIF)</span>
+              </div>
+            </div>
+          </div>
+          <button class="fab nobar"><svg class="ico"><use href="#i-plus"/></svg>Novo plantio</button>
+        </div></div>
+      </div>
+      <div class="changes"><h3>O que mudou</h3><ul>
+        <li><svg class="ico sm"><use href="#i-check"/></svg><span><b>Filtro em controle segmentado</b> com a contagem ("Todos (5)"), igual ao da Carteira de clientes.</span></li>
+        <li><svg class="ico sm"><use href="#i-check"/></svg><span><b>Fases do ciclo em 4 barras iguais</b> com os nomes inteiros. Antes "Prepar-o" e "Colheit-a" quebravam.</span></li>
+        <li><svg class="ico sm"><use href="#i-check"/></svg><span><b>Valores no formato brasileiro</b>: "R$ 3.480,00" e "R$ 5,9 mil" em vez de "R$3.5k".</span></li>
+        <li><svg class="ico sm"><use href="#i-check"/></svg><span><b>Situação aparece uma vez só</b>: o selo "Em crescimento" no topo do card (antes estava repetido duas vezes).</span></li>
+        <li><svg class="ico sm"><use href="#i-check"/></svg><span><b>Cada situação tem cor fixa</b>: verde em crescimento, violeta induzido, âmbar para data que precisa de atenção.</span></li>
+      </ul></div>
+    </div>
+  </section>
+
+  <!-- ===================== DETALHE ===================== -->
+  <section class="screen">
+    <div class="screen-h"><h2>Detalhe do plantio</h2><p>Quanto foi investido, quanto voltou, área e lançamentos</p></div>
+    <div class="compare">
+      <div class="side"><p class="tag"><i></i>Antes</p><img class="before" src="antes/detalhe.png" alt="Tela de detalhe do plantio atual"></div>
+      <div class="side new"><p class="tag"><i></i>Infortec Design</p>
+        <div class="phone"><div class="app">
+          <div data-status></div>
+          <div class="appbar">
+            <button class="ib" aria-label="Voltar"><svg class="ico"><use href="#i-back"/></svg></button>
+            <span class="t">Plantio</span>
+            <div class="r"><button class="ib" aria-label="Mais opções"><svg class="ico"><use href="#i-more"/></svg></button></div>
+          </div>
+          <div class="scroll">
+            <div class="ph">
+              <p class="ctx">Pérola · Fazenda Sol Nascente</p>
+              <h1>Plantio 4,41 linhas</h1>
+              <div class="row" style="margin-top:8px;flex-wrap:wrap;gap:6px"><span class="chip ok dot">Em crescimento</span><span class="chip line"><svg class="ico xs"><use href="#i-cal"/></svg>plantado 01/06/26 · 140 dias</span></div>
+            </div>
+
+            <div class="card">
+              <div class="card-h"><div><h2>Retorno do investimento</h2><p>Quanto do que foi gasto já voltou em vendas</p></div></div>
+              <div class="row" style="gap:14px;margin-bottom:14px">
+                <div class="gauge" style="width:60px;height:60px">
+                  <svg width="60" height="60"><circle cx="30" cy="30" r="26" fill="none" stroke="var(--track)" stroke-width="7" stroke-linecap="round" stroke-dasharray="122.5 163.4"/><circle cx="30" cy="30" r="26" fill="none" stroke="var(--danger)" stroke-width="7" stroke-linecap="round" stroke-dasharray="0.01 163.4"/></svg>
+                  <span>0%</span>
+                </div>
+                <div><p style="font-size:14px;font-weight:600">R$ 0,00 de R$ 3.480,00</p><p class="cap">ainda sem vendas · falta recuperar tudo</p></div>
+              </div>
+              <div class="boxes">
+                <div class="box"><p class="cap">Mudas</p><b>49.460</b></div>
+                <div class="box"><p class="cap">Total investido</p><b>R$ 3.480,00</b></div>
+                <div class="box"><p class="cap">Receita</p><b>R$ 0,00</b></div>
+                <div class="box"><p class="cap">A recuperar</p><b class="warn">R$ 3.480,00</b></div>
+                <div class="box"><p class="cap">Custo por muda</p><b>R$ 0,07</b></div>
+                <div class="box"><p class="cap">ROI</p><b>—</b></div>
+              </div>
+            </div>
+
+            <div class="card" style="padding:12px">
+              <div class="row" style="gap:12px">
+                <span class="tile" style="background:var(--c6)"><svg class="ico"><use href="#i-map"/></svg></span>
+                <div style="flex:1;min-width:0"><p style="font-weight:600">Área demarcada no mapa</p><p class="cap num">1,3354 ha · 4,41 linhas · 4 pontos</p></div>
+                <svg class="ico" style="color:var(--text-muted)"><use href="#i-chev"/></svg>
+              </div>
+              <button class="btn lg block" style="margin-top:12px"><svg class="ico sm"><use href="#i-scan"/></svg>Analisar esta área</button>
+            </div>
+
+            <div class="seg"><button class="on">Despesas</button><button>Insumos</button><button>Adubação</button><button>Colheita</button><button>Vendas</button></div>
+
+            <div class="card">
+              <div class="card-h"><div><h2>Despesas</h2><p>Tudo que já saiu do caixa para este plantio</p></div><div style="text-align:right"><p class="num" style="font-weight:700">R$ 3.480,00</p><p class="cap">4 despesas</p></div></div>
+              <div class="item" style="padding-top:0">
+                <span class="tile" style="background:var(--c2)"><svg class="ico"><use href="#i-flask"/></svg></span>
+                <div class="body"><p class="nm">NPK 20-05-20</p><p class="sub">Adubo</p></div>
+                <div class="col"><b>R$ 2.000,00</b></div>
+              </div>
+            </div>
+          </div>
+          <button class="fab nobar"><svg class="ico"><use href="#i-plus"/></svg>Despesa</button>
+        </div></div>
+      </div>
+      <div class="changes"><h3>O que mudou</h3><ul>
+        <li><svg class="ico sm"><use href="#i-check"/></svg><span><b>Gauge de retorno</b>: mostra de cara que nada do investido voltou ainda (0%, em vermelho).</span></li>
+        <li><svg class="ico sm"><use href="#i-check"/></svg><span><b>Números sem cores aleatórias</b>: antes cada valor tinha uma cor (verde, vermelho, roxo). Agora fica neutro, e só "A recuperar" ganha âmbar de atenção.</span></li>
+        <li><svg class="ico sm"><use href="#i-check"/></svg><span><b>Abas em controle segmentado</b>, com o mesmo visual das outras telas.</span></li>
+        <li><svg class="ico sm"><use href="#i-check"/></svg><span><b>Botão de lançar com texto</b> ("Despesa") no lugar do ícone sozinho, que não dizia o que fazia.</span></li>
+      </ul></div>
+    </div>
+  </section>
+
+  <!-- ===================== FINANCEIRO ===================== -->
+  <section class="screen">
+    <div class="screen-h"><h2>Financeiro</h2><p>Quanto entrou, quanto saiu e para onde foi o dinheiro</p></div>
+    <div class="compare">
+      <div class="side"><p class="tag"><i></i>Antes</p><img class="before" src="antes/financeiro.png" alt="Tela Financeiro atual"></div>
+      <div class="side new"><p class="tag"><i></i>Infortec Design</p>
+        <div class="phone"><div class="app">
+          <div data-status></div>
+          <div class="appbar">
+            <span class="t" style="padding-left:4px">Financeiro</span>
+            <div class="r"><button class="ib" aria-label="Atualizar"><svg class="ico"><use href="#i-refresh"/></svg></button></div>
+          </div>
+          <div class="scroll">
+            <div class="seg"><button class="on">Resumo</button><button>Despesas</button><button>Receitas</button></div>
+            <div class="search" style="justify-content:space-between;color:var(--text)"><span class="row"><svg class="ico sm" style="color:var(--text-muted)"><use href="#i-cal"/></svg>Todo o período</span><svg class="ico sm" style="color:var(--text-muted)"><use href="#i-down"/></svg></div>
+
+            <div class="card">
+              <div class="row" style="justify-content:space-between"><p class="label">Investimento ativo</p><span class="chip bad">↘ ROI −32,9%</span></div>
+              <p class="num" style="font-size:24px;font-weight:700;margin-top:4px">R$ 22.115,00</p>
+              <p class="cap">o que ainda falta voltar das despesas</p>
+              <div class="split"><i style="flex:45;background:var(--brand)"></i><i style="flex:67.2;background:var(--danger)"></i></div>
+              <div class="row" style="justify-content:space-between;align-items:flex-start">
+                <div><p class="row cap" style="gap:4px"><svg class="ico xs" style="color:var(--primary)"><use href="#i-up"/></svg>Receitas</p><p class="num" style="font-weight:700;font-size:14px">R$ 45,0 mil</p><p class="cap">1 receita</p></div>
+                <div style="text-align:right"><p class="row cap" style="gap:4px;justify-content:flex-end">Despesas<svg class="ico xs" style="color:var(--danger-fg)"><use href="#i-dn"/></svg></p><p class="num" style="font-weight:700;font-size:14px">R$ 67,2 mil</p><p class="cap">28 despesas</p></div>
+              </div>
+            </div>
+
+            <div style="display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:6px">
+              <button class="btn lg"><svg class="ico sm"><use href="#i-tag"/></svg>Vendas</button>
+              <button class="btn lg"><svg class="ico sm"><use href="#i-up"/></svg>Lucro</button>
+              <button class="btn lg"><svg class="ico sm"><use href="#i-file"/></svg>Relatórios</button>
+            </div>
+
+            <div class="card">
+              <div class="card-h"><div><h2>Gastos por categoria</h2><p>Para onde foram as despesas</p></div></div>
+              <div class="row" style="gap:16px;align-items:center">
+                <div style="position:relative;width:108px;height:108px;flex-shrink:0">
+                  <svg width="108" height="108" viewBox="0 0 108 108" style="transform:rotate(-90deg)">
+                    <!-- r=44, C=276.5; 37% / 63% com 2px de folga -->
+                    <circle cx="54" cy="54" r="44" fill="none" stroke="var(--c2)" stroke-width="14" stroke-dasharray="100.3 276.5"/>
+                    <circle cx="54" cy="54" r="44" fill="none" stroke="var(--c10)" stroke-width="14" stroke-dasharray="172.2 276.5" stroke-dashoffset="-102.3"/>
+                  </svg>
+                  <div style="position:absolute;inset:0;display:grid;place-content:center;text-align:center"><span class="label" style="font-size:9px">Despesas</span><b class="num" style="font-size:10.5px">R$ 67,2 mil</b></div>
+                </div>
+                <div class="legend" style="flex:1;min-width:0">
+                  <div class="li"><span class="d" style="background:var(--c2)"></span>Irrigação<span class="val"><b>R$ 25.000,00</b><span class="cap num">37%</span></span></div>
+                  <div class="li"><span class="d" style="background:var(--c10)"></span>Outras<span class="val"><b>R$ 42,2 mil</b><span class="cap num">63%</span></span></div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <nav class="tabbar">
+            <div class="tab"><span class="pill"><svg class="ico"><use href="#i-home"/></svg></span>Início</div>
+            <div class="tab"><span class="pill"><svg class="ico"><use href="#i-sprout"/></svg></span>Plantios</div>
+            <div class="tab on"><span class="pill"><svg class="ico"><use href="#i-wallet"/></svg></span>Financeiro</div>
+            <div class="tab"><span class="pill"><svg class="ico"><use href="#i-store"/></svg></span>Vendas</div>
+            <div class="tab"><span class="pill"><svg class="ico"><use href="#i-cal"/></svg></span>Agenda<span class="badge">4</span></div>
+          </nav>
+        </div></div>
+      </div>
+      <div class="changes"><h3>O que mudou</h3><ul>
+        <li><svg class="ico sm"><use href="#i-check"/></svg><span><b>Card principal branco</b> no lugar do bloco verde escuro, com o valor em mono e o ROI num selo vermelho (é negativo).</span></li>
+        <li><svg class="ico sm"><use href="#i-check"/></svg><span><b>Receitas × despesas numa barra só</b>, verde e vermelha, com os valores no formato brasileiro ("R$ 45,0 mil").</span></li>
+        <li><svg class="ico sm"><use href="#i-check"/></svg><span><b>Gastos por categoria em donut</b> com legenda e %, igual ao "Espaço em disco por sistema" da tela Servidor.</span></li>
+        <li><svg class="ico sm"><use href="#i-check"/></svg><span><b>Atalhos viram botões</b> com ícone e nome inteiro ("Lucratividade" estava cortado).</span></li>
+      </ul></div>
+    </div>
+  </section>
+
+  <p class="cap" style="max-width:820px">Valores tirados dos seus prints. Onde o print cortava o conteúdo, completei com o que estava visível: o nome "Plantio 29 linhas", a categoria da despesa NPK e "Outras categorias" (o total de despesas menos Irrigação). A barra de navegação de baixo usa os ícones do app atual; os nomes "Plantios" e "Vendas" são sugestão.</p>
+</div>
+
+<script>
+  const tpl = document.getElementById("status-bar");
+  document.querySelectorAll("[data-status]").forEach(el => el.replaceWith(tpl.content.cloneNode(true)));
+</script>
+</body>
+</html>

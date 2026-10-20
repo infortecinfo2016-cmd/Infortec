@@ -199,3 +199,15 @@ function Segmented({ options, value, onChange }: { options: string[]; value: str
 - **Avisos tranquilizadores no subtítulo:** "só informativo, esta tela não apaga nada".
 - **Vazio:** dentro do card, ícone 20px muted + frase curta + ação outline. Nunca card em branco.
 - **Carregando:** skeleton `animate-pulse rounded bg-track` com a mesma forma do conteúdo.
+
+## App no celular (referência: `telas/meu-plantio/index.html`)
+- **Toque:** botões, inputs e abas com **40px** de altura (no desktop são 32px). Ícone-botão 40×40.
+- **Topo:** branco, 52px, borda inferior; voltar ou menu à esquerda, título 15px/700, ações à direita (busca, sino com contador vermelho, avatar). Nunca topo verde escuro.
+- **Cabeçalho da tela:** contexto muted 11,5px + H1 22px, igual ao desktop. Títulos de card continuam com subtítulo.
+- **Barra de baixo:** branca, borda superior, 5 itens; o ativo ganha pílula `bg-brand-soft` com ícone e texto em `--primary`. Contador em vermelho.
+- **Botão flutuante:** `bg-primary`, raio 8px, 44px, **sempre com texto** ("Lançar", "Novo plantio", "Despesa"); é a única peça com sombra (`0 4px 12px rgb(11 113 85 / .22)`).
+- **KPIs:** 2 colunas; o valor mais longo (dinheiro) ocupa a linha inteira em vez de ser cortado.
+- **Listas no lugar de cartões lado a lado:** linha com ícone-bloco, nome inteiro, barra de progresso com % e valor mono à direita.
+- **Fases/etapas:** barras iguais lado a lado (feito e atual em `--brand`, futuro em `--track`), nome embaixo em 10px, o atual em `--primary` 600.
+- **Abas e filtros:** controle segmentado de largura total, rolando na horizontal se não couber.
+- **Valores grandes abreviados em pt-BR:** `R$ 45,0 mil`, `R$ 2,1 mi`, nunca `45.0k`.
