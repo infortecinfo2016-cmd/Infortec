@@ -888,7 +888,7 @@ document.addEventListener('change',ev=>{
 $('ofx-file').addEventListener('change',async ev=>{
   const f=ev.target.files[0];if(!f)return;
   try{
-    const buf=await f.arrayBuffer();let txt=new TextDecoder('utf-8').decode(buf);if(txt.includes('�'))txt=new TextDecoder('windows-1252').decode(buf);
+    const buf=await f.arrayBuffer();let txt=new TextDecoder('utf-8').decode(buf);if(txt.includes('\uFFFD'))txt=new TextDecoder('windows-1252').decode(buf);
     const l=lerOFX(txt);
     if(!l.length){toast('Não encontrei lançamentos neste arquivo. Confira se é um extrato OFX.');return}
     D.banco=l.sort((a,b)=>a.data.localeCompare(b.data));
