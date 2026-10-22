@@ -8,41 +8,37 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Archivo:wdth,wght@62..125,400..800&family=JetBrains+Mono:wght@400;500;700&display=swap">
 <style>
-/* Direção "Caderno de campo": papel branco, linha fina, texto e número no lugar de enfeite.
-   Verde da folha do abacaxi (glauco, puxado para o azul) como cor de ação; amarelo-marca-texto só para "hoje/atual".
-   Layout do documento: coluna de 1160px com seções separadas por régua, sem cartões flutuando. */
+[hidden]{display:none!important}
+/* Direção "Caderno de campo" aplicada ao app Android/iOS: papel claro, régua fina, listas agrupadas, abas embaixo.
+   Layout do documento: coluna de 1160px; na seção de telas, cada par mostra o celular de hoje, o proposto e as notas. */
 :root{
   --paper:#F5F5F1; --sheet:#FFFFFF; --rule:#D8DBD4; --rule-soft:#E8EAE5;
   --ink:#1A1D1B; --ink-2:#5B635F; --ink-3:#8A918D;
-  --leaf:#2F6B57; --leaf-ink:#245746; --leaf-tint:#E3EDE8;
-  --marker:#F5CF47; --marker-ink:#3A2F00;
-  --warn:#9A5F0E; --warn-tint:#F6EBD8; --bad:#B3261E; --bad-tint:#F7E2DF;
-  --shot:#E9EBE5;
+  --leaf:#2F6B57; --leaf-ink:#245746;
+  --marker:#F5CF47; --warn:#9A5F0E; --bad:#B3261E;
+  --shot:#E9EBE5; --bezel:#1C1F1D;
   --font:"Archivo",ui-sans-serif,system-ui,"Segoe UI",sans-serif;
   --mono:"JetBrains Mono",ui-monospace,"SFMono-Regular",Consolas,monospace;
 
-  /* telas do app (sempre claras) */
-  --a-paper:#F5F5F1; --a-sheet:#FFFFFF; --a-rule:#D8DBD4; --a-rule-soft:#E9EBE6; --a-head:#FAFAF8;
+  /* app (sempre claro) */
+  --a-paper:#F3F3EF; --a-sheet:#FFFFFF; --a-rule:#D8DBD4; --a-rule-soft:#E9EBE6;
   --a-ink:#1A1D1B; --a-ink-2:#5B635F; --a-ink-3:#8A918D;
-  --a-leaf:#2F6B57; --a-leaf-dark:#234F41; --a-leaf-tint:#E3EDE8;
-  --a-marker:#F5CF47; --a-marker-ink:#3A2F00;
-  --a-warn:#9A5F0E; --a-warn-tint:#F6EBD8; --a-bad:#B3261E; --a-bad-tint:#F7E2DF; --a-info:#2D5E86;
+  --a-leaf:#2F6B57; --a-marker:#F5CF47; --a-marker-ink:#3A2F00;
+  --a-warn:#9A5F0E; --a-bad:#B3261E;
   --ph-prep:#9A6B43; --ph-grow:#8DB3A0; --ph-keep:#2F6B57; --ph-harv:#E2B53B;
 }
 @media (prefers-color-scheme: dark){:root:not([data-theme="light"]){
   --paper:#111412; --sheet:#181C1A; --rule:#2C332F; --rule-soft:#222825;
   --ink:#E6EAE7; --ink-2:#A3ACA7; --ink-3:#77807B;
-  --leaf:#6FB49A; --leaf-ink:#8CCBB3; --leaf-tint:#1D2E27;
-  --marker:#E9C443; --marker-ink:#2A2200;
-  --warn:#E0A54B; --warn-tint:#33280F; --bad:#F08A80; --bad-tint:#3A1A17;
-  --shot:#1E2421; color-scheme:dark}}
+  --leaf:#6FB49A; --leaf-ink:#8CCBB3;
+  --marker:#E9C443; --warn:#E0A54B; --bad:#F08A80;
+  --shot:#1E2421; --bezel:#2E3430; color-scheme:dark}}
 :root[data-theme="dark"]{
   --paper:#111412; --sheet:#181C1A; --rule:#2C332F; --rule-soft:#222825;
   --ink:#E6EAE7; --ink-2:#A3ACA7; --ink-3:#77807B;
-  --leaf:#6FB49A; --leaf-ink:#8CCBB3; --leaf-tint:#1D2E27;
-  --marker:#E9C443; --marker-ink:#2A2200;
-  --warn:#E0A54B; --warn-tint:#33280F; --bad:#F08A80; --bad-tint:#3A1A17;
-  --shot:#1E2421; color-scheme:dark}
+  --leaf:#6FB49A; --leaf-ink:#8CCBB3;
+  --marker:#E9C443; --warn:#E0A54B; --bad:#F08A80;
+  --shot:#1E2421; --bezel:#2E3430; color-scheme:dark}
 
 *{box-sizing:border-box}
 body{background:var(--paper);color:var(--ink);font-family:var(--font);font-size:15px;line-height:1.55;-webkit-font-smoothing:antialiased;
@@ -51,21 +47,18 @@ h1,h2,h3,p{margin:0}
 h1,h2,h3{text-wrap:balance}
 img{max-width:100%;display:block}
 a{color:var(--leaf-ink)}
-.i{width:16px;height:16px;fill:none;stroke:currentColor;stroke-width:1.6;stroke-linecap:square;stroke-linejoin:miter;flex-shrink:0}
-.i.s{width:14px;height:14px}.i.xs{width:12px;height:12px}
+.i{width:18px;height:18px;fill:none;stroke:currentColor;stroke-width:1.7;stroke-linecap:square;stroke-linejoin:miter;flex-shrink:0}
+.i.s{width:15px;height:15px}.i.xs{width:12px;height:12px}
 :focus-visible{outline:2px solid var(--leaf);outline-offset:2px}
-.wrap{max-width:1160px;margin:0 auto;display:grid;gap:40px;grid-template-columns:minmax(0,1fr)}
-.lbl{font-stretch:75%;font-size:11.5px;font-weight:600;letter-spacing:.07em;text-transform:uppercase;color:var(--ink-2)}
-.num{font-family:var(--mono);font-variant-numeric:tabular-nums}
+.wrap{max-width:1160px;margin:0 auto;display:grid;gap:44px;grid-template-columns:minmax(0,1fr)}
+.lbl{font-stretch:75%;font-size:11.5px;font-weight:650;letter-spacing:.07em;text-transform:uppercase;color:var(--ink-2)}
 mark{background:linear-gradient(transparent 55%,var(--marker) 55%);color:inherit;padding:0 2px}
 
-/* cabeçalho do documento */
 .doc-head{display:grid;gap:14px;border-bottom:2px solid var(--ink);padding-bottom:22px}
 .doc-head h1{font-size:clamp(34px,5.5vw,54px);font-weight:750;font-stretch:112%;letter-spacing:-.025em;line-height:1.02}
 .lede{max-width:70ch;color:var(--ink-2);font-size:16px}
 .jump{display:flex;flex-wrap:wrap;gap:4px 18px;font-size:14px;font-weight:600}
 .jump a{text-decoration:none;border-bottom:1px solid var(--rule)}
-.jump a:hover{border-color:var(--leaf)}
 .facts{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));border:1px solid var(--rule);background:var(--sheet)}
 .facts>div{padding:14px 16px;border-left:1px solid var(--rule)}
 .facts>div:first-child{border-left:0}
@@ -73,25 +66,13 @@ mark{background:linear-gradient(transparent 55%,var(--marker) 55%);color:inherit
 .facts .s{font-size:12.5px;color:var(--ink-2)}
 @media (max-width:760px){.facts{grid-template-columns:repeat(2,minmax(0,1fr))}.facts>div:nth-child(3){border-left:0}.facts>div:nth-child(n+3){border-top:1px solid var(--rule)}}
 
-/* seções */
 .sec{display:grid;gap:18px;min-width:0}
 .sec-h{display:grid;grid-template-columns:minmax(0,220px) minmax(0,1fr);gap:8px 32px;border-top:1px solid var(--rule);padding-top:18px}
 .sec-h .lbl{padding-top:6px}
 .sec-h h2{font-size:28px;font-weight:720;font-stretch:108%;letter-spacing:-.02em;line-height:1.1}
-.sec-h p{color:var(--ink-2);max-width:70ch;margin-top:8px;font-size:15px}
+.sec-h p{color:var(--ink-2);max-width:70ch;margin-top:8px}
 @media (max-width:760px){.sec-h{grid-template-columns:minmax(0,1fr)}}
 
-/* sai / entra */
-.swap-wrap{overflow-x:auto;border:1px solid var(--rule);background:var(--sheet)}
-table.swap{width:100%;border-collapse:collapse;min-width:720px;font-size:14px}
-.swap th{text-align:left;padding:10px 14px;border-bottom:1px solid var(--rule);background:var(--paper)}
-.swap td{padding:12px 14px;border-bottom:1px solid var(--rule-soft);vertical-align:top}
-.swap tr:last-child td{border-bottom:0}
-.swap td:first-child{color:var(--ink-2);text-decoration:line-through;text-decoration-color:var(--bad);text-decoration-thickness:1.5px;width:28%}
-.swap td:nth-child(2){font-weight:600;width:36%}
-.swap td:nth-child(3){color:var(--ink-2)}
-
-/* diagnóstico */
 .diag{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));border-top:1px solid var(--rule)}
 .issue{padding:18px 20px 20px 0;border-bottom:1px solid var(--rule);display:grid;gap:10px;align-content:start;min-width:0}
 .issue:nth-child(even){padding-left:20px;padding-right:0;border-left:1px solid var(--rule)}
@@ -105,10 +86,19 @@ table.swap{width:100%;border-collapse:collapse;min-width:720px;font-size:14px}
 .ev figure{margin:0;background:var(--shot);padding:8px;flex:1 1 140px;min-width:0;display:grid;place-items:center}
 .ev img{max-height:210px;width:auto}
 .ev figcaption{font-size:11.5px;color:var(--ink-2);margin-top:5px;text-align:center}
-.keep{border-left:3px solid var(--leaf);padding:4px 0 4px 14px;font-size:15px;color:var(--ink-2)}
+.keep{border-left:3px solid var(--leaf);padding:4px 0 4px 14px;color:var(--ink-2)}
 .keep b{color:var(--ink)}
 
-/* direção */
+.dt-wrap{overflow-x:auto;border:1px solid var(--rule);background:var(--sheet)}
+table.dt{width:100%;border-collapse:collapse;min-width:720px;font-size:14px}
+.dt th{text-align:left;padding:10px 14px;border-bottom:1px solid var(--rule);background:var(--paper)}
+.dt td{padding:12px 14px;border-bottom:1px solid var(--rule-soft);vertical-align:top}
+.dt tr:last-child td{border-bottom:0}
+.dt.swap td:first-child{color:var(--ink-2);text-decoration:line-through;text-decoration-color:var(--bad);text-decoration-thickness:1.5px;width:28%}
+.dt.swap td:nth-child(2){font-weight:600;width:36%}
+.dt.swap td:nth-child(3),.dt.pat td:nth-child(2){color:var(--ink-2)}
+.dt.pat td:first-child{font-weight:650;width:30%}
+
 .dir{display:grid;grid-template-columns:minmax(0,1.1fr) minmax(0,1fr);gap:24px}
 @media (max-width:860px){.dir{grid-template-columns:minmax(0,1fr)}}
 .sw{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));border:1px solid var(--rule);background:var(--sheet)}
@@ -120,217 +110,188 @@ table.swap{width:100%;border-collapse:collapse;min-width:720px;font-size:14px}
 @media (max-width:520px){.sw{grid-template-columns:repeat(2,minmax(0,1fr))}}
 .spec{border:1px solid var(--rule);background:var(--sheet);padding:18px;display:grid;gap:10px;align-content:start}
 .spec .h{font-size:30px;font-weight:750;font-stretch:112%;letter-spacing:-.02em;line-height:1.05}
-.spec .t{font-size:15px;color:var(--ink-2)}
+.spec .t{color:var(--ink-2)}
 .spec .n{font:700 26px var(--mono)}
 .spec small{font-size:12.5px;color:var(--ink-3)}
-.reuse{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:0;border:1px solid var(--rule);background:var(--sheet);margin-top:4px}
-.reuse div{padding:12px 14px;border-bottom:1px solid var(--rule-soft);font-size:14px}
-.reuse div:nth-child(odd){border-right:1px solid var(--rule-soft)}
-.reuse b{display:block;font-size:14px}
-.reuse span{color:var(--ink-2);font-size:13px}
-@media (max-width:640px){.reuse{grid-template-columns:minmax(0,1fr)}.reuse div:nth-child(odd){border-right:0}}
 
-/* visor */
-.vbar{display:flex;flex-wrap:wrap;gap:10px 16px;justify-content:space-between;align-items:flex-end;border-bottom:1px solid var(--rule)}
-.tabs{display:flex;flex-wrap:wrap;gap:0 4px}
-.tabs button{appearance:none;border:0;background:none;padding:10px 12px;font:600 14px var(--font);color:var(--ink-2);border-bottom:2px solid transparent;margin-bottom:-1px;cursor:pointer}
+.tabs{display:flex;flex-wrap:wrap;gap:0 2px;border-bottom:1px solid var(--rule)}
+.tabs button{appearance:none;border:0;background:none;padding:10px 11px;font:600 14px var(--font);color:var(--ink-2);border-bottom:2px solid transparent;margin-bottom:-1px;cursor:pointer}
 .tabs button[aria-selected="true"]{color:var(--ink);border-bottom-color:var(--ink)}
-.seg{display:inline-flex;border:1px solid var(--rule);background:var(--sheet)}
-.seg button{height:30px;padding:0 12px;border:0;background:none;font:600 13px var(--font);color:var(--ink-2);cursor:pointer}
-.seg button+button{border-left:1px solid var(--rule)}
-.seg button.on{background:var(--ink);color:var(--sheet)}
-.viewbar{display:flex;flex-wrap:wrap;gap:10px 20px;justify-content:space-between;align-items:center;margin:14px 0 12px}
-.viewbar p{color:var(--ink-2);max-width:74ch;font-size:14.5px}
-.frame{background:var(--shot);padding:12px;overflow:hidden}
-.hoje img{width:100%}
-.hoje.ph{display:flex;flex-wrap:wrap;gap:16px;justify-content:center}
-.hoje.ph img{width:300px;max-width:100%}
-.changes{list-style:none;margin:14px 0 0;padding:0;display:grid;gap:6px;font-size:14.5px}
+.pair{display:grid;grid-template-columns:auto auto minmax(0,1fr);gap:20px 28px;align-items:start;margin-top:20px}
+.pair[hidden]{display:none}
+.pair .col{display:grid;gap:8px;justify-items:start;min-width:0;grid-template-columns:minmax(0,376px)}
+.notes{display:grid;gap:12px;align-content:start;padding-top:24px}
+.notes h3{font-size:22px;font-weight:720;font-stretch:108%;letter-spacing:-.015em;line-height:1.15}
+.notes p{color:var(--ink-2)}
+.changes{list-style:none;margin:0;padding:0;display:grid;gap:8px;font-size:14.5px}
 .changes li{padding-left:18px;position:relative}
 .changes li::before{content:"";position:absolute;left:0;top:.62em;width:8px;height:2px;background:var(--leaf)}
 .tag{font-stretch:75%;font-size:11px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;padding:1px 6px;border:1px solid currentColor;vertical-align:1px;white-space:nowrap}
 .tag.ex{color:var(--warn)}.tag.new{color:var(--leaf-ink)}
+@media (max-width:1120px){.pair{grid-template-columns:auto auto;justify-content:center}.notes{grid-column:1/-1;padding-top:0}}
+@media (max-width:800px){.pair{grid-template-columns:minmax(0,1fr)}.pair .col{justify-items:center}}
 
-/* =================== APP =================== */
-.app{container-type:inline-size;background:var(--a-paper);color:var(--a-ink);font-family:var(--font);font-size:13.5px;line-height:1.45;position:relative;border:1px solid var(--a-rule)}
+/* ================== APARELHO ================== */
+.dev{width:376px;max-width:100%;height:796px;border:8px solid var(--bezel);border-radius:44px;overflow:hidden;position:relative;background:var(--a-paper);color:var(--a-ink);font-family:var(--font);font-size:14px;line-height:1.4;flex-shrink:0}
+.dev *{min-width:0}
+.dev.shot{background:#fff}
+.dev.shot img{width:100%;height:100%;object-fit:cover;object-position:top}
+.sbar{position:absolute;top:0;left:0;right:0;height:44px;display:flex;justify-content:space-between;align-items:center;padding:0 26px 0 30px;font:650 14.5px var(--font);z-index:3;background:var(--sb-bg,var(--a-paper))}
+.sbar svg{height:12px;width:54px;fill:currentColor}
+.notch{position:absolute;top:10px;left:50%;width:96px;height:26px;margin-left:-48px;border-radius:14px;background:#0B0C0B;z-index:4}
+.scr{position:absolute;top:44px;left:0;right:0;bottom:84px;overflow:hidden}
+.scr.dock-on{bottom:150px}
+.tabbar{position:absolute;left:0;right:0;bottom:0;height:84px;background:var(--a-sheet);border-top:1px solid var(--a-rule);display:grid;grid-template-columns:repeat(5,1fr);padding-bottom:20px;z-index:2}
+.tabbar span{display:grid;justify-items:center;align-content:center;gap:3px;font-size:10.5px;font-weight:600;color:var(--a-ink-3);border-top:2px solid transparent;margin-top:-1px}
+.tabbar span.on{color:var(--a-ink);border-top-color:var(--a-leaf)}
+.tabbar .i{width:22px;height:22px}
+.homeind{position:absolute;bottom:7px;left:50%;width:124px;height:5px;margin-left:-62px;border-radius:3px;background:var(--a-ink);z-index:7}
+.dock{position:absolute;left:0;right:0;bottom:84px;height:66px;padding:11px 16px;background:var(--a-sheet);border-top:1px solid var(--a-rule-soft);z-index:2;display:flex;gap:8px}
+.dock .btn{flex:1}
+
+.ah{padding:4px 16px 12px;display:grid;gap:10px}
+.ah-top{display:flex;align-items:center;gap:12px;min-height:40px}
+.ah-top .farm{display:flex;align-items:center;gap:6px;font-weight:650;font-size:14.5px}
+.ah-top .farm img{width:24px;height:24px}
+.ah-top .r{margin-left:auto;display:flex;align-items:center;gap:16px}
+.back{display:flex;align-items:center;gap:2px;color:var(--a-leaf);font-weight:600;font-size:15px}
+.back .i{width:20px;height:20px;margin-left:-6px}
+.bell{position:relative;display:grid}
+.bell b{position:absolute;right:-7px;top:-6px;min-width:16px;height:16px;padding:0 3px;background:var(--a-bad);color:#fff;font:700 10px/16px var(--mono);text-align:center}
+.me{width:30px;height:30px;display:grid;place-items:center;background:var(--a-leaf);color:#fff;font:700 11px var(--font);border-radius:4px}
+.ah .c{font-size:13px;color:var(--a-ink-2)}
+.ah h1{font-size:28px;font-weight:760;font-stretch:108%;letter-spacing:-.025em;line-height:1.08}
+.ah h1.sm{font-size:25px}
+
+.sl{display:flex;justify-content:space-between;align-items:baseline;padding:18px 20px 7px}
+.dev .lbl{color:var(--a-ink-2);font-size:11px}
+.sl a{font-size:13px;font-weight:600;text-decoration:none;color:var(--a-leaf)}
+.grp{margin:0 14px;background:var(--a-sheet);border:1px solid var(--a-rule);border-radius:8px;overflow:hidden}
+.row{display:flex;align-items:center;gap:10px;min-height:50px;padding:10px 14px;border-top:1px solid var(--a-rule-soft)}
+.row:first-child{border-top:0}
+.row .tx{flex:1}
+.row b{display:block;font-size:15px;font-weight:600}
+.row small{display:block;font-size:12.5px;color:var(--a-ink-2);margin-top:1px}
+.row .v{font:700 14.5px var(--mono);font-variant-numeric:tabular-nums;white-space:nowrap;text-align:right}
+.row .v small{font:400 11.5px var(--font);color:var(--a-ink-3);text-align:right}
+.row .d{font-size:13.5px;color:var(--a-ink-2);white-space:nowrap}
+.row .go{color:var(--a-ink-3);width:16px;height:16px}
+.st{display:inline-flex;align-items:center;gap:6px;font-size:13px;font-weight:600;white-space:nowrap}
+.st::before{content:"";width:9px;height:9px;background:var(--c,var(--a-ink-3));flex-shrink:0}
+.st.prep{--c:var(--ph-prep)}.st.ok{--c:var(--a-leaf)}.st.warn{--c:var(--a-warn)}
+.nums{margin:0 14px;display:grid;grid-template-columns:1fr 1fr;background:var(--a-sheet);border:1px solid var(--a-rule);border-radius:8px;overflow:hidden}
+.nums>div{padding:11px 13px}
+.nums>div:nth-child(even){border-left:1px solid var(--a-rule-soft)}
+.nums>div:nth-child(n+3){border-top:1px solid var(--a-rule-soft)}
+.nums .lbl{font-size:10.5px}
+.nums .v{font:700 18px var(--mono);font-variant-numeric:tabular-nums;margin-top:3px;white-space:nowrap}
+.nums .v small{font:500 12px var(--mono);color:var(--a-ink-3)}
+.nums .s{font-size:12px;color:var(--a-ink-2)}
+.nums .s.w{color:var(--a-warn)}
+.btn{height:44px;display:inline-flex;align-items:center;justify-content:center;gap:6px;padding:0 14px;border-radius:6px;border:1px solid var(--a-rule);background:var(--a-sheet);font:650 14.5px var(--font);color:var(--a-ink);white-space:nowrap}
+.btn.p{background:var(--a-leaf);border-color:var(--a-leaf);color:#fff}
+.btn.sm{height:36px;font-size:13.5px;padding:0 12px}
+.chips{display:flex;gap:8px;padding:0 14px;overflow:hidden}
+.chips .btn{flex-shrink:0;height:40px;font-size:14px}
+.chips .btn .i{color:var(--a-leaf)}
+.seg{margin:0 14px;display:flex;border:1px solid var(--a-rule);border-radius:7px;overflow:hidden;background:var(--a-sheet)}
+.seg span{flex:1 0 auto;height:34px;display:grid;place-items:center;padding:0 10px;font-size:13.5px;font-weight:600;color:var(--a-ink-2);white-space:nowrap}
+.seg span+span{border-left:1px solid var(--a-rule-soft)}
+.seg span.on{background:var(--a-ink);color:#fff}
+.search{margin:0 14px;height:40px;border-radius:8px;background:#E6E7E2;display:flex;align-items:center;gap:8px;padding:0 12px;color:var(--a-ink-3);font-size:15px}
+.trial{margin:0 14px;display:flex;align-items:center;gap:8px;font-size:13.5px;padding:9px 12px;background:var(--a-sheet);border:1px solid var(--a-rule);border-left:3px solid var(--a-warn);border-radius:6px}
+.trial a{margin-left:auto;font-weight:700;color:var(--a-leaf);text-decoration:none}
+.note{margin:10px 20px 0;font-size:12.5px;color:var(--a-ink-2)}
+.calmini{display:flex;gap:2px;height:6px;margin-top:8px;position:relative}
+.calmini i{display:block;height:100%}
+.calmini::after{content:"";position:absolute;left:4%;top:-4px;bottom:-4px;width:2px;background:var(--a-ink)}
+.cal svg{width:100%;height:auto;display:block}
+.cal text{font-family:var(--font);font-size:10.5px;fill:var(--a-ink-2)}
+.cal .yr{font:600 10px var(--mono);fill:var(--a-ink-3)}
+.utabs{display:flex;border-bottom:1px solid var(--a-rule-soft);padding:0 6px;overflow:hidden}
+.utabs span{flex-shrink:0;padding:12px 8px 10px;font-size:14px;color:var(--a-ink-2);border-bottom:2px solid transparent;margin-bottom:-1px;white-space:nowrap}
+.utabs span.on{color:var(--a-ink);font-weight:650;border-bottom-color:var(--a-ink)}
+.utabs em{font:500 11.5px var(--mono);font-style:normal;color:var(--a-ink-3);margin-left:4px}
+.swipe{position:relative;overflow:hidden;border-top:1px solid var(--a-rule-soft)}
+.swipe .back-acts{position:absolute;right:0;top:0;bottom:0;display:flex}
+.swipe .back-acts span{width:72px;display:grid;place-items:center;color:#fff;font-size:13px;font-weight:650}
+.swipe .row{transform:translateX(-144px);background:var(--a-sheet);border-top:0}
+.ptr{display:flex;justify-content:center;align-items:center;gap:8px;height:34px;font-size:12.5px;color:var(--a-ink-3)}
+.ptr i{width:14px;height:14px;border:2px solid var(--a-rule);border-top-color:var(--a-leaf);border-radius:50%}
+.price{padding:4px 20px 0}
+.price .pv{font:700 46px/1 var(--mono);letter-spacing:-.04em}
+.price .pv small{font:500 15px var(--mono);color:var(--a-ink-3);letter-spacing:0;margin-left:3px}
+.dn{color:var(--a-bad);font:600 13px var(--mono)}
+.spk{width:92px;height:26px;display:block;flex-shrink:0}
+.calc{display:grid;grid-template-columns:1fr auto 1fr;gap:8px;align-items:end;padding:12px 14px}
+.calc label{display:grid;gap:4px;font-size:12px;font-weight:600;color:var(--a-ink-2)}
+.calc input{height:44px;width:100%;border:1px solid var(--a-rule);border-radius:6px;padding:0 10px;font:700 16px var(--mono);color:var(--a-ink);background:var(--a-sheet)}
+.calc input:focus{outline:2px solid var(--a-leaf);outline-offset:0}
+.calc .op{font:500 18px var(--mono);color:var(--a-ink-3);padding-bottom:10px}
+.calc-out{display:flex;justify-content:space-between;align-items:baseline;padding:10px 14px;border-top:1px solid var(--a-rule-soft)}
+.calc-out b{font:700 20px var(--mono);border-bottom:3px solid var(--a-marker)}
+
+.dim{position:absolute;inset:0;background:rgb(10 14 12 / .45);z-index:5}
+.sheet{position:absolute;left:0;right:0;bottom:0;top:86px;background:var(--a-paper);border-radius:14px 14px 0 0;z-index:6;display:flex;flex-direction:column;overflow:hidden}
+.grab{width:40px;height:5px;border-radius:3px;background:var(--a-rule);margin:8px auto 2px}
+.sh-h{display:flex;align-items:center;justify-content:space-between;padding:6px 16px 10px}
+.sh-h b{font-size:17px;font-weight:700}
+.sh-h span{font-size:15px;color:var(--a-leaf);font-weight:600}
+.sh-b{flex:1;overflow:hidden}
+.amount{margin:0 14px;padding:12px 14px;background:var(--a-sheet);border:1px solid var(--a-rule);border-radius:8px}
+.amount .pv{font:700 34px var(--mono);letter-spacing:-.03em}
+.amount .pv small{font:500 16px var(--mono);color:var(--a-ink-3);margin-right:6px}
+.tog{width:46px;height:28px;border-radius:14px;background:#D2D5CF;position:relative;border:0;cursor:pointer;flex-shrink:0}
+.tog::after{content:"";position:absolute;top:3px;left:3px;width:22px;height:22px;border-radius:50%;background:#fff;box-shadow:0 1px 2px rgb(0 0 0 / .3);transition:left .15s}
+.tog[aria-checked="true"]{background:var(--a-leaf)}
+.tog[aria-checked="true"]::after{left:21px}
+.sh-f{padding:10px 16px 26px;background:var(--a-sheet);border-top:1px solid var(--a-rule-soft)}
+.sh-f .btn{width:100%}
+
+/* portal web */
+.app{container-type:inline-size;background:var(--a-paper);color:var(--a-ink);font-family:var(--font);font-size:13.5px;line-height:1.45;border:1px solid var(--a-rule)}
 .app *{min-width:0}
-.app .i{color:inherit}
+.app .lbl{font-size:11px;color:var(--a-ink-2)}
+.frame{background:var(--shot);padding:12px;overflow:hidden}
 .mtop{background:var(--a-sheet);border-bottom:1px solid var(--a-rule)}
 .r1{display:flex;align-items:center;gap:18px;height:52px;padding:0 18px;border-bottom:1px solid var(--a-rule-soft)}
-.logo{display:flex;align-items:center;gap:8px;font-weight:750;font-stretch:108%;font-size:15px;letter-spacing:-.01em;white-space:nowrap}
+.logo{display:flex;align-items:center;gap:8px;font-weight:750;font-stretch:108%;font-size:15px;white-space:nowrap}
 .logo img{width:24px;height:24px}
-.farm{display:flex;align-items:center;gap:4px;font-size:13px;color:var(--a-ink-2);padding-left:14px;border-left:1px solid var(--a-rule);white-space:nowrap}
 .areas{display:flex;gap:2px;height:100%;overflow-x:auto}
 .areas span{display:flex;align-items:center;padding:0 10px;font-weight:600;color:var(--a-ink-2);border-bottom:2px solid transparent;white-space:nowrap}
 .areas span.on{color:var(--a-ink);border-bottom-color:var(--a-leaf)}
 .r1-r{margin-left:auto;display:flex;align-items:center;gap:12px}
-.find{display:flex;align-items:center;gap:8px;width:230px;height:32px;padding:0 10px;border:1px solid var(--a-rule);color:var(--a-ink-3);font-size:13px;border-radius:3px}
-.find kbd{margin-left:auto;font:500 10.5px var(--mono);color:var(--a-ink-3)}
-.bell{position:relative;display:grid}
-.bell b{position:absolute;right:-6px;top:-6px;min-width:15px;height:15px;padding:0 3px;background:var(--a-bad);color:#fff;font:700 9.5px/15px var(--mono);text-align:center}
-.me{width:30px;height:30px;display:grid;place-items:center;background:var(--a-leaf);color:#fff;font:700 11px var(--font);border-radius:3px}
+.find{display:flex;align-items:center;gap:8px;width:230px;height:32px;padding:0 10px;border:1px solid var(--a-rule);color:var(--a-ink-3);font-size:13px;border-radius:4px}
+.find kbd{margin-left:auto;font:500 10.5px var(--mono)}
 .r2{display:flex;align-items:center;gap:2px;height:40px;padding:0 12px;overflow-x:auto}
-.r2 span{padding:0 8px;height:100%;display:flex;align-items:center;font-size:13px;color:var(--a-ink-2);white-space:nowrap;border-bottom:2px solid transparent}
-.r2 span.on{color:var(--a-ink);font-weight:650;border-bottom-color:var(--a-ink)}
-.r2 .lockt{font-size:10px;font-stretch:75%;font-weight:700;letter-spacing:.06em;color:var(--a-ink-3);margin-left:5px;text-transform:uppercase}
-.r2 .trial{margin-left:auto;font-size:12.5px;color:var(--a-ink-2);white-space:nowrap;padding-left:16px}
-.r2 .trial a{color:var(--a-leaf);font-weight:700;text-decoration:none;margin-left:6px}
-.r2 .sc{color:var(--a-leaf);font-weight:600}
-
-.pg{padding:18px;display:grid;gap:16px;grid-template-columns:minmax(0,1fr);align-content:start}
-.ph{display:flex;flex-wrap:wrap;align-items:flex-end;justify-content:space-between;gap:12px}
-.ph .c{font-size:12.5px;color:var(--a-ink-2);margin-bottom:3px}
-.ph h1{font-size:26px;font-weight:750;font-stretch:108%;letter-spacing:-.02em;line-height:1.1;display:flex;flex-wrap:wrap;align-items:center;gap:6px 14px}
-.acts{display:flex;flex-wrap:wrap;gap:8px}
-.b{height:34px;display:inline-flex;align-items:center;gap:6px;padding:0 13px;border:1px solid var(--a-rule);background:var(--a-sheet);font:600 13px var(--font);color:var(--a-ink);border-radius:3px;white-space:nowrap}
-.b.p{background:var(--a-leaf);border-color:var(--a-leaf);color:#fff}
-.b.t{border-color:transparent;background:none;color:var(--a-leaf);padding:0 4px}
-.b.sq{width:34px;padding:0;justify-content:center}
-.st{display:inline-flex;align-items:center;gap:6px;font-size:13px;font-weight:600;white-space:nowrap}
-.st::before{content:"";width:9px;height:9px;background:var(--c,var(--a-ink-3))}
-.st.prep{--c:var(--ph-prep)}.st.ok{--c:var(--a-leaf)}.st.warn{--c:var(--a-warn)}.st.bad{--c:var(--a-bad)}.st.mut{--c:var(--a-rule)}
-.ph h1 .st{font-size:13px;font-stretch:100%;letter-spacing:0;font-weight:600;color:var(--a-ink-2)}
-
+.r2 span{padding:0 8px;font-size:13px;color:var(--a-leaf);font-weight:600;white-space:nowrap}
+.r2 .trial2{margin-left:auto;color:var(--a-ink-2);font-weight:400}
+.pg{padding:18px;display:grid;gap:16px}
+.pgh .c{font-size:12.5px;color:var(--a-ink-2)}
+.pgh h1{font-size:26px;font-weight:750;font-stretch:108%;letter-spacing:-.02em}
 .strip{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));background:var(--a-sheet);border:1px solid var(--a-rule)}
 .strip>div{padding:12px 16px;border-left:1px solid var(--a-rule-soft)}
 .strip>div:first-child{border-left:0}
-.strip .v{font:700 22px var(--mono);font-variant-numeric:tabular-nums;margin:4px 0 1px;white-space:nowrap}
+.strip .v{font:700 22px var(--mono);margin:4px 0 1px;white-space:nowrap}
 .strip .v small{font:500 13px var(--mono);color:var(--a-ink-3)}
 .strip .s{font-size:12px;color:var(--a-ink-2)}
 .strip .s.w{color:var(--a-warn)}
-.app .lbl{color:var(--a-ink-2);font-size:11px}
-
-.box{background:var(--a-sheet);border:1px solid var(--a-rule);min-width:0}
-.box-h{display:flex;flex-wrap:wrap;justify-content:space-between;align-items:flex-start;gap:8px 14px;padding:12px 16px;border-bottom:1px solid var(--a-rule-soft)}
+.g2{display:grid;gap:16px;grid-template-columns:minmax(0,1.65fr) minmax(0,1fr);align-items:start}
+.box{background:var(--a-sheet);border:1px solid var(--a-rule)}
+.box-h{display:flex;justify-content:space-between;align-items:flex-start;gap:12px;padding:12px 16px;border-bottom:1px solid var(--a-rule-soft)}
 .box-h h2{font-size:15px;font-weight:700}
 .box-h p{font-size:12.5px;color:var(--a-ink-2)}
 .box-b{padding:14px 16px}
-.g2{display:grid;gap:16px;grid-template-columns:minmax(0,1.65fr) minmax(0,1fr);align-items:start}
-.col{display:grid;gap:16px;align-content:start}
-
-/* linhas do talhão + cronograma */
-.field{display:grid;grid-template-columns:230px minmax(0,1fr);gap:20px;align-items:start}
-.rows svg{width:100%;height:auto;display:block}
-.rows text{font:500 9.5px var(--mono);fill:var(--a-ink-3)}
-.rows-cap{font-size:11.5px;color:var(--a-ink-2);margin-top:6px}
-.kv{display:grid;gap:0}
 .kv div{display:flex;justify-content:space-between;align-items:baseline;gap:12px;padding:7px 0;border-bottom:1px solid var(--a-rule-soft)}
 .kv div:last-child{border-bottom:0}
-.kv span{color:var(--a-ink-2);font-size:13px}
-.kv b{font:700 14px var(--mono);font-variant-numeric:tabular-nums;text-align:right;white-space:nowrap}
-.kv b small{display:block;font:400 11px var(--font);color:var(--a-ink-3);text-align:right}
-.cal svg{width:100%;height:auto;display:block}
-.cal text{font-family:var(--font);font-size:10.5px;fill:var(--a-ink-2)}
-.cal .yr{font:600 10px var(--mono);fill:var(--a-ink-3)}
-.cal .phn{font-size:11px;font-weight:650;fill:var(--a-ink)}
-.legend{display:flex;flex-wrap:wrap;gap:4px 16px;font-size:12px;color:var(--a-ink-2);margin-top:8px}
-.legend span{display:inline-flex;align-items:center;gap:6px}
-.legend i{width:10px;height:10px;display:inline-block}
-.foot{display:flex;flex-wrap:wrap;justify-content:space-between;gap:8px;padding:10px 16px;border-top:1px solid var(--a-rule-soft);font-size:13px;color:var(--a-ink-2)}
+.kv span{color:var(--a-ink-2)}
+.kv b{font:700 14px var(--mono);white-space:nowrap}
+.rows svg{width:100%;height:auto;display:block}
+.rows text{font:500 9.5px var(--mono);fill:var(--a-ink-3)}
+.field{display:grid;grid-template-columns:230px minmax(0,1fr);gap:20px;align-items:start}
+@container (max-width:900px){.g2,.field{grid-template-columns:minmax(0,1fr)}.find span,.find kbd{display:none}.find{width:auto}}
+@container (max-width:600px){.strip{grid-template-columns:repeat(2,minmax(0,1fr))}.strip>div:nth-child(3){border-left:0}.strip>div:nth-child(n+3){border-top:1px solid var(--a-rule-soft)}.r2 .trial2{display:none}}
 
-/* tabela livro-caixa */
-.tw{overflow-x:auto}
-table.t{width:100%;border-collapse:collapse;min-width:520px}
-.t th{height:32px;padding:0 16px;text-align:left;font-stretch:75%;font-size:11px;font-weight:650;letter-spacing:.07em;text-transform:uppercase;color:var(--a-ink-2);background:var(--a-head);border-bottom:1px solid var(--a-rule)}
-.t th.r,.t td.r{text-align:right}
-.t td{padding:9px 16px;border-bottom:1px solid var(--a-rule-soft);vertical-align:top;font-size:13.5px}
-.t tr:last-child td{border-bottom:0}
-.t td small{display:block;font-size:11.5px;color:var(--a-ink-3);margin-top:1px}
-.t .m{font:700 13.5px var(--mono);font-variant-numeric:tabular-nums;white-space:nowrap}
-.t .d{font:500 12.5px var(--mono);color:var(--a-ink-2);white-space:nowrap}
-.t tfoot td{border-top:1px solid var(--a-rule);border-bottom:0;font-weight:700}
-.utabs{display:flex;gap:0;border-bottom:1px solid var(--a-rule-soft);padding:0 8px;overflow-x:auto}
-.utabs span{flex-shrink:0;padding:10px 8px;font-size:13px;color:var(--a-ink-2);border-bottom:2px solid transparent;margin-bottom:-1px;white-space:nowrap}
-.utabs span.on{color:var(--a-ink);font-weight:650;border-bottom-color:var(--a-ink)}
-.utabs span em{font:500 11px var(--mono);font-style:normal;color:var(--a-ink-3);margin-left:4px}
-.list .li{display:flex;align-items:center;gap:12px;padding:10px 16px;border-bottom:1px solid var(--a-rule-soft)}
-.list .li:last-child{border-bottom:0}
-.list .li .tx{flex:1}
-.list .li b{display:block;font-size:13.5px;font-weight:650}
-.list .li small{display:block;font-size:12px;color:var(--a-ink-2)}
-.list .li .go{color:var(--a-ink-3)}
-
-/* dinheiro */
-.big{font:700 28px var(--mono);font-variant-numeric:tabular-nums;letter-spacing:-.02em}
-.mseg{display:inline-flex;border:1px solid var(--a-rule)}
-.mseg span{height:26px;padding:0 9px;display:flex;align-items:center;font-size:12px;font-weight:600;color:var(--a-ink-2)}
-.mseg span+span{border-left:1px solid var(--a-rule)}
-.mseg span.on{background:var(--a-ink);color:#fff}
-.inp{height:34px;border:1px solid var(--a-rule);border-radius:3px;display:flex;align-items:center;gap:8px;padding:0 10px;color:var(--a-ink-3);font-size:13px;background:var(--a-sheet)}
-.stack{display:flex;height:12px;gap:2px}
-.stack i{display:block;height:100%}
-.rank div{display:grid;grid-template-columns:12px minmax(0,1fr) 54px 96px;gap:10px;align-items:baseline;padding:7px 0;border-bottom:1px solid var(--a-rule-soft);font-size:13px}
-.rank div:last-child{border-bottom:0}
-.rank i{width:10px;height:10px;display:inline-block}
-.rank .pc{font:500 12px var(--mono);color:var(--a-ink-2);text-align:right}
-.rank .vl{font:700 13px var(--mono);text-align:right}
-
-/* mercado */
-.price{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1.1fr);gap:20px;align-items:end}
-.price .pv{font:700 56px/1 var(--mono);letter-spacing:-.04em}
-.price .pv small{font:500 16px var(--mono);color:var(--a-ink-3);letter-spacing:0;margin-left:4px}
-.dn{color:var(--a-bad);font:600 13px var(--mono)}
-.spark{width:150px;height:30px;display:block}
-.calc{display:flex;flex-wrap:wrap;align-items:center;gap:8px 10px;font-size:15px}
-.calc input{height:36px;width:118px;border:1px solid var(--a-rule);border-radius:3px;padding:0 10px;font:700 15px var(--mono);color:var(--a-ink);background:var(--a-sheet)}
-.calc input:focus{outline:2px solid var(--a-leaf);outline-offset:0}
-.calc .eq{font:700 22px var(--mono);border-bottom:3px solid var(--a-marker);padding:0 2px}
-.calc .op{color:var(--a-ink-3);font:500 16px var(--mono)}
-
-/* formulário */
-.dimmed{opacity:.45}
-.panel-f{position:absolute;top:0;right:0;bottom:0;width:440px;max-width:100%;background:var(--a-sheet);border-left:1px solid var(--a-rule);box-shadow:-12px 0 24px -16px rgb(0 0 0 / .25);display:flex;flex-direction:column}
-.pf-h{display:flex;justify-content:space-between;align-items:flex-start;gap:12px;padding:16px 18px;border-bottom:1px solid var(--a-rule)}
-.pf-h h2{font-size:20px;font-weight:750;font-stretch:108%;letter-spacing:-.015em}
-.pf-h p{font-size:12.5px;color:var(--a-ink-2)}
-.pf-b{padding:16px 18px;display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:14px 12px;overflow:auto;flex:1;align-content:start}
-.f{display:grid;gap:5px}
-.f.full{grid-column:1/-1}
-.f>label{font-size:12.5px;font-weight:650}
-.f>label em{font-style:normal;color:var(--a-bad)}
-.fi{height:36px;border:1px solid var(--a-rule);border-radius:3px;display:flex;align-items:center;gap:8px;padding:0 10px;font-size:13.5px;background:var(--a-sheet)}
-.fi.mono{font:700 15px var(--mono)}
-.fi.ph{color:var(--a-ink-3)}
-.fi .dd{margin-left:auto;color:var(--a-ink-3)}
-.fi.area{height:62px;align-items:flex-start;padding-top:9px}
-.hint{font-size:11.5px;color:var(--a-ink-3)}
-.chk{grid-column:1/-1;display:flex;gap:10px;align-items:flex-start;padding:10px 12px;border:1px solid var(--a-rule);border-radius:3px;cursor:pointer;background:var(--a-sheet);text-align:left;font:inherit;color:inherit}
-.chk .bx{width:16px;height:16px;border:1.5px solid var(--a-ink-2);border-radius:2px;flex-shrink:0;margin-top:2px;display:grid;place-items:center;color:#fff}
-.chk[aria-checked="true"] .bx{background:var(--a-leaf);border-color:var(--a-leaf)}
-.chk[aria-checked="false"] .bx .i{visibility:hidden}
-.chk b{display:block;font-size:13.5px}
-.chk span{font-size:12px;color:var(--a-ink-2)}
-.pf-f{display:flex;justify-content:flex-end;gap:8px;padding:12px 18px;border-top:1px solid var(--a-rule)}
-
-/* celular */
-.phones{display:flex;flex-wrap:wrap;gap:28px;justify-content:center;padding:4px 0}
-.phone{width:330px;max-width:100%;height:690px;border:8px solid #1C1F1D;border-radius:34px;overflow:hidden;position:relative;font-size:13px}
-.phone .scr{height:100%;overflow:hidden;padding-bottom:120px}
-.p-top{display:flex;align-items:center;gap:8px;padding:14px 14px 10px;background:var(--a-sheet);border-bottom:1px solid var(--a-rule)}
-.p-top .logo{font-size:14px}
-.p-top .r{margin-left:auto;display:flex;gap:14px;align-items:center}
-.p-sub{font-size:12px;color:var(--a-ink-2);padding:8px 14px;background:var(--a-sheet);border-bottom:1px solid var(--a-rule-soft);display:flex;justify-content:space-between}
-.p-sub a{color:var(--a-leaf);font-weight:700;text-decoration:none}
-.p-body{padding:14px;display:grid;gap:12px}
-.p-body h1{font-size:22px;font-weight:750;font-stretch:108%;letter-spacing:-.02em;line-height:1.1}
-.p-body .c{font-size:12px;color:var(--a-ink-2)}
-.phone .strip{grid-template-columns:repeat(2,minmax(0,1fr))}
-.phone .strip>div{padding:10px 12px}
-.phone .strip>div:nth-child(3){border-left:0}
-.phone .strip>div:nth-child(n+3){border-top:1px solid var(--a-rule-soft)}
-.phone .strip .v{font-size:17px}
-.phone .box-h{padding:10px 12px}
-.phone .box-b{padding:10px 12px}
-.phone .list .li{padding:9px 12px}
-.phone .utabs{padding:0 4px}
-.lanca{position:absolute;left:0;right:0;bottom:62px;height:54px;padding:0 12px;display:flex;align-items:center;justify-content:flex-end;background:var(--a-sheet);border-top:1px solid var(--a-rule-soft)}
-.phone .scr{padding-bottom:0;height:calc(100% - 116px)}
-.bn{position:absolute;left:0;right:0;bottom:0;height:62px;background:var(--a-sheet);border-top:1px solid var(--a-rule);display:grid;grid-template-columns:repeat(5,1fr)}
-.bn span{display:grid;justify-items:center;align-content:center;gap:3px;font-size:10.5px;font-weight:600;color:var(--a-ink-3);border-top:2px solid transparent;margin-top:-1px}
-.bn span.on{color:var(--a-ink);border-top-color:var(--a-leaf)}
-.bn .i{width:20px;height:20px}
-
-/* navegação */
 .navmap{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));border:1px solid var(--rule);background:var(--sheet)}
 .navmap>div{padding:14px 16px;border-left:1px solid var(--rule-soft)}
 .navmap>div:first-child{border-left:0}
@@ -342,7 +303,6 @@ table.t{width:100%;border-collapse:collapse;min-width:520px}
 @media (max-width:900px){.navmap{grid-template-columns:repeat(2,minmax(0,1fr))}.navmap>div:nth-child(3){border-left:0}.navmap>div:nth-child(n+3){border-top:1px solid var(--rule-soft)}}
 @media (max-width:520px){.navmap{grid-template-columns:minmax(0,1fr)}.navmap>div{border-left:0;border-top:1px solid var(--rule-soft)}}
 
-/* inventário */
 .inv-bar{display:flex;flex-wrap:wrap;gap:8px;justify-content:space-between;align-items:center}
 .inv-bar .q{flex:1 1 280px;display:flex;align-items:center;gap:8px;height:38px;padding:0 12px;border:1px solid var(--rule);background:var(--sheet);color:var(--ink-3)}
 .inv-bar input{border:0;outline:0;background:none;font:14px var(--font);color:var(--ink);width:100%}
@@ -356,7 +316,6 @@ table.inv{width:100%;border-collapse:collapse;min-width:780px;font-size:13.5px}
 .inv .w{color:var(--ink-2)}
 .inv .ok{color:var(--leaf-ink);font-weight:650;white-space:nowrap}
 
-/* implementação */
 .steps{display:grid;border-top:1px solid var(--rule)}
 .step{display:grid;grid-template-columns:44px minmax(0,1fr);gap:12px;padding:14px 0;border-bottom:1px solid var(--rule-soft)}
 .step .n{font:700 20px var(--mono);color:var(--leaf-ink)}
@@ -365,26 +324,6 @@ table.inv{width:100%;border-collapse:collapse;min-width:780px;font-size:13.5px}
 pre.code{margin:0;background:var(--sheet);border:1px solid var(--rule);padding:14px 16px;overflow-x:auto;font:12.5px/1.65 var(--mono);color:var(--ink)}
 .code .k{color:var(--leaf-ink);font-weight:700}
 .code .c{color:var(--ink-3)}
-
-/* responsivo das telas */
-@container (max-width: 980px){
-  .find{width:auto}.find span,.find kbd{display:none}
-  .farm{display:none}
-  .g2{grid-template-columns:minmax(0,1fr)}
-  .field{grid-template-columns:minmax(0,1fr)}
-  .price{grid-template-columns:minmax(0,1fr)}
-}
-@container (max-width: 640px){
-  .strip{grid-template-columns:repeat(2,minmax(0,1fr))}
-  .strip>div:nth-child(3){border-left:0}
-  .strip>div:nth-child(n+3){border-top:1px solid var(--a-rule-soft)}
-  .r1{gap:10px;padding:0 12px}
-  .logo span{display:none}
-  .r2 .trial{display:none}
-  .pf-b{grid-template-columns:minmax(0,1fr)}
-  .price .pv{font-size:40px}
-}
-@media (max-width:600px){.frame{padding:6px}}
 </style>
 
 <svg width="0" height="0" style="position:absolute" aria-hidden="true">
@@ -393,474 +332,505 @@ pre.code{margin:0;background:var(--sheet);border:1px solid var(--rule);padding:1
   <symbol id="plus" viewBox="0 0 24 24"><path d="M12 5v14M5 12h14"/></symbol>
   <symbol id="chev" viewBox="0 0 24 24"><path d="m9 6 6 6-6 6"/></symbol>
   <symbol id="down" viewBox="0 0 24 24"><path d="m6 9 6 6 6-6"/></symbol>
-  <symbol id="back" viewBox="0 0 24 24"><path d="m15 6-6 6 6 6"/></symbol>
-  <symbol id="more" viewBox="0 0 24 24"><path d="M5 12h.01M12 12h.01M19 12h.01" stroke-width="3"/></symbol>
-  <symbol id="x" viewBox="0 0 24 24"><path d="m6 6 12 12M18 6 6 18"/></symbol>
-  <symbol id="check" viewBox="0 0 24 24"><path d="m5 12 4.5 4.5L19 7" stroke-width="2.6"/></symbol>
-  <symbol id="cal" viewBox="0 0 24 24"><path d="M4 6h16v14H4zM4 10h16M8 3v4M16 3v4"/></symbol>
+  <symbol id="back" viewBox="0 0 24 24"><path d="m15 5-7 7 7 7"/></symbol>
+  <symbol id="more" viewBox="0 0 24 24"><path d="M5 12h.01M12 12h.01M19 12h.01" stroke-width="3.2"/></symbol>
   <symbol id="n-home" viewBox="0 0 24 24"><path d="M4 11 12 4l8 7M6 9.5V20h12V9.5"/></symbol>
   <symbol id="n-rows" viewBox="0 0 24 24"><path d="M4 20V8M9 20V5M14 20V8M19 20V5"/><path d="M2 20h20"/></symbol>
-  <symbol id="n-coin" viewBox="0 0 24 24"><path d="M4 7h16v10H4z"/><circle cx="12" cy="12" r="2.5"/><path d="M7 10v4M17 10v4"/></symbol>
-  <symbol id="n-crate" viewBox="0 0 24 24"><path d="M3 8h18v12H3zM3 14h18M8 8v12M16 8v12M6 8l2-4h8l2 4"/></symbol>
+  <symbol id="n-coin" viewBox="0 0 24 24"><path d="M3 7h18v10H3z"/><circle cx="12" cy="12" r="2.5"/><path d="M6.5 10v4M17.5 10v4"/></symbol>
+  <symbol id="n-crate" viewBox="0 0 24 24"><path d="M3 9h18v11H3zM3 14.5h18M8 9v11M16 9v11M6 9l2-4h8l2 4"/></symbol>
   <symbol id="n-cal" viewBox="0 0 24 24"><path d="M4 6h16v14H4zM4 10h16M8 3v4M16 3v4M8 14h2M14 14h2M8 17h2"/></symbol>
+  <symbol id="sig" viewBox="0 0 54 12"><rect x="0" y="8" width="3" height="4"/><rect x="5" y="5.5" width="3" height="6.5"/><rect x="10" y="3" width="3" height="9"/><rect x="15" y="0" width="3" height="12"/><path d="M24 4.2a8 8 0 0 1 10 0l-1.4 1.6a6 6 0 0 0-7.2 0zM26.3 7a4.5 4.5 0 0 1 5.4 0L29 10z"/><rect x="38" y="1" width="14" height="10" rx="2.5" fill="none" stroke="currentColor" stroke-width="1"/><rect x="39.6" y="2.6" width="9" height="6.8" rx="1.3"/><rect x="52.6" y="4" width="1.4" height="4" rx=".6"/></symbol>
 </svg>
 
 <div class="wrap">
 
   <header class="doc-head">
-    <p class="lbl">Meu Plantio · proposta de reestilização · versão 3 · 22/10/2026</p>
+    <p class="lbl">Meu Plantio · proposta de reestilização · versão 4 · 22/10/2026</p>
     <h1>Meu Plantio, nova cara</h1>
-    <p class="lede">Uma direção visual feita para o produtor de abacaxi, sem os vícios dos layouts gerados por IA: nada de ícone em quadradinho colorido, degradê, botão em pílula ou cor diferente em cada card. O app passa a parecer um caderno de campo bem organizado, com texto claro, número alinhado e desenho só onde ele explica a lavoura. Levantei tudo na versão 1.0.7, com a conta de teste. Nenhuma funcionalidade sai.</p>
-    <nav class="jump" aria-label="Seções"><a href="#diagnostico">Diagnóstico</a><a href="#sem-ia">Sem cara de IA</a><a href="#direcao">Direção</a><a href="#telas">Telas</a><a href="#navegacao">Navegação</a><a href="#inventario">Inventário</a><a href="#implementacao">Implementação</a></nav>
+    <p class="lede">O Meu Plantio é um aplicativo Android e iOS, e esta proposta parte do celular. São oito telas redesenhadas lado a lado com as de hoje, usando padrões que quem tem celular já conhece: abas embaixo, listas agrupadas, formulário que sobe de baixo, puxar para atualizar e botão principal ao alcance do polegar. O visual é de caderno de campo, sem os enfeites típicos de layout gerado por IA. O mesmo app se ajusta ao computador (portal web) e ao tablet. Nenhuma funcionalidade sai.</p>
+    <nav class="jump" aria-label="Seções"><a href="#telas">Telas do app</a><a href="#diagnostico">Diagnóstico</a><a href="#direcao">Direção</a><a href="#portal">Computador e tablet</a><a href="#navegacao">Navegação</a><a href="#inventario">Inventário</a><a href="#implementacao">Implementação</a></nav>
   </header>
 
   <div class="facts" aria-label="Resumo do levantamento">
     <div><p class="lbl">Funcionalidades mapeadas</p><p class="v" id="f-total">—</p><p class="s">todas presentes na proposta</p></div>
-    <div><p class="lbl">Áreas do app</p><p class="v" id="f-areas">—</p><p class="s">do login à Conta</p></div>
+    <div><p class="lbl">Telas de celular</p><p class="v">8</p><p class="s">hoje e proposta, lado a lado</p></div>
     <div><p class="lbl">Ações escondidas hoje</p><p class="v">12</p><p class="s">no menu ⋮ de cada plantio</p></div>
-    <div><p class="lbl">Telas redesenhadas</p><p class="v">6</p><p class="s">computador e celular</p></div>
+    <div><p class="lbl">Área mínima de toque</p><p class="v">48 px</p><p class="s">Android e iOS</p></div>
   </div>
-
-  <!-- ============ DIAGNÓSTICO ============ -->
-  <section class="sec" id="diagnostico">
-    <div class="sec-h"><p class="lbl">01 · O que encontrei</p><div><h2>Diagnóstico do app atual</h2><p>O app tem muita função boa. O problema é de apresentação: cada parte foi desenhada de um jeito, e no computador boa parte das telas vira uma tela de celular esticada.</p></div></div>
-    <div class="diag">
-      <article class="issue"><span class="lbl sev hi">Grave</span><h3>As telas internas saem do painel</h3><p>Ao abrir Plantios, Mercado, Recebimentos, Adubação e quase todos os módulos, a barra lateral some e o layout de celular estica até a largura do monitor. Para trocar de área é preciso voltar várias vezes.</p>
-        <div class="ev"><figure><img src="img/ev-esticada.jpg" alt="Tela Meus Plantios ocupando a largura toda, sem barra lateral" loading="lazy"><figcaption>Meus Plantios a 1440px</figcaption></figure></div></article>
-      <article class="issue"><span class="lbl sev hi">Grave</span><h3>Doze ações escondidas num menu ⋮</h3><p>Plano de manejo, Linha do tempo, Indução floral, Pragas e doenças, Irrigação, Correção de solo e Análise da área só aparecem no menu de três pontos do plantio.</p>
-        <div class="ev"><figure><img src="img/ev-menu.jpg" alt="Menu de três pontos do plantio com doze itens" loading="lazy" style="max-height:250px"><figcaption>Menu do plantio</figcaption></figure></div></article>
-      <article class="issue"><span class="lbl sev md">Médio</span><h3>Cores sem regra</h3><p>Irrigação tem a tela toda azul, Indução floral é roxa, "Salvar despesa" é vermelho, "Total investido" aparece em vermelho e os ícones dos indicadores usam vermelho e laranja sem indicar problema.</p>
-        <div class="ev"><figure><img src="img/ev-irrigacao.jpg" alt="Tela de irrigação inteira em azul" loading="lazy"><figcaption>Irrigação</figcaption></figure><figure><img src="img/ev-tif.jpg" alt="Tela de indução floral com faixa roxa" loading="lazy"><figcaption>Indução floral</figcaption></figure></div></article>
-      <article class="issue"><span class="lbl sev md">Médio</span><h3>Cada seção tem um cabeçalho diferente</h3><p>Faixa verde em degradê na Início, cartão em degradê na Lavoura, barra centralizada no Financeiro e na Agenda, outro cartão verde no Comercial e faixa marrom no plantio. Parecem quatro apps.</p>
-        <div class="ev"><figure><img src="img/hoje-financeiro.jpg" alt="Tela Financeiro com barra de título centralizada" loading="lazy"><figcaption>Financeiro</figcaption></figure><figure><img src="img/hoje-plantio.jpg" alt="Detalhe do plantio com faixa marrom" loading="lazy"><figcaption>Plantio</figcaption></figure></div></article>
-      <article class="issue"><span class="lbl sev md">Médio</span><h3>Quatro caminhos para o mesmo lugar</h3><p>Menu rápido (13 itens), atalhos da Início, botão "Mais", "Acesso rápido" de cada seção e menu lateral repetem os mesmos destinos, e nenhum deles mostra o app inteiro.</p></article>
-      <article class="issue"><span class="lbl sev md">Médio</span><h3>Números sem destaque nem alinhamento</h3><p>Valores em reais, mudas e porcentagens ficam à esquerda e mudam de tamanho de tela para tela. Fica difícil comparar valores numa lista.</p></article>
-      <article class="issue"><span class="lbl sev md">Médio</span><h3>Celular: textos cortados e sobreposição</h3><p>"Plantios ativ…" e "Total de mu…" cortados, atalho "Mais" pela metade, botão "Lançar" cobrindo um card, "Propriedade s" quebrando e abas do plantio fora da tela.</p>
-        <div class="ev"><figure><img src="img/ev-kpi-celular.jpg" alt="Indicadores cortados no celular" loading="lazy"><figcaption>Início no celular</figcaption></figure><figure><img src="img/ev-quebra.jpg" alt="Palavra Propriedades quebrada em duas linhas" loading="lazy"><figcaption>"Propriedade s"</figcaption></figure></div></article>
-      <article class="issue"><span class="lbl sev lo">Leve</span><h3>Pequenos defeitos visuais</h3><p>O emoji da lua aparece como um quadrado na saudação, "Meu Plantio" vira só "Meu", e o gráfico de preços faz zigue-zague diário, o que parece ser as três CEASAs numa linha só (vale conferir os dados).</p>
-        <div class="ev"><figure><img src="img/ev-saudacao.jpg" alt="Saudação com um quadrado no lugar do emoji" loading="lazy"><figcaption>Saudação</figcaption></figure><figure style="flex-basis:100%"><img src="img/ev-grafico.jpg" alt="Gráfico de preços em zigue-zague" loading="lazy"><figcaption>Histórico de preços</figcaption></figure></div></article>
-    </div>
-    <p class="keep"><b>O que já funciona e fica:</b> a barra inferior no celular, os estados vazios que explicam o que fazer, os filtros por status, as predefinições da Calculadora, o comparativo de CEASAs e a separação entre Lavoura, Financeiro e Comercial.</p>
-  </section>
-
-  <!-- ============ SEM CARA DE IA ============ -->
-  <section class="sec" id="sem-ia">
-    <div class="sec-h"><p class="lbl">02 · O que muda nesta versão</p><div><h2>Sem cara de IA</h2><p>As duas primeiras propostas ainda usavam os enfeites que aparecem em quase todo sistema gerado por IA. Esta tabela mostra o que sai, o que entra no lugar e por quê.</p></div></div>
-    <div class="swap-wrap"><table class="swap">
-      <thead><tr><th class="lbl">Sai</th><th class="lbl">Entra</th><th class="lbl">Por quê</th></tr></thead>
-      <tbody>
-        <tr><td>Ícone dentro de quadradinho colorido em cada card, botão e item de lista</td><td>Texto e número. Ícone só em ação (buscar, avisos, adicionar, fechar) e na barra do celular, em traço reto</td><td>O ícone decorativo em bolha pastel é o sinal mais forte de layout gerado. Aqui o rótulo já diz o que é.</td></tr>
-        <tr><td>Uma cor para cada card e categoria (vermelho, laranja, roxo, azul)</td><td>Uma cor de ação (verde da folha) e três de situação. As fases da lavoura usam cores da própria planta: terra, broto, folha e fruto</td><td>Com poucas cores, quando aparece vermelho o produtor sabe que é problema.</td></tr>
-        <tr><td>Degradê, foto de fundo, brilho, vidro e sombra suave</td><td>Folha branca, linha fina de 1px e nenhuma sombra (só no painel que abre por cima)</td><td>A tela parece um documento de trabalho, não uma propaganda.</td></tr>
-        <tr><td>Botões, etiquetas e abas em pílula</td><td>Cantos de 3px. Situação marcada com um quadrado de cor e o texto ao lado</td><td>Fica mais sério, e o quadrado continua legível sem depender da cor.</td></tr>
-        <tr><td>Grade de "cards de indicador" todos iguais</td><td>Faixa de números com divisórias, como no cabeçalho de um livro-caixa, e tabelas com valor à direita</td><td>Os números são o conteúdo. Alinhados, dá para comparar de relance.</td></tr>
-        <tr><td>Barra de progresso genérica</td><td>Desenho das linhas do talhão e cronograma do ciclo por mês, do preparo à colheita</td><td>É algo que só um app de abacaxi teria, e mostra o que a barra escondia: quanto falta e o que vem depois.</td></tr>
-        <tr><td>Fonte da moda (Poppins hoje, Bricolage na versão 2)</td><td>Archivo, a mesma família do site da Infortec, com versão estreita nos rótulos. Números em JetBrains Mono, do Infortec Design</td><td>Continuidade com a marca Infortec, e o rótulo estreito lembra etiqueta de caixa de fruta e de máquina agrícola.</td></tr>
-        <tr><td>Menu lateral escuro</td><td>Barra superior com as cinco áreas e uma segunda linha com os módulos da área aberta</td><td>Sobra largura para tabelas, e todo módulo fica a um clique, em qualquer tela.</td></tr>
-      </tbody>
-    </table></div>
-  </section>
-
-  <!-- ============ DIREÇÃO ============ -->
-  <section class="sec" id="direcao">
-    <div class="sec-h"><p class="lbl">03 · Direção visual</p><div><h2>Caderno de campo</h2><p>Papel branco, régua fina, letra firme e número bem alinhado. A cor principal é o verde acinzentado da folha do abacaxi, que é diferente do verde-limão de quase todo app de agro. O amarelo entra como caneta marca-texto, só para o que é de hoje.</p></div></div>
-    <div class="dir">
-      <div class="sw" aria-label="Paleta">
-        <div><i style="background:#2F6B57"></i><b>Folha</b><span>botões, item ativo, "tudo certo"</span><code>#2F6B57</code></div>
-        <div><i style="background:#F5CF47"></i><b>Marca-texto</b><span>hoje, fase atual, total calculado</span><code>#F5CF47</code></div>
-        <div><i style="background:#1A1D1B"></i><b>Tinta</b><span>texto, aba selecionada</span><code>#1A1D1B</code></div>
-        <div><i style="background:#9A5F0E"></i><b>Atenção</b><span>conta a vencer, limite do plano</span><code>#9A5F0E</code></div>
-        <div><i style="background:#B3261E"></i><b>Problema</b><span>atraso, praga ativa, prejuízo</span><code>#B3261E</code></div>
-        <div><i style="background:#F5F5F1;border-bottom:1px solid #D8DBD4"></i><b>Papel</b><span>fundo do app</span><code>#F5F5F1</code></div>
-        <div><i style="background:#9A6B43"></i><b>Fase: preparo</b><span>cor da terra</span><code>#9A6B43</code></div>
-        <div><i style="background:#8DB3A0"></i><b>Fase: crescimento</b><span>broto novo</span><code>#8DB3A0</code></div>
-        <div><i style="background:#E2B53B"></i><b>Fase: colheita</b><span>fruto maduro</span><code>#E2B53B</code></div>
-      </div>
-      <div style="display:grid;gap:12px;align-content:start">
-        <div class="spec">
-          <span class="lbl">Rótulo estreito · Archivo 75%</span>
-          <span class="h">Lavoura 10 linhas</span>
-          <span class="t">Texto em Archivo 400, 13 a 15px, para ler no sol.</span>
-          <span class="n">R$ 7.430,00</span>
-          <small>Títulos em Archivo levemente larga (108% a 112%). Números em JetBrains Mono com algarismos de mesma largura.</small>
-        </div>
-        <div class="reuse">
-          <div><b>Do Infortec Design, fica</b><span>números em mono e formato pt-BR</span></div>
-          <div><b>Fica</b><span>todo quadro tem título e uma frase explicando o que mostra</span></div>
-          <div><b>Fica</b><span>valor à direita, com legenda pequena embaixo</span></div>
-          <div><b>Fica</b><span>cor só quando quer dizer algo, e item de destaque marcado</span></div>
-        </div>
-      </div>
-    </div>
-  </section>
 
   <!-- ============ TELAS ============ -->
   <section class="sec" id="telas">
-    <div class="sec-h"><p class="lbl">04 · Antes e depois</p><div><h2>Telas redesenhadas</h2><p>Use "Proposta | Hoje" para comparar com a tela atual. A conta de teste está vazia, então as telas usam <span class="tag ex">números de exemplo</span>. O que está marcado como <span class="tag new">sugestão</span> mostra de outro jeito dados que o app já tem e pode ficar de fora.</p></div></div>
+    <div class="sec-h"><p class="lbl">01 · O app</p><div><h2>Telas do celular</h2><p>À esquerda, a tela de hoje (captura do app em 22/10/2026). À direita, a proposta. A conta de teste está vazia, então as propostas usam <span class="tag ex">números de exemplo</span>.</p></div></div>
     <div>
-      <div class="vbar"><div class="tabs" role="tablist" aria-label="Telas">
+      <div class="tabs" role="tablist" aria-label="Telas">
         <button role="tab" aria-selected="true" data-tab="inicio">Início</button>
-        <button role="tab" aria-selected="false" data-tab="plantio">Plantio</button>
-        <button role="tab" aria-selected="false" data-tab="financeiro">Financeiro</button>
-        <button role="tab" aria-selected="false" data-tab="mercado">Mercado</button>
+        <button role="tab" aria-selected="false" data-tab="lavoura">Lavoura</button>
+        <button role="tab" aria-selected="false" data-tab="plantios">Plantios</button>
+        <button role="tab" aria-selected="false" data-tab="plantio">Um plantio</button>
         <button role="tab" aria-selected="false" data-tab="despesa">Nova despesa</button>
-        <button role="tab" aria-selected="false" data-tab="celular">Celular</button>
-      </div></div>
+        <button role="tab" aria-selected="false" data-tab="financeiro">Financeiro</button>
+        <button role="tab" aria-selected="false" data-tab="comercial">Comercial</button>
+        <button role="tab" aria-selected="false" data-tab="mercado">Mercado</button>
+      </div>
 
       <!-- INÍCIO -->
-      <div class="panel" data-panel="inicio" role="tabpanel">
-        <div class="viewbar"><p>A Início vira um boletim do dia: números em uma linha, o talhão desenhado com o cronograma, o dinheiro numa tabela curta e as tarefas ao lado.</p><div class="seg vs"><button class="on" data-v="p">Proposta</button><button data-v="h">Hoje</button></div></div>
-        <div class="frame" data-view="p"><div class="app">
-          <header class="mtop">
-            <div class="r1"><span class="logo"><img src="img/logo.png" alt=""><span>Meu Plantio</span></span><span class="farm">Sítio São José<svg class="i xs"><use href="#down"/></svg></span>
-              <nav class="areas"><span class="on">Início</span><span>Lavoura</span><span>Financeiro</span><span>Comercial</span><span>Agenda</span></nav>
-              <div class="r1-r"><span class="find"><svg class="i s"><use href="#search"/></svg><span>Buscar ou ir para…</span><kbd>Ctrl K</kbd></span><span class="bell"><svg class="i"><use href="#bell"/></svg><b>2</b></span><span class="me">MP</span></div></div>
-            <div class="r2"><span class="sc">+ Lançar gasto</span><span class="sc">+ Registrar colheita</span><span class="sc">+ Novo plantio</span><span class="sc">+ Diária de mão de obra</span><span>Todos os módulos</span><span class="trial">Teste grátis termina hoje<a>Assinar</a></span></div>
-          </header>
-          <div class="pg">
-            <div class="ph"><div><p class="c">Quinta, 22/10/2026 · Sítio São José · safra 2026</p><h1>Boa noite, Meu Plantio</h1></div><div class="acts"><span class="b">Agenda</span><span class="b p"><svg class="i s"><use href="#plus"/></svg>Novo plantio</span></div></div>
-            <div class="strip">
-              <div><p class="lbl">Plantios ativos</p><p class="v">1 <small>de 1</small></p><p class="s w">limite do plano gratuito</p></div>
-              <div><p class="lbl">Mudas</p><p class="v">12.000</p><p class="s">em 1 plantio</p></div>
-              <div><p class="lbl">Custo por linha</p><p class="v">R$ 743,00</p><p class="s">10 linhas</p></div>
-              <div><p class="lbl">Tarefas hoje</p><p class="v">0</p><p class="s">0 atrasadas · 0 programadas</p></div>
-            </div>
-            <div class="g2">
-              <section class="box">
-                <div class="box-h"><div><h2>Lavoura 10 linhas</h2><p>Pérola · Sítio São José · início 05/10/2026</p></div><span class="st prep">Preparando terra</span></div>
-                <div class="box-b" style="display:grid;gap:18px">
-                  <div class="field">
-                    <div class="rows" data-rows="10"></div>
-                    <div class="kv">
-                      <div><span>Fase atual</span><b>Preparo · 11%</b></div>
-                      <div><span>Mudas</span><b>12.000<small>R$ 0,40 cada</small></b></div>
-                      <div><span>Investido</span><b>R$ 7.430,00</b></div>
-                      <div><span>Previsão de colheita</span><b>mar/2028</b></div>
-                    </div>
-                  </div>
-                  <div><p class="lbl" style="margin-bottom:6px">Cronograma do ciclo · <span style="text-transform:none;letter-spacing:0">previsão de exemplo</span></p><div class="cal"></div></div>
-                </div>
-                <div class="foot"><span>1 de 1 plantio ativo</span><span class="b t">Abrir plantio<svg class="i s"><use href="#chev"/></svg></span></div>
-              </section>
-              <div class="col">
-                <section class="box">
-                  <div class="box-h"><div><h2>Dinheiro</h2><p>Quanto entrou e saiu dos plantios</p></div><span class="mseg"><span class="on">Todos</span><span>Lavoura 10 linhas</span></span></div>
-                  <div class="box-b">
-                    <p class="lbl">Total investido</p><p class="big">R$ 7.430,00</p>
-                    <div class="kv" style="margin-top:8px">
-                      <div><span>Gasto no mês</span><b>R$ 7.430,00</b></div>
-                      <div><span>Receitas dos plantios</span><b>R$ 0,00</b></div>
-                      <div><span>Retorno estimado</span><b><mark>R$ 53.040,00</mark><small>exemplo: 85% das mudas a R$ 5,20</small></b></div>
-                      <div><span>Situação</span><span class="st ok" style="color:var(--a-ink)">Em formação</span></div>
-                    </div>
-                  </div>
-                </section>
-                <section class="box">
-                  <div class="box-h"><div><h2>Hoje</h2><p>Lembretes e tarefas da Agenda</p></div><span class="b t">Ver agenda</span></div>
-                  <div class="box-b" style="display:grid;gap:12px">
-                    <p style="color:var(--a-ink-2)">Nada agendado para hoje. <span style="color:var(--a-leaf);font-weight:650">+ Novo lembrete</span></p>
-                    <div><p class="lbl" style="margin-bottom:5px">Previsão do tempo</p><span class="inp">Cidade da propriedade, ex.: Floresta do Araguaia</span></div>
-                  </div>
-                </section>
+      <div class="pair" data-panel="inicio" role="tabpanel">
+        <div class="col"><span class="lbl">Hoje</span><div class="dev shot"><img src="img/cel-inicio.jpg" alt="Início atual no celular" loading="lazy"></div></div>
+        <div class="col"><span class="lbl">Proposta</span>
+          <div class="dev"><div class="notch"></div><div class="sbar"><span>07:42</span><svg viewBox="0 0 54 12"><use href="#sig"/></svg></div>
+            <div class="scr">
+              <div class="ah">
+                <div class="ah-top"><span class="farm"><img src="img/logo.png" alt="">Sítio São José<svg class="i s"><use href="#down"/></svg></span><span class="r"><svg class="i"><use href="#search"/></svg><span class="bell"><svg class="i"><use href="#bell"/></svg><b>2</b></span><span class="me">MP</span></span></div>
+                <div><p class="c">Quinta, 22 de outubro</p><h1>Boa noite, Meu Plantio</h1></div>
               </div>
-            </div>
-          </div>
-        </div></div>
-        <div class="hoje" data-view="h" hidden><img src="img/hoje-inicio.jpg" alt="Tela Início atual" loading="lazy"></div>
-        <ul class="changes">
-          <li>Os atalhos e o aviso de teste grátis passam para a segunda linha da barra superior. O menu rápido e a busca viram uma busca só (Ctrl K).</li>
-          <li>O card estreito do plantio vira um quadro com as 10 linhas desenhadas e o cronograma de 18 meses, com o mês de hoje marcado.</li>
-          <li>O resumo financeiro vira uma tabela curta com os mesmos valores. O retorno estimado ganha o marca-texto, porque é o número calculado.</li>
-        </ul>
-      </div>
-
-      <!-- PLANTIO -->
-      <div class="panel" data-panel="plantio" role="tabpanel" hidden>
-        <div class="viewbar"><p>O plantio vira uma ficha: cabeçalho com as ações, linha de números, ciclo desenhado, registros em tabela e o manejo listado com a situação de cada item. As doze ações do menu ⋮ ficam à vista.</p><div class="seg vs"><button class="on" data-v="p">Proposta</button><button data-v="h">Hoje</button></div></div>
-        <div class="frame" data-view="p"><div class="app">
-          <header class="mtop">
-            <div class="r1"><span class="logo"><img src="img/logo.png" alt=""><span>Meu Plantio</span></span><span class="farm">Sítio São José<svg class="i xs"><use href="#down"/></svg></span>
-              <nav class="areas"><span>Início</span><span class="on">Lavoura</span><span>Financeiro</span><span>Comercial</span><span>Agenda</span></nav>
-              <div class="r1-r"><span class="find"><svg class="i s"><use href="#search"/></svg><span>Buscar ou ir para…</span><kbd>Ctrl K</kbd></span><span class="bell"><svg class="i"><use href="#bell"/></svg><b>2</b></span><span class="me">MP</span></div></div>
-            <div class="r2"><span class="on">Plantios</span><span>Mapa vivo</span><span>Adubação</span><span>Correção de solo</span><span>Irrigação</span><span>Colheita</span><span>Estoque</span><span>Mão de obra</span><span>Propriedades</span><span>Safras<span class="lockt">planos pagos</span></span><span>Calculadora</span></div>
-          </header>
-          <div class="pg">
-            <div class="ph"><div><p class="c">Plantios › Pérola · Sítio São José · 10 linhas · início 05/10/2026</p><h1>Lavoura 10 linhas <span class="st prep">Preparando terra</span></h1></div>
-              <div class="acts"><span class="b">Mudar status</span><span class="b">Editar</span><span class="b sq" title="Vincular área · Excluir"><svg class="i"><use href="#more"/></svg></span><span class="b">Lançar receita</span><span class="b p"><svg class="i s"><use href="#plus"/></svg>Lançar despesa</span></div></div>
-            <div class="strip">
-              <div><p class="lbl">Mudas</p><p class="v">12.000</p><p class="s">R$ 0,40 por muda</p></div>
-              <div><p class="lbl">Total investido</p><p class="v">R$ 7.430,00</p><p class="s">4 despesas</p></div>
-              <div><p class="lbl">Receita</p><p class="v">R$ 0,00</p><p class="s">nenhuma venda ainda</p></div>
-              <div><p class="lbl">A recuperar</p><p class="v" style="color:var(--a-warn)">R$ 7.430,00</p><p class="s">investido menos receita</p></div>
-            </div>
-            <section class="box">
-              <div class="box-h"><div><h2>Ciclo do plantio</h2><p>Fases previstas a partir da data de início · previsão de exemplo</p></div><span class="b t">Plano de manejo<svg class="i s"><use href="#chev"/></svg></span></div>
-              <div class="box-b"><div class="field"><div class="rows" data-rows="10"></div><div class="cal"></div></div></div>
-            </section>
-            <div class="g2">
-              <section class="box">
-                <div class="utabs"><span class="on">Despesas<em>4</em></span><span>Insumos<em>0</em></span><span>Adubação<em>0</em></span><span>Colheita<em>0</em></span><span>Vendas<em>0</em></span><span>Anexos<em>0</em></span></div>
-                <div class="tw"><table class="t">
-                  <thead><tr><th>Data</th><th>Descrição</th><th>Pagamento</th><th class="r">Valor</th></tr></thead>
-                  <tbody>
-                    <tr><td class="d">18/10</td><td>Aragem e gradagem<small>Aragem · responsável João</small></td><td>Pix<small>pago</small></td><td class="r m">R$ 1.200,00</td></tr>
-                    <tr><td class="d">15/10</td><td>Calcário dolomítico, 2 t<small>Correção</small></td><td>Dinheiro<small>pago</small></td><td class="r m">R$ 980,00</td></tr>
-                    <tr><td class="d">10/10</td><td>Mudas Pérola, 12.000 un<small>Mudas</small></td><td>Boleto<small style="color:var(--a-warn)">vence 10/11</small></td><td class="r m">R$ 4.800,00</td></tr>
-                    <tr><td class="d">08/10</td><td>Diárias: preparo de covas<small>Mão de obra · 3 trabalhadores</small></td><td>Dinheiro<small>pago</small></td><td class="r m">R$ 450,00</td></tr>
-                  </tbody>
-                  <tfoot><tr><td></td><td>Total</td><td></td><td class="r m">R$ 7.430,00</td></tr></tfoot>
-                </table></div>
-              </section>
-              <section class="box">
-                <div class="box-h"><div><h2>Manejo</h2><p>Saúde e acompanhamento da lavoura</p></div></div>
-                <div class="list">
-                  <div class="li"><div class="tx"><b>Pragas e doenças</b><small><span class="st ok" style="font-size:12px;font-weight:500">nenhuma ocorrência ativa</span></small></div><svg class="i s go"><use href="#chev"/></svg></div>
-                  <div class="li"><div class="tx"><b>Indução floral (TIF)</b><small>liberada na fase de crescimento</small></div><svg class="i s go"><use href="#chev"/></svg></div>
-                  <div class="li"><div class="tx"><b>Irrigação</b><small>0 aplicações · sistema, plano e produtos</small></div><svg class="i s go"><use href="#chev"/></svg></div>
-                  <div class="li"><div class="tx"><b>Correção de solo</b><small>1 aplicação · 15/10</small></div><svg class="i s go"><use href="#chev"/></svg></div>
-                  <div class="li"><div class="tx"><b>Análise da área</b><small>ainda não gerada</small></div><span class="b" style="height:28px;font-size:12px">Gerar</span></div>
-                  <div class="li"><div class="tx"><b>Linha do tempo</b><small>5 eventos registrados</small></div><svg class="i s go"><use href="#chev"/></svg></div>
-                </div>
-              </section>
-            </div>
-          </div>
-        </div></div>
-        <div class="hoje" data-view="h" hidden><img src="img/hoje-plantio.jpg" alt="Detalhe do plantio atual" loading="lazy"></div>
-        <ul class="changes">
-          <li>As 12 ações do menu ⋮ ficam assim: Mudar status, Editar, Lançar receita e Lançar despesa no cabeçalho; Plano de manejo no quadro do ciclo; Pragas e doenças, Indução floral, Irrigação, Correção de solo, Análise da área e Linha do tempo no quadro Manejo; Vincular área e Excluir no botão ⋯.</li>
-          <li>A barra de progresso marrom vira o desenho das 10 linhas e o cronograma por mês, com a fase atual e o dia de hoje marcados.</li>
-          <li>As despesas viram uma tabela com total no rodapé. "Total investido" deixa de ser vermelho.</li>
-        </ul>
-      </div>
-
-      <!-- FINANCEIRO -->
-      <div class="panel" data-panel="financeiro" role="tabpanel" hidden>
-        <div class="viewbar"><p>Vendas, Lucratividade e Relatórios, hoje três botões dentro do Resumo, entram na linha de módulos ao lado de Despesas e Receitas. O Resumo fica com cara de extrato.</p><div class="seg vs"><button class="on" data-v="p">Proposta</button><button data-v="h">Hoje</button></div></div>
-        <div class="frame" data-view="p"><div class="app">
-          <header class="mtop">
-            <div class="r1"><span class="logo"><img src="img/logo.png" alt=""><span>Meu Plantio</span></span><span class="farm">Sítio São José<svg class="i xs"><use href="#down"/></svg></span>
-              <nav class="areas"><span>Início</span><span>Lavoura</span><span class="on">Financeiro</span><span>Comercial</span><span>Agenda</span></nav>
-              <div class="r1-r"><span class="find"><svg class="i s"><use href="#search"/></svg><span>Buscar ou ir para…</span><kbd>Ctrl K</kbd></span><span class="bell"><svg class="i"><use href="#bell"/></svg><b>2</b></span><span class="me">MP</span></div></div>
-            <div class="r2"><span class="on">Resumo</span><span>Despesas</span><span>Receitas</span><span>Vendas</span><span>Lucratividade</span><span>Relatórios</span></div>
-          </header>
-          <div class="pg">
-            <div class="ph"><div><p class="c">Todos os plantios · Sítio São José</p><h1>Financeiro</h1></div><div class="acts"><span class="b"><svg class="i s"><use href="#cal"/></svg>Outubro de 2026<svg class="i xs"><use href="#down"/></svg></span><span class="b">Nova receita</span><span class="b p"><svg class="i s"><use href="#plus"/></svg>Nova despesa</span></div></div>
-            <div class="strip">
-              <div><p class="lbl">Saldo do mês</p><p class="v">−R$ 7.430,00</p><p class="s">normal no preparo: volta na colheita</p></div>
-              <div><p class="lbl">Receitas</p><p class="v">R$ 0,00</p><p class="s">0 lançamentos</p></div>
-              <div><p class="lbl">Despesas</p><p class="v">R$ 7.430,00</p><p class="s">4 lançamentos</p></div>
-              <div><p class="lbl">Contas a pagar</p><p class="v">R$ 4.800,00</p><p class="s w">1 conta · vence 10/11</p></div>
-            </div>
-            <div class="g2">
-              <section class="box">
-                <div class="box-h"><div><h2>Lançamentos de outubro</h2><p>4 despesas · 0 receitas</p></div><span class="inp" style="width:210px"><svg class="i s"><use href="#search"/></svg>Buscar lançamento</span></div>
-                <div class="tw"><table class="t">
-                  <thead><tr><th>Data</th><th>Descrição</th><th>Plantio</th><th class="r">Valor</th></tr></thead>
-                  <tbody>
-                    <tr><td class="d">18/10</td><td>Aragem e gradagem<small>Aragem · Pix · pago</small></td><td>Lavoura 10 linhas</td><td class="r m">−R$ 1.200,00</td></tr>
-                    <tr><td class="d">15/10</td><td>Calcário dolomítico, 2 t<small>Correção · dinheiro · pago</small></td><td>Lavoura 10 linhas</td><td class="r m">−R$ 980,00</td></tr>
-                    <tr><td class="d">10/10</td><td>Mudas Pérola, 12.000 un<small style="color:var(--a-warn)">Mudas · boleto · vence 10/11</small></td><td>Lavoura 10 linhas</td><td class="r m">−R$ 4.800,00</td></tr>
-                    <tr><td class="d">08/10</td><td>Diárias: preparo de covas<small>Mão de obra · dinheiro · pago</small></td><td>Lavoura 10 linhas</td><td class="r m">−R$ 450,00</td></tr>
-                  </tbody>
-                  <tfoot><tr><td></td><td>Saldo do mês</td><td></td><td class="r m">−R$ 7.430,00</td></tr></tfoot>
-                </table></div>
-              </section>
-              <div class="col">
-                <section class="box">
-                  <div class="box-h"><div><h2>Por categoria <span class="tag new">sugestão</span></h2><p>Para onde foram as despesas do mês</p></div></div>
-                  <div class="box-b"><div class="stack" id="stack"></div><div class="rank" id="rank" style="margin-top:8px"></div></div>
-                </section>
-                <section class="box">
-                  <div class="box-h"><div><h2>Contas a pagar</h2><p>Despesas lançadas com vencimento</p></div></div>
-                  <div class="list"><div class="li"><div class="tx"><b>Mudas Pérola</b><small><span class="st warn" style="font-size:12px;font-weight:500">vence 10/11 · em 19 dias</span></small></div><span class="num" style="font-weight:700">R$ 4.800,00</span></div></div>
-                </section>
-              </div>
-            </div>
-          </div>
-        </div></div>
-        <div class="hoje" data-view="h" hidden><img src="img/hoje-financeiro.jpg" alt="Tela Financeiro atual" loading="lazy"></div>
-        <ul class="changes">
-          <li>O período fica no cabeçalho e vale para todas as abas. Os lançamentos aparecem já no Resumo, com saldo no rodapé.</li>
-          <li>"Contas a pagar" ganha um quadro próprio. Hoje essa informação só aparece dentro de cada despesa.</li>
-          <li>O "Saldo positivo" verde-escuro e a barra vermelha de despesas viram números neutros, com uma frase explicando o saldo negativo da fase de preparo.</li>
-        </ul>
-      </div>
-
-      <!-- MERCADO -->
-      <div class="panel" data-panel="mercado" role="tabpanel" hidden>
-        <div class="viewbar"><p>Mesmos dados de hoje: preço por CEASA, médias, comparativo, histórico e simulação. Cada CEASA ganha a própria linha com um gráfico pequeno, e o simulador vira uma conta escrita.</p><div class="seg vs"><button class="on" data-v="p">Proposta</button><button data-v="h">Hoje</button></div></div>
-        <div class="frame" data-view="p"><div class="app">
-          <header class="mtop">
-            <div class="r1"><span class="logo"><img src="img/logo.png" alt=""><span>Meu Plantio</span></span><span class="farm">Sítio São José<svg class="i xs"><use href="#down"/></svg></span>
-              <nav class="areas"><span>Início</span><span>Lavoura</span><span>Financeiro</span><span class="on">Comercial</span><span>Agenda</span></nav>
-              <div class="r1-r"><span class="find"><svg class="i s"><use href="#search"/></svg><span>Buscar ou ir para…</span><kbd>Ctrl K</kbd></span><span class="bell"><svg class="i"><use href="#bell"/></svg><b>2</b></span><span class="me">MP</span></div></div>
-            <div class="r2"><span>Painel</span><span class="on">Mercado</span><span>Negociações</span><span>Carregamentos</span><span>Recebimentos</span><span>Relatórios</span><span>Cadastros</span><span>Marcar tara</span></div>
-          </header>
-          <div class="pg">
-            <div class="ph"><div><p class="c">Abacaxi Pérola · preço por unidade nas CEASAs · cotação de 22/10/2026</p><h1>Mercado</h1></div><div class="acts"><span class="b">Lançamento manual</span><span class="b p">Sincronizar CEASAs</span></div></div>
-            <section class="box">
-              <div class="box-b price">
-                <div><p class="lbl">Média das 3 CEASAs hoje</p><p class="pv">R$ 5,20<small>/un</small></p><p style="margin-top:6px"><span class="dn">−0,2%</span> <span style="color:var(--a-ink-2);font-size:12.5px">desde ontem</span></p></div>
-                <div class="kv">
-                  <div><span>Caixeta (22 un)</span><b>R$ 114,31</b></div>
-                  <div><span>Média de 7 dias</span><b>R$ 5,04</b></div>
-                  <div><span>Média de 30 dias</span><b>R$ 5,10</b></div>
-                  <div><span>Média de 90 dias</span><b>R$ 5,24</b></div>
-                </div>
-              </div>
-            </section>
-            <section class="box">
-              <div class="box-h"><div><h2>Por CEASA</h2><p>Do maior para o menor preço de hoje · <span class="tag ex">gráfico ilustrativo</span></p></div><span class="mseg"><span class="on">30 dias</span><span>90 dias</span><span>180 dias</span></span></div>
-              <div class="tw"><table class="t">
-                <thead><tr><th>CEASA</th><th>Últimos 30 dias</th><th class="r">Variação</th><th class="r">Preço/un</th></tr></thead>
-                <tbody id="ceasas"></tbody>
-              </table></div>
-            </section>
-            <section class="box">
-              <div class="box-h"><div><h2>Simular venda</h2><p>Quanto rende uma carga no preço que você escolher</p></div></div>
-              <div class="box-b"><div class="calc"><input id="sim-q" inputmode="numeric" value="12.000" aria-label="Quantidade"><span>unidades</span><span class="op">×</span><input id="sim-p" inputmode="decimal" value="5,20" aria-label="Preço por unidade"><span>por unidade</span><span class="op">=</span><span class="eq" id="sim-t">R$ 62.400,00</span></div></div>
-            </section>
-          </div>
-        </div></div>
-        <div class="hoje" data-view="h" hidden><img src="img/hoje-mercado.jpg" alt="Tela Mercado atual" loading="lazy"></div>
-        <ul class="changes">
-          <li>O cartão verde-escuro do preço vira um número grande sobre fundo branco, com as médias ao lado numa tabela curta.</li>
-          <li>O gráfico em zigue-zague vira um gráfico pequeno por CEASA, em ordem de preço.</li>
-          <li>O simulador vira uma conta escrita: quantidade × preço = total. Teste mudando os valores.</li>
-        </ul>
-      </div>
-
-      <!-- NOVA DESPESA -->
-      <div class="panel" data-panel="despesa" role="tabpanel" hidden>
-        <div class="viewbar"><p>Os formulários abrem num painel à direita (no celular, em tela cheia), com rótulos sempre visíveis e os mesmos campos de hoje. Teste a opção "Conta a pagar".</p><div class="seg vs"><button class="on" data-v="p">Proposta</button><button data-v="h">Hoje</button></div></div>
-        <div class="frame" data-view="p"><div class="app" style="min-height:620px">
-          <div class="dimmed" aria-hidden="true">
-            <header class="mtop"><div class="r1"><span class="logo"><img src="img/logo.png" alt=""><span>Meu Plantio</span></span><nav class="areas"><span>Início</span><span>Lavoura</span><span class="on">Financeiro</span><span>Comercial</span><span>Agenda</span></nav></div><div class="r2"><span>Resumo</span><span class="on">Despesas</span><span>Receitas</span><span>Vendas</span></div></header>
-            <div class="pg"><div class="ph"><div><p class="c">Outubro de 2026</p><h1>Despesas</h1></div></div><div class="box" style="height:400px"></div></div>
-          </div>
-          <div class="panel-f" role="dialog" aria-label="Nova despesa">
-            <div class="pf-h"><div><h2>Nova despesa</h2><p>Entra no Financeiro e no plantio escolhido.</p></div><span class="b sq"><svg class="i"><use href="#x"/></svg></span></div>
-            <div class="pf-b">
-              <div class="f full"><label>Descrição <em>*</em></label><div class="fi">Calcário dolomítico, 2 t</div></div>
-              <div class="f"><label>Valor <em>*</em></label><div class="fi mono">R$ 980,00</div></div>
-              <div class="f"><label>Data</label><div class="fi mono" style="font-weight:500;font-size:13.5px">15/10/2026</div></div>
-              <div class="f"><label>Categoria</label><div class="fi">Correção<svg class="i s dd"><use href="#down"/></svg></div></div>
-              <div class="f"><label>Plantio</label><div class="fi">Lavoura 10 linhas<svg class="i s dd"><use href="#down"/></svg></div></div>
-              <div class="f"><label>Forma de pagamento</label><div class="fi">Dinheiro<svg class="i s dd"><use href="#down"/></svg></div></div>
-              <div class="f"><label>Responsável</label><div class="fi ph">Quem pagou ou comprou</div></div>
-              <button class="chk" role="checkbox" aria-checked="false" id="tg"><span class="bx"><svg class="i xs"><use href="#check"/></svg></span><span><b>Conta a pagar</b><span>Ainda não foi paga e tem vencimento</span></span></button>
-              <div class="f full" id="venc" hidden><label>Vencimento</label><div class="fi mono" style="font-weight:500;font-size:13.5px">10/11/2026</div></div>
-              <div class="f full"><label>Observações</label><div class="fi area ph">Notas, número da nota fiscal…</div><span class="hint">Opcional</span></div>
-            </div>
-            <div class="pf-f"><span class="b">Cancelar</span><span class="b p">Salvar despesa</span></div>
-          </div>
-        </div></div>
-        <div class="hoje" data-view="h" hidden><img src="img/hoje-despesa.jpg" alt="Formulário Nova despesa atual" loading="lazy"></div>
-        <ul class="changes">
-          <li>O botão Salvar fica verde em todos os formulários. O vermelho fica só para Excluir.</li>
-          <li>Rótulo em cima do campo, e não dentro, para não sumir quando a pessoa começa a digitar.</li>
-          <li>O vencimento só aparece quando "Conta a pagar" está marcado. O mesmo painel serve para os demais cadastros.</li>
-        </ul>
-      </div>
-
-      <!-- CELULAR -->
-      <div class="panel" data-panel="celular" role="tabpanel" hidden>
-        <div class="viewbar"><p>No celular, a barra inferior continua com as mesmas cinco áreas de hoje, com ícones próprios em traço reto (Lavoura é desenhada como linhas de plantio). O botão "Lançar" fica acima da barra, e o conteúdo tem espaço para não ficar coberto.</p><div class="seg vs"><button class="on" data-v="p">Proposta</button><button data-v="h">Hoje</button></div></div>
-        <div class="phones" data-view="p">
-          <div class="phone app"><div class="scr">
-            <div class="p-top"><span class="logo"><img src="img/logo.png" alt="">Meu Plantio</span><span class="r"><svg class="i"><use href="#search"/></svg><span class="bell"><svg class="i"><use href="#bell"/></svg><b>2</b></span></span></div>
-            <div class="p-sub"><span>Teste grátis termina hoje</span><a>Assinar</a></div>
-            <div class="p-body">
-              <div><p class="c">Qui, 22/10 · Sítio São José</p><h1>Boa noite, Meu Plantio</h1></div>
-              <div class="strip">
-                <div><p class="lbl">Plantios</p><p class="v">1 <small>de 1</small></p><p class="s w">limite do plano</p></div>
-                <div><p class="lbl">Mudas</p><p class="v">12.000</p><p class="s">1 plantio</p></div>
-                <div><p class="lbl">Custo/linha</p><p class="v">R$ 743,00</p><p class="s">10 linhas</p></div>
+              <div class="trial">Teste grátis termina hoje<a>Assinar</a></div>
+              <div class="sl"><span class="lbl">Lançar</span></div>
+              <div class="chips"><span class="btn"><svg class="i s"><use href="#plus"/></svg>Gasto</span><span class="btn"><svg class="i s"><use href="#plus"/></svg>Colheita</span><span class="btn"><svg class="i s"><use href="#plus"/></svg>Diária</span><span class="btn"><svg class="i s"><use href="#plus"/></svg>Plantio</span></div>
+              <div class="sl"><span class="lbl">Resumo</span></div>
+              <div class="nums">
+                <div><p class="lbl">Plantios ativos</p><p class="v">1 <small>de 1</small></p><p class="s w">limite do plano</p></div>
+                <div><p class="lbl">Mudas</p><p class="v">12.000</p><p class="s">em 1 plantio</p></div>
+                <div><p class="lbl">Custo por linha</p><p class="v">R$ 743,00</p><p class="s">10 linhas</p></div>
                 <div><p class="lbl">Tarefas hoje</p><p class="v">0</p><p class="s">0 atrasadas</p></div>
               </div>
-              <section class="box"><div class="box-h"><div><h2>Lavoura 10 linhas</h2><p>Pérola · preparo 11%</p></div><span class="st prep" style="font-size:12px">Preparo</span></div><div class="box-b"><div class="cal" data-compact="1"></div></div></section>
-              <section class="box"><div class="box-h"><div><h2>Dinheiro</h2></div></div><div class="box-b"><div class="kv"><div><span>Total investido</span><b>R$ 7.430,00</b></div><div><span>Receitas</span><b>R$ 0,00</b></div></div></div></section>
+              <div class="sl"><span class="lbl">Meus plantios</span><a>Ver todos</a></div>
+              <div class="grp"><div class="row"><div class="tx"><b>Lavoura 10 linhas</b><small>Pérola · <span class="st prep" style="font-size:12.5px;font-weight:500">preparo · 11%</span></small><div class="calmini"><i style="flex:2;background:var(--ph-prep)"></i><i style="flex:8;background:var(--ph-grow)"></i><i style="flex:6;background:var(--ph-keep)"></i><i style="flex:2;background:var(--ph-harv)"></i></div></div><span class="v">R$ 7.430<small>investido</small></span><svg class="i go"><use href="#chev"/></svg></div></div>
+              <div class="sl"><span class="lbl">Dinheiro</span></div>
+              <div class="grp">
+                <div class="row"><span class="tx">Total investido</span><span class="v">R$ 7.430,00</span></div>
+                <div class="row"><span class="tx">Receitas</span><span class="v">R$ 0,00</span></div>
+                <div class="row"><span class="tx">Retorno estimado</span><span class="v"><mark>R$ 53.040,00</mark></span></div>
+              </div>
             </div>
+            <nav class="tabbar"><span class="on"><svg class="i"><use href="#n-home"/></svg>Início</span><span><svg class="i"><use href="#n-rows"/></svg>Lavoura</span><span><svg class="i"><use href="#n-coin"/></svg>Financeiro</span><span><svg class="i"><use href="#n-crate"/></svg>Comercial</span><span><svg class="i"><use href="#n-cal"/></svg>Agenda</span></nav><div class="homeind"></div>
           </div>
-            <div class="lanca"><span class="b p"><svg class="i s"><use href="#plus"/></svg>Lançar</span></div>
-            <nav class="bn"><span class="on"><svg class="i"><use href="#n-home"/></svg>Início</span><span><svg class="i"><use href="#n-rows"/></svg>Lavoura</span><span><svg class="i"><use href="#n-coin"/></svg>Financeiro</span><span><svg class="i"><use href="#n-crate"/></svg>Comercial</span><span><svg class="i"><use href="#n-cal"/></svg>Agenda</span></nav>
+        </div>
+        <div class="notes"><h3>Início: o resumo do dia, de cima para baixo</h3><p>A tela segue a ordem em que o produtor olha: avisos, o que lançar, os números, o plantio e o dinheiro.</p>
+          <ul class="changes">
+            <li>A faixa verde com degradê vira um cabeçalho limpo, com a troca de propriedade no topo.</li>
+            <li>Os seis ícones de atalho viram a fileira "Lançar", com texto. Ela desliza para o lado e não corta mais o "Mais".</li>
+            <li>Os três indicadores cortados ("Plantios ativ…", "Total de mu…") viram uma grade 2 × 2 com o rótulo inteiro.</li>
+            <li>O card estreito do plantio vira uma linha de lista, com o ciclo em miniatura e o valor investido.</li>
+            <li>O botão flutuante "Lançar", que cobria o card "Novo plantio", sai: a fileira "Lançar" faz o mesmo papel.</li>
+            <li>Rolando, seguem a seção "Hoje" (tarefas e previsão do tempo) e o resumo do dinheiro completo.</li>
+          </ul></div>
+      </div>
+
+      <!-- LAVOURA -->
+      <div class="pair" data-panel="lavoura" role="tabpanel" hidden>
+        <div class="col"><span class="lbl">Hoje</span><div class="dev shot"><img src="img/cel-lavoura.jpg" alt="Aba Lavoura atual no celular" loading="lazy"></div></div>
+        <div class="col"><span class="lbl">Proposta</span>
+          <div class="dev"><div class="notch"></div><div class="sbar"><span>07:42</span><svg viewBox="0 0 54 12"><use href="#sig"/></svg></div>
+            <div class="scr">
+              <div class="ah"><div class="ah-top"><span class="farm"><img src="img/logo.png" alt="">Sítio São José<svg class="i s"><use href="#down"/></svg></span><span class="r"><svg class="i"><use href="#search"/></svg><span class="bell"><svg class="i"><use href="#bell"/></svg><b>2</b></span></span></div><div><p class="c">Manejo do campo</p><h1>Lavoura</h1></div></div>
+              <div class="sl"><span class="lbl">No campo</span></div>
+              <div class="grp">
+                <div class="row"><span class="tx"><b>Plantios</b></span><span class="d">1 ativo</span><svg class="i go"><use href="#chev"/></svg></div>
+                <div class="row"><span class="tx"><b>Mapa vivo</b></span><span class="d">nenhum talhão</span><svg class="i go"><use href="#chev"/></svg></div>
+                <div class="row"><span class="tx"><b>Adubação</b></span><span class="d">0 aplicações</span><svg class="i go"><use href="#chev"/></svg></div>
+                <div class="row"><span class="tx"><b>Correção de solo</b></span><span class="d">1 aplicação</span><svg class="i go"><use href="#chev"/></svg></div>
+                <div class="row"><span class="tx"><b>Irrigação</b></span><span class="d">0 aplicações</span><svg class="i go"><use href="#chev"/></svg></div>
+                <div class="row"><span class="tx"><b>Colheita</b></span><span class="d">nenhuma ainda</span><svg class="i go"><use href="#chev"/></svg></div>
+              </div>
+              <div class="sl"><span class="lbl">Recursos</span></div>
+              <div class="grp">
+                <div class="row"><span class="tx"><b>Estoque</b></span><span class="d">0 insumos</span><svg class="i go"><use href="#chev"/></svg></div>
+                <div class="row"><span class="tx"><b>Mão de obra</b></span><span class="d">0 trabalhadores</span><svg class="i go"><use href="#chev"/></svg></div>
+                <div class="row"><span class="tx"><b>Propriedades</b></span><span class="d">1</span><svg class="i go"><use href="#chev"/></svg></div>
+              </div>
+              <div class="sl"><span class="lbl">Ferramentas</span></div>
+              <div class="grp">
+                <div class="row"><span class="tx"><b>Calculadora de plantio</b></span><svg class="i go"><use href="#chev"/></svg></div>
+                <div class="row"><span class="tx"><b>Comparar safras</b></span><span class="d" style="color:var(--a-warn)">planos pagos</span><svg class="i go"><use href="#chev"/></svg></div>
+              </div>
+              <p class="note">Pragas, doenças e indução floral ficam dentro de cada plantio.</p>
+            </div>
+            <nav class="tabbar"><span><svg class="i"><use href="#n-home"/></svg>Início</span><span class="on"><svg class="i"><use href="#n-rows"/></svg>Lavoura</span><span><svg class="i"><use href="#n-coin"/></svg>Financeiro</span><span><svg class="i"><use href="#n-crate"/></svg>Comercial</span><span><svg class="i"><use href="#n-cal"/></svg>Agenda</span></nav><div class="homeind"></div>
           </div>
-          <div class="phone app"><div class="scr">
-            <div class="p-top"><svg class="i"><use href="#back"/></svg><span style="font-weight:650">Plantios</span><span class="r"><svg class="i"><use href="#more"/></svg></span></div>
-            <div class="p-body">
-              <div><p class="c">Pérola · Sítio São José · 10 linhas</p><h1>Lavoura 10 linhas</h1><p style="margin-top:6px"><span class="st prep">Preparando terra</span></p></div>
-              <div style="display:flex;gap:6px;flex-wrap:wrap"><span class="b" style="height:32px">Mudar status</span><span class="b" style="height:32px">Editar</span></div>
-              <div class="strip">
+        </div>
+        <div class="notes"><h3>Lavoura: lista em vez de grade de ícones</h3><p>A grade de 11 ícones dentro de quadradinhos é o padrão mais repetido em app gerado por IA. Uma lista agrupada é o que os próprios aplicativos do sistema usam (Ajustes no iPhone, Configurações no Android), e cabe mais informação.</p>
+          <ul class="changes">
+            <li>Cada módulo mostra ao lado um número útil: plantios ativos, aplicações, trabalhadores.</li>
+            <li>Os 11 módulos ficam em três grupos com nome: no campo, recursos e ferramentas.</li>
+            <li>Acaba a quebra "Propriedade s": o nome inteiro cabe na linha.</li>
+            <li>Comparar safras avisa antes de abrir que é de plano pago.</li>
+          </ul></div>
+      </div>
+
+      <!-- PLANTIOS -->
+      <div class="pair" data-panel="plantios" role="tabpanel" hidden>
+        <div class="col"><span class="lbl">Hoje</span><div class="dev shot"><img src="img/cel-plantios.jpg" alt="Lista de plantios atual no celular" loading="lazy"></div></div>
+        <div class="col"><span class="lbl">Proposta</span>
+          <div class="dev"><div class="notch"></div><div class="sbar"><span>07:42</span><svg viewBox="0 0 54 12"><use href="#sig"/></svg></div>
+            <div class="scr dock-on">
+              <div class="ptr"><i></i>Puxe para atualizar</div>
+              <div class="ah" style="padding-top:0"><div class="ah-top"><span class="back"><svg class="i"><use href="#back"/></svg>Lavoura</span></div><h1>Plantios</h1></div>
+              <div class="search"><svg class="i s"><use href="#search"/></svg>Buscar plantio ou variedade</div>
+              <div style="height:10px"></div>
+              <div class="seg"><span class="on">Todos</span><span>Ativos</span><span>Colhidos</span><span>Encerrados</span></div>
+              <div class="sl"><span class="lbl">1 plantio</span></div>
+              <div class="grp"><div class="row" style="align-items:flex-start"><div class="tx"><b>Lavoura 10 linhas</b><small>Pérola · Sítio São José · 10 linhas</small><p style="margin-top:6px"><span class="st prep">Preparando terra</span></p>
+                <div class="cal" data-compact="1" style="margin-top:6px"></div></div><svg class="i go" style="margin-top:4px"><use href="#chev"/></svg></div>
+                <div class="row"><span class="tx" style="color:var(--a-ink-2)">Mudas</span><span class="v">12.000</span></div>
+                <div class="row"><span class="tx" style="color:var(--a-ink-2)">Investido</span><span class="v">R$ 7.430,00</span></div>
+              </div>
+              <p class="note">Plano gratuito: 1 de 1 plantio usado.</p>
+            </div>
+            <div class="dock"><span class="btn p"><svg class="i s"><use href="#plus"/></svg>Novo plantio</span></div>
+            <nav class="tabbar"><span><svg class="i"><use href="#n-home"/></svg>Início</span><span class="on"><svg class="i"><use href="#n-rows"/></svg>Lavoura</span><span><svg class="i"><use href="#n-coin"/></svg>Financeiro</span><span><svg class="i"><use href="#n-crate"/></svg>Comercial</span><span><svg class="i"><use href="#n-cal"/></svg>Agenda</span></nav><div class="homeind"></div>
+          </div>
+        </div>
+        <div class="notes"><h3>Plantios: o ciclo inteiro numa linha</h3><p>A barra de progresso de hoje quebra os nomes das fases ("Prepar o", "Colheit a"). No lugar entra o cronograma do ciclo mês a mês, com o dia de hoje marcado em amarelo.</p>
+          <figure style="margin:0;background:var(--shot);padding:8px"><img src="img/ev-fases.jpg" alt="Nomes das fases quebrados na lista de plantios atual" loading="lazy"></figure>
+          <ul class="changes">
+            <li>Os filtros viram um controle segmentado, que cabe inteiro na largura.</li>
+            <li>O botão "Atualizar" sai: para atualizar, basta puxar a lista para baixo, como em todo app.</li>
+            <li>"Novo plantio" fica fixo embaixo, acima das abas, sem cobrir a lista, e o limite do plano aparece antes do toque.</li>
+          </ul></div>
+      </div>
+
+      <!-- UM PLANTIO -->
+      <div class="pair" data-panel="plantio" role="tabpanel" hidden>
+        <div class="col"><span class="lbl">Hoje</span><div class="dev shot"><img src="img/cel-plantio.jpg" alt="Detalhe do plantio atual no celular" loading="lazy"></div></div>
+        <div class="col"><span class="lbl">Proposta</span>
+          <div class="dev"><div class="notch"></div><div class="sbar"><span>07:42</span><svg viewBox="0 0 54 12"><use href="#sig"/></svg></div>
+            <div class="scr dock-on">
+              <div class="ah"><div class="ah-top"><span class="back"><svg class="i"><use href="#back"/></svg>Plantios</span><span class="r"><svg class="i"><use href="#more"/></svg></span></div>
+                <div><p class="c">Pérola · Sítio São José · 10 linhas</p><h1 class="sm">Lavoura 10 linhas</h1><p style="margin-top:6px"><span class="st prep">Preparando terra</span></p></div>
+                <div style="display:flex;gap:8px"><span class="btn sm">Mudar status</span><span class="btn sm">Editar</span><span class="btn sm">Plano de manejo</span></div>
+              </div>
+              <div class="nums">
                 <div><p class="lbl">Investido</p><p class="v">R$ 7.430,00</p></div>
                 <div><p class="lbl">Receita</p><p class="v">R$ 0,00</p></div>
                 <div><p class="lbl">Mudas</p><p class="v">12.000</p></div>
                 <div><p class="lbl">A recuperar</p><p class="v" style="color:var(--a-warn)">R$ 7.430,00</p></div>
               </div>
-              <section class="box"><div class="utabs"><span class="on">Despesas<em>4</em></span><span>Insumos<em>0</em></span><span>Adubação<em>0</em></span><span>Colheita<em>0</em></span><span>Vendas<em>0</em></span><span>Anexos<em>0</em></span></div>
-                <div class="list"><div class="li"><div class="tx"><b>Mudas Pérola</b><small style="color:var(--a-warn)">10/10 · vence 10/11</small></div><span class="num" style="font-weight:700">R$ 4.800,00</span></div><div class="li"><div class="tx"><b>Aragem e gradagem</b><small>18/10 · pago</small></div><span class="num" style="font-weight:700">R$ 1.200,00</span></div></div></section>
-              <section class="box"><div class="box-h"><div><h2>Manejo</h2></div></div><div class="list"><div class="li"><div class="tx"><b>Pragas e doenças</b><small>nenhuma ocorrência ativa</small></div><svg class="i s go"><use href="#chev"/></svg></div></div></section>
+              <div class="sl"><span class="lbl">Ciclo · previsão de exemplo</span></div>
+              <div class="grp" style="padding:8px 12px 4px"><div class="cal" data-compact="1"></div></div>
+              <div class="sl"><span class="lbl">Registros</span></div>
+              <div class="grp"><div class="utabs"><span class="on">Despesas<em>4</em></span><span>Insumos<em>0</em></span><span>Adubação<em>0</em></span><span>Colheita<em>0</em></span><span>Vendas<em>0</em></span></div>
+                <div class="row"><span class="tx"><b>Mudas Pérola</b><small style="color:var(--a-warn)">10/10 · vence 10/11</small></span><span class="v">R$ 4.800,00</span></div>
+                <div class="row"><span class="tx"><b>Aragem e gradagem</b><small>18/10 · pago</small></span><span class="v">R$ 1.200,00</span></div>
+              </div>
+              <div class="sl"><span class="lbl">Manejo</span></div>
+              <div class="grp">
+                <div class="row"><span class="tx"><b>Pragas e doenças</b><small><span class="st ok" style="font-size:12.5px;font-weight:500">nenhuma ocorrência ativa</span></small></span><svg class="i go"><use href="#chev"/></svg></div>
+                <div class="row"><span class="tx"><b>Indução floral</b><small>liberada no crescimento</small></span><svg class="i go"><use href="#chev"/></svg></div>
+              </div>
             </div>
-          </div>
-            <div class="lanca"><span class="b p"><svg class="i s"><use href="#plus"/></svg>Lançar despesa</span></div>
-            <nav class="bn"><span><svg class="i"><use href="#n-home"/></svg>Início</span><span class="on"><svg class="i"><use href="#n-rows"/></svg>Lavoura</span><span><svg class="i"><use href="#n-coin"/></svg>Financeiro</span><span><svg class="i"><use href="#n-crate"/></svg>Comercial</span><span><svg class="i"><use href="#n-cal"/></svg>Agenda</span></nav>
+            <div class="dock"><span class="btn" style="flex:0 0 auto">Receita</span><span class="btn p"><svg class="i s"><use href="#plus"/></svg>Lançar despesa</span></div>
+            <nav class="tabbar"><span><svg class="i"><use href="#n-home"/></svg>Início</span><span class="on"><svg class="i"><use href="#n-rows"/></svg>Lavoura</span><span><svg class="i"><use href="#n-coin"/></svg>Financeiro</span><span><svg class="i"><use href="#n-crate"/></svg>Comercial</span><span><svg class="i"><use href="#n-cal"/></svg>Agenda</span></nav><div class="homeind"></div>
           </div>
         </div>
-        <div class="hoje ph" data-view="h" hidden><img src="img/hoje-celular.jpg" alt="Início atual no celular" loading="lazy"><img src="img/hoje-celular-plantio.jpg" alt="Detalhe do plantio atual no celular" loading="lazy"></div>
-        <ul class="changes">
-          <li>Os números ficam em grade 2 × 2, com rótulos curtos, sem reticências.</li>
-          <li>As seis abas do plantio deslizam para o lado e mostram quantos registros cada uma tem.</li>
-          <li>A barra inferior mantém as cinco áreas de hoje. Só os ícones mudam.</li>
-        </ul>
+        <div class="notes"><h3>Um plantio: as 12 ações à vista</h3><p>Hoje, quase tudo o que se faz num plantio fica escondido no menu ⋮. Na proposta, cada ação tem lugar fixo na tela.</p>
+          <ul class="changes">
+            <li>Abaixo do título: Mudar status, Editar e Plano de manejo.</li>
+            <li>Fixos embaixo, ao alcance do polegar: Lançar despesa e Receita.</li>
+            <li>Na seção Manejo (rolando): Pragas e doenças, Indução floral, Irrigação, Correção de solo, Análise da área e Linha do tempo, cada uma com a situação ao lado.</li>
+            <li>No ⋯ do topo ficam só Vincular área e Excluir, que são raras e perigosas.</li>
+            <li>As seis abas de registros deslizam para o lado e mostram a contagem.</li>
+            <li>"Total investido" deixa de ser vermelho. Vermelho fica para atraso e praga ativa.</li>
+          </ul></div>
+      </div>
+
+      <!-- NOVA DESPESA -->
+      <div class="pair" data-panel="despesa" role="tabpanel" hidden>
+        <div class="col"><span class="lbl">Hoje</span><div class="dev shot"><img src="img/cel-despesa.jpg" alt="Formulário Nova despesa atual no celular" loading="lazy"></div></div>
+        <div class="col"><span class="lbl">Proposta</span>
+          <div class="dev" style="--sb-bg:transparent;background:#5E6460"><div class="notch"></div><div class="sbar" style="color:#fff"><span>07:42</span><svg viewBox="0 0 54 12"><use href="#sig"/></svg></div>
+            <div class="dim"></div>
+            <div class="sheet" role="dialog" aria-label="Nova despesa">
+              <div class="grab"></div>
+              <div class="sh-h"><span>Cancelar</span><b>Nova despesa</b><span style="visibility:hidden">Cancelar</span></div>
+              <div class="sh-b">
+                <div class="amount"><p class="lbl">Valor *</p><p class="pv"><small>R$</small>980,00</p></div>
+                <div style="height:12px"></div>
+                <div class="grp">
+                  <div class="row"><span class="tx" style="color:var(--a-ink-2)">Descrição *</span><span>Calcário, 2 t</span></div>
+                  <div class="row"><span class="tx" style="color:var(--a-ink-2)">Categoria</span><span>Correção</span><svg class="i go"><use href="#chev"/></svg></div>
+                  <div class="row"><span class="tx" style="color:var(--a-ink-2)">Plantio</span><span>Lavoura 10 linhas</span><svg class="i go"><use href="#chev"/></svg></div>
+                  <div class="row"><span class="tx" style="color:var(--a-ink-2)">Data</span><span style="font-family:var(--mono)">15/10/2026</span><svg class="i go"><use href="#chev"/></svg></div>
+                </div>
+                <div style="height:12px"></div>
+                <div class="grp">
+                  <div class="row"><span class="tx" style="color:var(--a-ink-2)">Pagamento</span><span>Dinheiro</span><svg class="i go"><use href="#chev"/></svg></div>
+                  <div class="row"><span class="tx" style="color:var(--a-ink-2)">Responsável</span><span style="color:var(--a-ink-3)">opcional</span></div>
+                  <div class="row"><span class="tx"><b style="font-size:14.5px">Conta a pagar</b><small>ainda não foi paga</small></span><button class="tog" role="switch" aria-checked="false" aria-label="Conta a pagar" id="tg"></button></div>
+                  <div class="row" id="venc" hidden><span class="tx" style="color:var(--a-ink-2)">Vencimento</span><span style="font-family:var(--mono)">10/11/2026</span><svg class="i go"><use href="#chev"/></svg></div>
+                  <div class="row"><span class="tx" style="color:var(--a-ink-2)">Observações</span><span style="color:var(--a-ink-3)">opcional</span></div>
+                </div>
+              </div>
+              <div class="sh-f"><span class="btn p">Salvar despesa</span></div>
+            </div>
+            <div class="homeind"></div>
+          </div>
+        </div>
+        <div class="notes"><h3>Nova despesa: folha que sobe de baixo</h3><p>Os campos são os mesmos de hoje, organizados como formulário de app: valor em destaque, escolhas em linhas que abrem a lista de opções, e o botão de salvar ao alcance do polegar.</p>
+          <ul class="changes">
+            <li>O valor vem primeiro e já abre o teclado numérico.</li>
+            <li>Categoria, plantio, data e pagamento abrem a lista completa de opções que o app já tem. Nenhuma opção some.</li>
+            <li>O botão Salvar fica verde. Vermelho fica só para Excluir.</li>
+            <li>O vencimento só aparece quando "Conta a pagar" está ligado. Teste o botão.</li>
+            <li>A folha fecha arrastando para baixo ou em "Cancelar".</li>
+          </ul></div>
+      </div>
+
+      <!-- FINANCEIRO -->
+      <div class="pair" data-panel="financeiro" role="tabpanel" hidden>
+        <div class="col"><span class="lbl">Hoje</span><div class="dev shot"><img src="img/cel-financeiro.jpg" alt="Financeiro atual no celular" loading="lazy"></div></div>
+        <div class="col"><span class="lbl">Proposta</span>
+          <div class="dev"><div class="notch"></div><div class="sbar"><span>07:42</span><svg viewBox="0 0 54 12"><use href="#sig"/></svg></div>
+            <div class="scr dock-on">
+              <div class="ah"><div class="ah-top"><span class="farm"><img src="img/logo.png" alt="">Sítio São José<svg class="i s"><use href="#down"/></svg></span><span class="r"><svg class="i"><use href="#search"/></svg><span class="bell"><svg class="i"><use href="#bell"/></svg><b>2</b></span></span></div>
+                <div style="display:flex;justify-content:space-between;align-items:flex-end;gap:8px"><div><p class="c">Todos os plantios</p><h1>Financeiro</h1></div><span class="btn sm">Out 2026<svg class="i xs"><use href="#down"/></svg></span></div></div>
+              <div class="seg"><span class="on">Resumo</span><span>Despesas</span><span>Receitas</span></div>
+              <div style="height:12px"></div>
+              <div class="nums">
+                <div><p class="lbl">Saldo do mês</p><p class="v">−R$ 7.430,00</p><p class="s">volta na colheita</p></div>
+                <div><p class="lbl">A pagar</p><p class="v">R$ 4.800,00</p><p class="s w">vence 10/11</p></div>
+                <div><p class="lbl">Receitas</p><p class="v">R$ 0,00</p></div>
+                <div><p class="lbl">Despesas</p><p class="v">R$ 7.430,00</p></div>
+              </div>
+              <div class="sl"><span class="lbl">Lançamentos</span><a>Ver todos</a></div>
+              <div class="grp">
+                <div class="row"><span class="tx"><b>Aragem e gradagem</b><small>18/10 · Aragem</small></span><span class="v">−R$ 1.200,00</span></div>
+                <div class="swipe"><div class="back-acts"><span style="background:var(--a-ink-2)">Editar</span><span style="background:var(--a-bad)">Excluir</span></div><div class="row"><span class="tx"><b>Calcário, 2 t</b><small>15/10 · Correção</small></span><span class="v">−R$ 980,00</span></div></div>
+                <div class="row" style="border-top:1px solid var(--a-rule-soft)"><span class="tx"><b>Mudas Pérola</b><small style="color:var(--a-warn)">10/10 · vence 10/11</small></span><span class="v">−R$ 4.800,00</span></div>
+              </div>
+              <div class="sl"><span class="lbl">Mais no Financeiro</span></div>
+              <div class="grp">
+                <div class="row"><span class="tx"><b>Vendas</b></span><span class="d">0 pendentes</span><svg class="i go"><use href="#chev"/></svg></div>
+                <div class="row"><span class="tx"><b>Lucratividade</b></span><svg class="i go"><use href="#chev"/></svg></div>
+                <div class="row"><span class="tx"><b>Relatórios</b></span><span class="d">PDF</span><svg class="i go"><use href="#chev"/></svg></div>
+              </div>
+            </div>
+            <div class="dock"><span class="btn" style="flex:0 0 auto">Receita</span><span class="btn p"><svg class="i s"><use href="#plus"/></svg>Nova despesa</span></div>
+            <nav class="tabbar"><span><svg class="i"><use href="#n-home"/></svg>Início</span><span><svg class="i"><use href="#n-rows"/></svg>Lavoura</span><span class="on"><svg class="i"><use href="#n-coin"/></svg>Financeiro</span><span><svg class="i"><use href="#n-crate"/></svg>Comercial</span><span><svg class="i"><use href="#n-cal"/></svg>Agenda</span></nav><div class="homeind"></div>
+          </div>
+        </div>
+        <div class="notes"><h3>Financeiro: extrato que se mexe com o dedo</h3><p>As mesmas abas de hoje (Resumo, Despesas, Receitas) ficam num controle segmentado. O resumo passa a mostrar os lançamentos, e não só os totais.</p>
+          <ul class="changes">
+            <li>Deslize um lançamento para a esquerda para editar ou excluir, sem abrir outra tela. O segundo item da lista mostra o gesto.</li>
+            <li>"Contas a pagar" aparece no resumo, com o vencimento em cor de atenção.</li>
+            <li>Vendas, Lucratividade e Relatórios, hoje três quadradinhos com ícone, viram linhas de lista.</li>
+            <li>O período fica no topo e vale para todo o Financeiro.</li>
+          </ul></div>
+      </div>
+
+      <!-- COMERCIAL -->
+      <div class="pair" data-panel="comercial" role="tabpanel" hidden>
+        <div class="col"><span class="lbl">Hoje</span><div class="dev shot"><img src="img/cel-comercial.jpg" alt="Comercial atual no celular" loading="lazy"></div></div>
+        <div class="col"><span class="lbl">Proposta</span>
+          <div class="dev"><div class="notch"></div><div class="sbar"><span>07:42</span><svg viewBox="0 0 54 12"><use href="#sig"/></svg></div>
+            <div class="scr dock-on">
+              <div class="ah"><div class="ah-top"><span class="farm"><img src="img/logo.png" alt="">Sítio São José<svg class="i s"><use href="#down"/></svg></span><span class="r"><svg class="i"><use href="#search"/></svg><span class="bell"><svg class="i"><use href="#bell"/></svg><b>2</b></span></span></div><div><p class="c">Compra e venda de abacaxi</p><h1>Comercial</h1></div></div>
+              <div class="nums">
+                <div><p class="lbl">Lucro líquido</p><p class="v">R$ 0,00</p><p class="s">0 negociações</p></div>
+                <div><p class="lbl">Margem</p><p class="v">0%</p><p class="s">retorno 0%</p></div>
+                <div><p class="lbl">Compras</p><p class="v">R$ 0,00</p><p class="s">0 frutas</p></div>
+                <div><p class="lbl">Vendas</p><p class="v">R$ 0,00</p><p class="s">0 frutas</p></div>
+              </div>
+              <div class="sl"><span class="lbl">Acompanhar</span></div>
+              <div class="grp">
+                <div class="row"><span class="tx"><b>Mercado</b><small>média das CEASAs hoje</small></span><span class="v">R$ 5,20</span><svg class="i go"><use href="#chev"/></svg></div>
+                <div class="row"><span class="tx"><b>Recebimentos</b><small>hoje, semana, mês</small></span><span class="v">R$ 0,00<small>0 atrasados</small></span><svg class="i go"><use href="#chev"/></svg></div>
+                <div class="row"><span class="tx"><b>Carregamentos</b><small>hoje, agendados, pendentes</small></span><span class="v">0</span><svg class="i go"><use href="#chev"/></svg></div>
+                <div class="row"><span class="tx"><b>Negociações</b></span><span class="d">0 abertas</span><svg class="i go"><use href="#chev"/></svg></div>
+              </div>
+              <div class="sl"><span class="lbl">Ferramentas</span></div>
+              <div class="grp">
+                <div class="row"><span class="tx"><b>Marcar tara</b></span><svg class="i go"><use href="#chev"/></svg></div>
+                <div class="row"><span class="tx"><b>Relatórios</b></span><span class="d">11 relatórios</span><svg class="i go"><use href="#chev"/></svg></div>
+                <div class="row"><span class="tx"><b>Cadastros</b></span><span class="d">produtores, motoristas…</span><svg class="i go"><use href="#chev"/></svg></div>
+              </div>
+            </div>
+            <div class="dock"><span class="btn p"><svg class="i s"><use href="#plus"/></svg>Nova negociação</span></div>
+            <nav class="tabbar"><span><svg class="i"><use href="#n-home"/></svg>Início</span><span><svg class="i"><use href="#n-rows"/></svg>Lavoura</span><span><svg class="i"><use href="#n-coin"/></svg>Financeiro</span><span class="on"><svg class="i"><use href="#n-crate"/></svg>Comercial</span><span><svg class="i"><use href="#n-cal"/></svg>Agenda</span></nav><div class="homeind"></div>
+          </div>
+        </div>
+        <div class="notes"><h3>Comercial: números do mês e caminhos claros</h3><p>Os mesmos dados do painel de hoje, sem os cartões coloridos. Os sete quadradinhos do "Acesso rápido" viram duas listas.</p>
+          <ul class="changes">
+            <li>Resultado do mês, compras e vendas viram uma grade 2 × 2.</li>
+            <li>A linha do Mercado já mostra o preço do dia, sem precisar abrir.</li>
+            <li>Recebimentos e Carregamentos resumem os números de hoje e abrem o detalhe completo.</li>
+            <li>"Nova negociação" fica fixa embaixo, ao alcance do polegar.</li>
+          </ul></div>
+      </div>
+
+      <!-- MERCADO -->
+      <div class="pair" data-panel="mercado" role="tabpanel" hidden>
+        <div class="col"><span class="lbl">Hoje</span><div class="dev shot"><img src="img/cel-mercado.jpg" alt="Mercado atual no celular" loading="lazy"></div></div>
+        <div class="col"><span class="lbl">Proposta</span>
+          <div class="dev"><div class="notch"></div><div class="sbar"><span>07:42</span><svg viewBox="0 0 54 12"><use href="#sig"/></svg></div>
+            <div class="scr">
+              <div class="ah"><div class="ah-top"><span class="back"><svg class="i"><use href="#back"/></svg>Comercial</span><span class="r"><svg class="i"><use href="#more"/></svg></span></div><div><p class="c">Abacaxi Pérola · cotação de 22/10</p><h1>Mercado</h1></div></div>
+              <div class="seg"><span class="on">Média</span><span>CEAGESP</span><span>Campinas</span><span>BH</span></div>
+              <div class="price" style="margin-top:14px"><p class="lbl">Média das 3 CEASAs</p><p class="pv">R$ 5,20<small>/un</small></p><p style="margin-top:4px"><span class="dn">−0,2%</span> <span style="font-size:13px;color:var(--a-ink-2)">desde ontem · caixeta R$ 114,31</span></p></div>
+              <div class="sl"><span class="lbl">Por CEASA · 30 dias · ilustrativo</span></div>
+              <div class="grp" id="ceasas"></div>
+              <div class="sl"><span class="lbl">Médias</span></div>
+              <div class="grp"><div class="row"><span class="tx" style="color:var(--a-ink-2)">7 · 30 · 90 dias</span><span class="v" style="font-weight:500">R$ 5,04 · 5,10 · 5,24</span></div></div>
+              <div class="sl"><span class="lbl">Simular venda</span></div>
+              <div class="grp">
+                <div class="calc"><label for="sim-q">Quantidade<input id="sim-q" inputmode="numeric" value="12.000"></label><span class="op">×</span><label for="sim-p">Preço/un (R$)<input id="sim-p" inputmode="decimal" value="5,20"></label></div>
+                <div class="calc-out"><span style="color:var(--a-ink-2)">Total</span><b id="sim-t">R$ 62.400,00</b></div>
+              </div>
+            </div>
+            <nav class="tabbar"><span><svg class="i"><use href="#n-home"/></svg>Início</span><span><svg class="i"><use href="#n-rows"/></svg>Lavoura</span><span><svg class="i"><use href="#n-coin"/></svg>Financeiro</span><span class="on"><svg class="i"><use href="#n-crate"/></svg>Comercial</span><span><svg class="i"><use href="#n-cal"/></svg>Agenda</span></nav><div class="homeind"></div>
+          </div>
+        </div>
+        <div class="notes"><h3>Mercado: o preço do dia em primeiro lugar</h3><p>Mesmos dados de hoje: preço por CEASA, médias, comparativo, histórico e simulação.</p>
+          <ul class="changes">
+            <li>O cartão verde-escuro vira o número grande do preço sobre fundo claro.</li>
+            <li>O gráfico em zigue-zague vira um gráfico pequeno por CEASA, em ordem de preço, com a que paga mais marcada.</li>
+            <li>As médias de 7, 30 e 90 dias deixam de ter uma cor cada (azul, vermelho, roxo) e cabem numa linha.</li>
+            <li>O simulador sai do fim da página e vira uma conta simples. Teste mudando os valores.</li>
+            <li>"Lançamento manual" vai para o ⋯, e sincronizar as CEASAs passa a ser puxar a tela para baixo.</li>
+          </ul></div>
       </div>
     </div>
   </section>
 
+  <!-- ============ DIAGNÓSTICO ============ -->
+  <section class="sec" id="diagnostico">
+    <div class="sec-h"><p class="lbl">02 · O que encontrei</p><div><h2>Diagnóstico do app atual</h2><p>O app tem muita função boa. O problema é de apresentação: cada parte foi desenhada de um jeito, e no portal web as telas de celular aparecem esticadas no monitor.</p></div></div>
+    <div class="diag">
+      <article class="issue"><span class="lbl sev hi">Grave</span><h3>Doze ações escondidas num menu ⋮</h3><p>Plano de manejo, Linha do tempo, Indução floral, Pragas e doenças, Irrigação, Correção de solo e Análise da área só aparecem no menu de três pontos do plantio.</p>
+        <div class="ev"><figure><img src="img/ev-menu.jpg" alt="Menu de três pontos do plantio com doze itens" loading="lazy" style="max-height:240px"><figcaption>Menu do plantio</figcaption></figure></div></article>
+      <article class="issue"><span class="lbl sev hi">Grave</span><h3>Textos cortados e botão por cima do conteúdo</h3><p>"Plantios ativ…", "Total de mu…", o atalho "Mais" pela metade, "Propriedade s" e as fases "Prepar o" e "Colheit a" quebrando. O botão "Lançar" cobre o card "Novo plantio".</p>
+        <div class="ev"><figure><img src="img/ev-kpi-celular.jpg" alt="Indicadores cortados no celular" loading="lazy"><figcaption>Início</figcaption></figure><figure><img src="img/ev-quebra.jpg" alt="Palavra Propriedades quebrada" loading="lazy"><figcaption>Lavoura</figcaption></figure></div></article>
+      <article class="issue"><span class="lbl sev md">Médio</span><h3>Cores sem regra</h3><p>Irrigação tem a tela toda azul, Indução floral é roxa, "Salvar despesa" é vermelho e "Total investido" aparece em vermelho. Os ícones dos indicadores usam vermelho e laranja sem indicar problema.</p>
+        <div class="ev"><figure><img src="img/ev-irrigacao.jpg" alt="Tela de irrigação inteira em azul" loading="lazy"><figcaption>Irrigação</figcaption></figure><figure><img src="img/ev-tif.jpg" alt="Tela de indução floral com faixa roxa" loading="lazy"><figcaption>Indução floral</figcaption></figure></div></article>
+      <article class="issue"><span class="lbl sev md">Médio</span><h3>Cada aba tem um cabeçalho diferente</h3><p>Faixa verde em degradê na Início, cartão em degradê na Lavoura e no Comercial, barra centralizada no Financeiro e na Agenda, faixa marrom no plantio. Parecem apps diferentes.</p></article>
+      <article class="issue"><span class="lbl sev md">Médio</span><h3>Quatro caminhos para o mesmo lugar</h3><p>Menu rápido (13 itens), atalhos da Início, botão "Mais" e "Acesso rápido" de cada aba repetem os mesmos destinos.</p></article>
+      <article class="issue"><span class="lbl sev md">Médio</span><h3>No computador, celular esticado</h3><p>No portal web, ao abrir quase qualquer módulo, o menu lateral some e a tela de celular estica até a largura do monitor.</p>
+        <div class="ev"><figure><img src="img/ev-esticada.jpg" alt="Tela de plantios esticada no computador" loading="lazy"><figcaption>Meus Plantios a 1440px</figcaption></figure></div></article>
+      <article class="issue"><span class="lbl sev lo">Leve</span><h3>Pequenos defeitos visuais</h3><p>O emoji da lua aparece como um quadrado na saudação, e "Meu Plantio" vira só "Meu". O gráfico de preços faz zigue-zague diário, o que parece ser as três CEASAs numa linha só (vale conferir os dados).</p>
+        <div class="ev"><figure><img src="img/ev-saudacao.jpg" alt="Saudação com quadrado no lugar do emoji" loading="lazy"><figcaption>Saudação</figcaption></figure></div></article>
+      <article class="issue"><span class="lbl sev lo">Leve</span><h3>Botões de atualizar em toda tela</h3><p>Quase toda tela tem um ícone de atualizar no topo, ocupando espaço do cabeçalho. Em app, o gesto esperado é puxar a tela para baixo.</p></article>
+    </div>
+    <p class="keep"><b>O que já funciona e fica:</b> a barra de abas embaixo com as cinco áreas, os estados vazios que explicam o que fazer, os filtros por status, as predefinições da Calculadora e o comparativo de CEASAs.</p>
+  </section>
+
+  <!-- ============ DIREÇÃO ============ -->
+  <section class="sec" id="direcao">
+    <div class="sec-h"><p class="lbl">03 · Direção visual</p><div><h2>Caderno de campo, em forma de app</h2><p>Papel claro, linha fina, letra firme e número alinhado, com os padrões que quem usa Android e iPhone já conhece. A cor principal é o verde acinzentado da folha do abacaxi. O amarelo entra como marca-texto, só para o que é de hoje.</p></div></div>
+    <div class="dt-wrap"><table class="dt swap">
+      <thead><tr><th class="lbl">Sai (cara de IA)</th><th class="lbl">Entra</th><th class="lbl">Por quê</th></tr></thead>
+      <tbody>
+        <tr><td>Grade de ícones dentro de quadradinhos coloridos</td><td>Listas agrupadas, com texto e um número ao lado. Ícone só nas abas e nas ações (buscar, avisos, voltar)</td><td>É o padrão dos aplicativos do próprio sistema, e o número ao lado informa mais que o ícone.</td></tr>
+        <tr><td>Uma cor para cada card e categoria</td><td>Uma cor de ação (verde da folha) e três de situação. Nas fases da lavoura, cores da própria planta: terra, broto, folha e fruto</td><td>Com poucas cores, vermelho volta a significar problema.</td></tr>
+        <tr><td>Degradê, brilho, sombra e cartão flutuando</td><td>Fundo claro e grupos brancos com borda de 1px</td><td>Leitura melhor no sol e menos peso visual.</td></tr>
+        <tr><td>Botões e etiquetas em pílula</td><td>Botões de 44 a 48px com canto de 6px. Situação marcada com um quadrado de cor e o texto ao lado</td><td>Fica sério, e o quadrado continua legível sem depender só da cor.</td></tr>
+        <tr><td>Fonte da moda (Poppins hoje)</td><td>Archivo, a família do site da Infortec, com versão estreita nos rótulos. Números em JetBrains Mono, do Infortec Design</td><td>Continuidade com a marca, e os números ficam alinhados nas listas.</td></tr>
+        <tr><td>Barra de progresso genérica</td><td>Cronograma do ciclo por mês, do preparo à colheita, com o dia de hoje marcado</td><td>Só um app de abacaxi teria isso, e ele mostra quanto falta e o que vem depois.</td></tr>
+      </tbody>
+    </table></div>
+    <div class="dt-wrap"><table class="dt pat">
+      <thead><tr><th class="lbl">Padrão de app</th><th class="lbl">Como fica no Meu Plantio</th></tr></thead>
+      <tbody>
+        <tr><td>Abas embaixo</td><td>As cinco de hoje: Início, Lavoura, Financeiro, Comercial e Agenda. Ícones próprios em traço reto; o de Lavoura é desenhado como linhas de plantio.</td></tr>
+        <tr><td>Título grande e voltar</td><td>Cada tela abre com título grande. Telas internas mostram "‹ nome da tela anterior". No iPhone também volta com o gesto da borda; no Android, com o voltar do sistema.</td></tr>
+        <tr><td>Botão principal embaixo</td><td>A ação principal da tela (Novo plantio, Lançar despesa, Nova negociação) fica fixa acima das abas, ao alcance do polegar, e a lista termina antes dela.</td></tr>
+        <tr><td>Folha que sobe de baixo</td><td>Formulários de lançamento abrem por baixo, com o valor em destaque, e fecham arrastando para baixo.</td></tr>
+        <tr><td>Puxar para atualizar</td><td>Substitui os botões de atualizar que hoje ocupam o topo de quase toda tela.</td></tr>
+        <tr><td>Deslizar a linha</td><td>Em listas de lançamentos, deslizar para a esquerda mostra Editar e Excluir.</td></tr>
+        <tr><td>Áreas seguras e toque</td><td>Respeita o entalhe e a barra de gestos. Todo alvo de toque tem pelo menos 48px.</td></tr>
+      </tbody>
+    </table></div>
+    <div class="dir">
+      <div class="sw" aria-label="Paleta">
+        <div><i style="background:#2F6B57"></i><b>Folha</b><span>botões, aba ativa, "tudo certo"</span><code>#2F6B57</code></div>
+        <div><i style="background:#F5CF47"></i><b>Marca-texto</b><span>hoje, total calculado</span><code>#F5CF47</code></div>
+        <div><i style="background:#1A1D1B"></i><b>Tinta</b><span>texto, filtro selecionado</span><code>#1A1D1B</code></div>
+        <div><i style="background:#9A5F0E"></i><b>Atenção</b><span>conta a vencer, limite</span><code>#9A5F0E</code></div>
+        <div><i style="background:#B3261E"></i><b>Problema</b><span>atraso, praga, excluir</span><code>#B3261E</code></div>
+        <div><i style="background:#F3F3EF;border-bottom:1px solid #D8DBD4"></i><b>Papel</b><span>fundo do app</span><code>#F3F3EF</code></div>
+        <div><i style="background:#9A6B43"></i><b>Preparo</b><span>cor da terra</span><code>#9A6B43</code></div>
+        <div><i style="background:#8DB3A0"></i><b>Crescimento</b><span>broto novo</span><code>#8DB3A0</code></div>
+        <div><i style="background:#E2B53B"></i><b>Colheita</b><span>fruto maduro</span><code>#E2B53B</code></div>
+      </div>
+      <div class="spec">
+        <span class="lbl">Rótulo estreito · Archivo 75%</span>
+        <span class="h">Lavoura 10 linhas</span>
+        <span class="t">Texto em Archivo 400, 14 a 15px no celular, para ler no sol.</span>
+        <span class="n">R$ 7.430,00</span>
+        <small>Do Infortec Design ficam os números em mono, o formato brasileiro, o valor à direita com legenda embaixo e a cor só quando quer dizer algo.</small>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ PORTAL ============ -->
+  <section class="sec" id="portal">
+    <div class="sec-h"><p class="lbl">04 · Mesmo app, tela maior</p><div><h2>Computador e tablet</h2><p>O portal web (appmeuplantio.com.br/app) é o mesmo app Flutter. Em telas largas, as abas de baixo viram uma barra no topo, com uma segunda linha de atalhos. Os módulos abrem dentro dela, sem a tela de celular esticada.</p></div></div>
+    <div class="frame"><div class="app">
+      <header class="mtop">
+        <div class="r1"><span class="logo"><img src="img/logo.png" alt="">Meu Plantio</span><nav class="areas"><span class="on">Início</span><span>Lavoura</span><span>Financeiro</span><span>Comercial</span><span>Agenda</span></nav><div class="r1-r"><span class="find"><svg class="i s"><use href="#search"/></svg><span>Buscar ou ir para…</span><kbd>Ctrl K</kbd></span><span class="bell"><svg class="i"><use href="#bell"/></svg><b>2</b></span><span class="me">MP</span></div></div>
+        <div class="r2"><span>+ Lançar gasto</span><span>+ Registrar colheita</span><span>+ Novo plantio</span><span>+ Diária</span><span class="trial2">Teste grátis termina hoje · <b style="color:var(--a-leaf)">Assinar</b></span></div>
+      </header>
+      <div class="pg">
+        <div class="pgh"><p class="c">Quinta, 22/10/2026 · Sítio São José · safra 2026</p><h1>Boa noite, Meu Plantio</h1></div>
+        <div class="strip">
+          <div><p class="lbl">Plantios ativos</p><p class="v">1 <small>de 1</small></p><p class="s w">limite do plano gratuito</p></div>
+          <div><p class="lbl">Mudas</p><p class="v">12.000</p><p class="s">em 1 plantio</p></div>
+          <div><p class="lbl">Custo por linha</p><p class="v">R$ 743,00</p><p class="s">10 linhas</p></div>
+          <div><p class="lbl">Tarefas hoje</p><p class="v">0</p><p class="s">0 atrasadas · 0 programadas</p></div>
+        </div>
+        <div class="g2">
+          <section class="box"><div class="box-h"><div><h2>Lavoura 10 linhas</h2><p>Pérola · Sítio São José · início 05/10/2026</p></div><span class="st prep">Preparando terra</span></div>
+            <div class="box-b" style="display:grid;gap:16px"><div class="field"><div class="rows"></div><div class="kv"><div><span>Fase atual</span><b>Preparo · 11%</b></div><div><span>Mudas</span><b>12.000</b></div><div><span>Investido</span><b>R$ 7.430,00</b></div><div><span>Previsão de colheita</span><b>mar/2028</b></div></div></div><div class="cal"></div></div></section>
+          <section class="box"><div class="box-h"><div><h2>Dinheiro</h2><p>Quanto entrou e saiu dos plantios</p></div></div>
+            <div class="box-b kv"><div><span>Total investido</span><b>R$ 7.430,00</b></div><div><span>Gasto no mês</span><b>R$ 7.430,00</b></div><div><span>Receitas dos plantios</span><b>R$ 0,00</b></div><div><span>Retorno estimado</span><b><mark>R$ 53.040,00</mark></b></div></div></section>
+        </div>
+      </div>
+    </div></div>
+  </section>
+
   <!-- ============ NAVEGAÇÃO ============ -->
   <section class="sec" id="navegacao">
-    <div class="sec-h"><p class="lbl">05 · Onde fica cada coisa</p><div><h2>Barra superior com duas linhas</h2><p>A primeira linha tem as cinco áreas de hoje, a busca, os avisos e a conta. A segunda tem os módulos da área aberta e aparece em todas as telas, inclusive dentro de um plantio. Em verde, o que hoje está escondido ou espalhado e passa a ter lugar fixo.</p></div></div>
+    <div class="sec-h"><p class="lbl">05 · Onde fica cada coisa</p><div><h2>As cinco abas e o que tem em cada uma</h2><p>As abas de hoje continuam. O que muda é que cada uma mostra todos os seus módulos numa lista, sem depender do menu rápido ou do "Mais". Em verde, o que hoje está escondido ou espalhado e passa a ter lugar fixo.</p></div></div>
     <div class="navmap">
-      <div><h3>Lavoura</h3><ul><li>Plantios<span>+ quadro Manejo</span></li><li>Mapa vivo<span></span></li><li>Adubação<span></span></li><li>Correção de solo<span></span></li><li>Irrigação<span></span></li><li>Colheita<span></span></li><li>Estoque<span></span></li><li>Mão de obra<span></span></li><li>Propriedades<span></span></li><li>Safras<span>planos pagos</span></li><li>Calculadora<span></span></li><li class="mv">Pragas e doenças<span>no plantio</span></li><li class="mv">Indução floral<span>no plantio</span></li></ul></div>
-      <div><h3>Financeiro</h3><ul><li>Resumo<span></span></li><li>Despesas<span></span></li><li>Receitas<span></span></li><li class="mv">Vendas<span>era botão no Resumo</span></li><li class="mv">Lucratividade<span>era botão no Resumo</span></li><li class="mv">Relatórios<span>era botão no Resumo</span></li></ul></div>
-      <div><h3>Comercial</h3><ul><li>Painel<span></span></li><li class="mv">Mercado<span>era Acesso rápido</span></li><li class="mv">Negociações<span>era Acesso rápido</span></li><li class="mv">Carregamentos<span>era Acesso rápido</span></li><li class="mv">Recebimentos<span>era Acesso rápido</span></li><li class="mv">Relatórios<span>era Acesso rápido</span></li><li class="mv">Cadastros<span>era Acesso rápido</span></li><li class="mv">Marcar tara<span>era Acesso rápido</span></li></ul></div>
-      <div><h3>Sempre à mão</h3><ul><li>Início e Agenda<span>primeira linha</span></li><li class="mv">Busca (Ctrl K)<span>junta Buscar e Menu rápido</span></li><li>Notificações<span>sino</span></li><li class="mv">Atalhos de lançamento<span>2ª linha da Início</span></li><li class="mv">Teste grátis e Assinar<span>2ª linha</span></li><li class="mv">Trocar propriedade<span>ao lado da logo</span></li><li>Conta e configurações<span>quadrado MP</span></li></ul></div>
+      <div><h3>Lavoura</h3><ul><li>Plantios<span>+ seção Manejo</span></li><li>Mapa vivo<span></span></li><li>Adubação<span></span></li><li>Correção de solo<span></span></li><li>Irrigação<span></span></li><li>Colheita<span></span></li><li>Estoque<span></span></li><li>Mão de obra<span></span></li><li>Propriedades<span></span></li><li>Calculadora<span></span></li><li>Comparar safras<span>planos pagos</span></li><li class="mv">Pragas e doenças<span>no plantio</span></li><li class="mv">Indução floral<span>no plantio</span></li></ul></div>
+      <div><h3>Financeiro</h3><ul><li>Resumo, Despesas, Receitas<span>controle no topo</span></li><li class="mv">Vendas<span>era quadradinho</span></li><li class="mv">Lucratividade<span>era quadradinho</span></li><li class="mv">Relatórios<span>era quadradinho</span></li></ul></div>
+      <div><h3>Comercial</h3><ul><li>Painel<span>números do mês</span></li><li class="mv">Mercado<span>com o preço do dia</span></li><li>Recebimentos<span></span></li><li>Carregamentos<span></span></li><li>Negociações<span></span></li><li>Marcar tara<span></span></li><li>Relatórios<span></span></li><li>Cadastros<span></span></li></ul></div>
+      <div><h3>Início e topo</h3><ul><li class="mv">Lançar (gasto, colheita…)<span>fileira na Início</span></li><li class="mv">Busca<span>junta Buscar e Menu rápido</span></li><li>Notificações<span>sino</span></li><li class="mv">Trocar propriedade<span>topo da Início</span></li><li>Conta<span>quadrado MP</span></li><li>Agenda<span>aba própria</span></li></ul></div>
     </div>
   </section>
 
   <!-- ============ INVENTÁRIO ============ -->
   <section class="sec" id="inventario">
-    <div class="sec-h"><p class="lbl">06 · Nada se perde</p><div><h2>Inventário de funcionalidades</h2><p>Tudo o que encontrei no app, com o lugar de hoje e o lugar na proposta. Serve como lista de conferência na implementação: cada linha precisa continuar funcionando.</p></div></div>
+    <div class="sec-h"><p class="lbl">06 · Nada se perde</p><div><h2>Inventário de funcionalidades</h2><p>Tudo o que encontrei no app, com o lugar de hoje e o lugar na proposta para celular. Serve como lista de conferência na implementação: cada linha precisa continuar funcionando.</p></div></div>
     <div class="inv-bar"><label class="q" for="inv-q"><svg class="i s"><use href="#search"/></svg><input id="inv-q" type="search" placeholder="Buscar funcionalidade, tela ou campo"></label><select id="inv-a" aria-label="Filtrar por área"><option value="">Todas as áreas</option></select><span class="inv-count" id="inv-count"></span></div>
     <div class="inv-wrap"><table class="inv"><thead><tr><th>Área</th><th>Funcionalidade</th><th>Onde está hoje</th><th>Onde fica na proposta</th><th>Situação</th></tr></thead><tbody id="inv-b"></tbody></table></div>
   </section>
 
   <!-- ============ IMPLEMENTAÇÃO ============ -->
   <section class="sec" id="implementacao">
-    <div class="sec-h"><p class="lbl">07 · Como chegar lá</p><div><h2>Implementação em etapas</h2><p>O portal é um app Flutter Web, com o mesmo código do aplicativo. A ordem abaixo muda o visual primeiro, sem mexer em regra de negócio, e cada etapa pode ser publicada sozinha.</p></div></div>
+    <div class="sec-h"><p class="lbl">07 · Como chegar lá</p><div><h2>Implementação em etapas</h2><p>iPhone, Android e portal web saem do mesmo código Flutter. A ordem abaixo muda o visual primeiro, sem mexer em regra de negócio, e cada etapa pode ir para as lojas sozinha.</p></div></div>
     <div class="steps">
-      <div class="step"><span class="n">1</span><div><h3>Tema</h3><p>Um ThemeData com as cores da paleta, Archivo e JetBrains Mono pelo pacote google_fonts, cantos de 3px, bordas de 1px e elevação zero em cartões, botões e campos. Só esta etapa já tira as cores próprias de Irrigação e Indução floral, os degradês e o vermelho dos botões de salvar.</p></div></div>
-      <div class="step"><span class="n">2</span><div><h3>Moldura</h3><p>A barra superior de duas linhas no computador e a barra inferior atual no celular. Todas as rotas internas passam a abrir dentro dessa moldura. Se o app usa go_router, isso é um ShellRoute.</p></div></div>
-      <div class="step"><span class="n">3</span><div><h3>Componentes</h3><p>Faixa de números, quadro com título e frase, tabela de lançamentos com valor à direita, marcador de situação (quadrado + texto), desenho das linhas, cronograma do ciclo e painel de formulário. Trocar os ícones atuais pelo conjunto próprio, que é pequeno: só ações e a barra do celular.</p></div></div>
-      <div class="step"><span class="n">4</span><div><h3>Telas, por ordem de uso</h3><p>Início, Plantio, Financeiro, Comercial e Mercado, depois as listas de Lavoura e os formulários. A cada tela pronta, confira as linhas do inventário.</p></div></div>
-      <div class="step"><span class="n">5</span><div><h3>Revisão</h3><p>Testar cada tela a 390px e a 1440px, e corrigir os defeitos do diagnóstico: emoji na saudação, primeiro nome, quebra de "Propriedades", sobreposição do botão Lançar e os dados do gráfico de preços.</p></div></div>
+      <div class="step"><span class="n">1</span><div><h3>Tema</h3><p>Um ThemeData com a paleta, Archivo e JetBrains Mono (pacote google_fonts), elevação zero, borda de 1px e botões de 48px com canto de 6px. Só isso já tira as cores próprias de Irrigação e Indução floral, os degradês e o vermelho dos botões de salvar.</p></div></div>
+      <div class="step"><span class="n">2</span><div><h3>Padrões de app</h3><p>Título grande (SliverAppBar ou CupertinoSliverNavigationBar), RefreshIndicator no lugar dos botões de atualizar, showModalBottomSheet para os formulários, Dismissible ou flutter_slidable para deslizar linhas, SafeArea em todas as telas e botão principal fixo acima da NavigationBar.</p></div></div>
+      <div class="step"><span class="n">3</span><div><h3>Componentes</h3><p>Grupo de lista com rótulo, linha com valor à direita, grade 2 × 2 de números, marcador de situação, cronograma do ciclo e controle segmentado. Ícones próprios só para as cinco abas e as ações.</p></div></div>
+      <div class="step"><span class="n">4</span><div><h3>Telas, por ordem de uso</h3><p>Início, Lavoura, Plantios, Um plantio, Nova despesa, Financeiro, Comercial e Mercado. Depois os demais módulos e formulários. A cada tela pronta, confira as linhas do inventário.</p></div></div>
+      <div class="step"><span class="n">5</span><div><h3>Tela larga e revisão</h3><p>Com LayoutBuilder, acima de 900px as abas viram a barra superior do portal. Testar em celular pequeno (360px), iPhone e Android grandes e no computador, e corrigir os defeitos do diagnóstico.</p></div></div>
     </div>
 <pre class="code"><span class="c">// lib/theme/caderno.dart: ponto de partida da etapa 1</span>
-<span class="k">const</span> folha = Color(0xFF2F6B57), papel = Color(0xFFF5F5F1), tinta = Color(0xFF1A1D1B);
-<span class="k">const</span> regua = Color(0xFFD8DBD4), atencao = Color(0xFF9A5F0E), problema = Color(0xFFB3261E);
-<span class="k">final</span> canto = RoundedRectangleBorder(borderRadius: BorderRadius.circular(3));
+<span class="k">const</span> folha = Color(0xFF2F6B57), papel = Color(0xFFF3F3EF), tinta = Color(0xFF1A1D1B);
+<span class="k">const</span> regua = Color(0xFFD8DBD4), problema = Color(0xFFB3261E);
+<span class="k">final</span> canto = RoundedRectangleBorder(borderRadius: BorderRadius.circular(6));
 
 <span class="k">final</span> tema = ThemeData(
   colorScheme: ColorScheme.light(primary: folha, onPrimary: Colors.white,
       surface: Colors.white, onSurface: tinta, error: problema, outline: regua),
   scaffoldBackgroundColor: papel,
   textTheme: GoogleFonts.archivoTextTheme(),
+  appBarTheme: AppBarTheme(backgroundColor: papel, foregroundColor: tinta, elevation: 0, scrolledUnderElevation: 0),
+  navigationBarTheme: NavigationBarThemeData(backgroundColor: Colors.white, indicatorColor: Colors.transparent, elevation: 0),
   cardTheme: CardThemeData(elevation: 0, margin: EdgeInsets.zero, color: Colors.white,
       shape: canto.copyWith(side: BorderSide(color: regua))),
   filledButtonTheme: FilledButtonThemeData(style: FilledButton.styleFrom(
-      backgroundColor: folha, minimumSize: Size(0, 36), shape: canto)),
-  outlinedButtonTheme: OutlinedButtonThemeData(style: OutlinedButton.styleFrom(
-      foregroundColor: tinta, side: BorderSide(color: regua), minimumSize: Size(0, 36), shape: canto)),
-  inputDecorationTheme: InputDecorationTheme(
-      border: OutlineInputBorder(borderRadius: BorderRadius.circular(3), borderSide: BorderSide(color: regua))),
+      backgroundColor: folha, minimumSize: Size(0, 48), shape: canto)),
+  bottomSheetTheme: BottomSheetThemeData(backgroundColor: papel, showDragHandle: <span class="k">true</span>),
 );
 <span class="c">// números: GoogleFonts.jetBrainsMono(fontFeatures: [FontFeature.tabularFigures()])</span>
 <span class="c">// dinheiro: NumberFormat.currency(locale: 'pt_BR', symbol: 'R\$ ')</span></pre>
@@ -869,73 +839,48 @@ pre.code{margin:0;background:var(--sheet);border:1px solid var(--rule);padding:1
 
 <script>
 (function(){
-  /* abas e Proposta/Hoje */
   var tabs=[].slice.call(document.querySelectorAll('[data-tab]'));
   tabs.forEach(function(t){t.addEventListener('click',function(){
     tabs.forEach(function(x){x.setAttribute('aria-selected',x===t?'true':'false')});
     document.querySelectorAll('[data-panel]').forEach(function(p){p.hidden=p.dataset.panel!==t.dataset.tab});
   })});
-  document.querySelectorAll('[data-panel]').forEach(function(panel){
-    var bs=panel.querySelectorAll('.vs button');
-    bs.forEach(function(b){b.addEventListener('click',function(){
-      bs.forEach(function(x){x.classList.toggle('on',x===b)});
-      panel.querySelectorAll('[data-view]').forEach(function(v){v.hidden=v.dataset.view!==b.dataset.v});
-    })});
-  });
-
   var brl=function(v){return v.toLocaleString('pt-BR',{style:'currency',currency:'BRL'}).replace(/ /g,' ')};
   var pct=function(v){return v.toLocaleString('pt-BR',{maximumFractionDigits:1})+'%'};
 
-  /* desenho das linhas do talhão: preparo = covas marcadas na terra */
+  /* linhas do talhão (portal) */
   document.querySelectorAll('.rows').forEach(function(el){
-    var n=+el.dataset.rows, W=230, rh=14, H=n*rh+6, g='';
-    for(var r=0;r<n;r++){
-      var y=6+r*rh+rh/2;
-      g+='<text x="0" y="'+(y+3)+'">L'+(r+1)+'</text>';
-      g+='<line x1="26" x2="'+(W-2)+'" y1="'+y+'" y2="'+y+'" stroke="var(--ph-prep)" stroke-width="5" stroke-opacity=".28"/>';
-      var done=r<1?1:(r<2?.1:0);
-      if(done>0)g+='<line x1="26" x2="'+(26+(W-28)*done)+'" y1="'+y+'" y2="'+y+'" stroke="var(--ph-prep)" stroke-width="5"/>';
-      for(var x=30;x<W-4;x+=9)g+='<line x1="'+x+'" x2="'+x+'" y1="'+(y-1.5)+'" y2="'+(y+1.5)+'" stroke="var(--a-sheet)" stroke-width="1.2"/>';
-    }
-    el.innerHTML='<svg viewBox="0 0 '+W+' '+H+'" role="img" aria-label="Talhão com 10 linhas: linha 1 preparada, linha 2 começando">'+g+'</svg><p class="rows-cap">10 linhas · 1,1 de 10 preparadas (11%)</p>';
+    var n=10,W=230,rh=14,H=n*rh+6,g='';
+    for(var r=0;r<n;r++){var y=6+r*rh+rh/2;g+='<text x="0" y="'+(y+3)+'">L'+(r+1)+'</text><line x1="26" x2="'+(W-2)+'" y1="'+y+'" y2="'+y+'" stroke="var(--ph-prep)" stroke-width="5" stroke-opacity=".28"/>';
+      var d=r<1?1:(r<2?.1:0); if(d)g+='<line x1="26" x2="'+(26+(W-28)*d)+'" y1="'+y+'" y2="'+y+'" stroke="var(--ph-prep)" stroke-width="5"/>';
+      for(var x=30;x<W-4;x+=9)g+='<line x1="'+x+'" x2="'+x+'" y1="'+(y-1.5)+'" y2="'+(y+1.5)+'" stroke="var(--a-sheet)" stroke-width="1.2"/>';}
+    el.innerHTML='<svg viewBox="0 0 '+W+' '+H+'" role="img" aria-label="Talhão com 10 linhas, 1,1 preparada">'+g+'</svg>';
   });
 
-  /* cronograma do ciclo: out/2026 a mar/2028, 18 meses */
+  /* cronograma do ciclo: out/2026 a mar/2028 */
   var months=['O','N','D','J','F','M','A','M','J','J','A','S','O','N','D','J','F','M'];
   var phases=[['Preparo',0,2,'var(--ph-prep)'],['Crescimento',2,10,'var(--ph-grow)'],['Manutenção',10,16,'var(--ph-keep)'],['Colheita',16,18,'var(--ph-harv)']];
   document.querySelectorAll('.cal').forEach(function(el){
-    var compact=el.dataset.compact, W=compact?300:640, mw=W/18, H=74, g='';
-    var by=22;
-    phases.forEach(function(p){
-      g+='<rect x="'+(p[1]*mw).toFixed(1)+'" y="'+by+'" width="'+((p[2]-p[1])*mw-1.5).toFixed(1)+'" height="14" fill="'+p[3]+'"/>';
-      if(!compact)g+='<text class="phn" x="'+(p[1]*mw+3).toFixed(1)+'" y="14">'+p[0]+'</text>';
-    });
-    months.forEach(function(m,i){g+='<text x="'+(i*mw+mw/2).toFixed(1)+'" y="'+(by+30)+'" text-anchor="middle">'+m+'</text>'; if(i)g+='<line x1="'+(i*mw).toFixed(1)+'" x2="'+(i*mw).toFixed(1)+'" y1="'+(by+18)+'" y2="'+(by+22)+'" stroke="var(--a-rule)"/>';});
-    [['2026',0],['2027',3],['2028',15]].forEach(function(y){g+='<text class="yr" x="'+(y[1]*mw+2).toFixed(1)+'" y="'+(by+44)+'">'+y[0]+'</text>'});
-    var hx=(22/31)*mw;
-    g+='<line x1="'+hx.toFixed(1)+'" x2="'+hx.toFixed(1)+'" y1="'+(by-4)+'" y2="'+(by+18)+'" stroke="var(--a-ink)" stroke-width="2"/>';
-    var ly=compact?3:by+34;
+    var c=el.dataset.compact, W=c?300:640, mw=W/18, by=c?20:22, bh=c?10:14, H=c?66:74, g='';
+    phases.forEach(function(p){g+='<rect x="'+(p[1]*mw).toFixed(1)+'" y="'+by+'" width="'+((p[2]-p[1])*mw-1.5).toFixed(1)+'" height="'+bh+'" fill="'+p[3]+'"/>'; if(!c)g+='<text x="'+(p[1]*mw+3).toFixed(1)+'" y="14" style="font-weight:650;fill:var(--a-ink)">'+p[0]+'</text>';});
+    months.forEach(function(m,i){g+='<text x="'+(i*mw+mw/2).toFixed(1)+'" y="'+(by+bh+14)+'" text-anchor="middle">'+m+'</text>'});
+    [['2026',0],['2027',3],['2028',15]].forEach(function(y){g+='<text class="yr" x="'+(y[1]*mw+2).toFixed(1)+'" y="'+(by+bh+28)+'">'+y[0]+'</text>'});
+    var hx=(22/31)*mw, ly=c?2:by+bh+18;
+    g+='<line x1="'+hx.toFixed(1)+'" x2="'+hx.toFixed(1)+'" y1="'+(by-4)+'" y2="'+(by+bh+3)+'" stroke="var(--a-ink)" stroke-width="2"/>';
     g+='<rect x="'+(hx+4).toFixed(1)+'" y="'+ly+'" width="30" height="13" fill="var(--a-marker)"/><text x="'+(hx+19).toFixed(1)+'" y="'+(ly+10)+'" text-anchor="middle" style="font-weight:700;fill:var(--a-marker-ink);font-size:10px">hoje</text>';
-    el.innerHTML='<svg viewBox="0 0 '+W+' '+H+'" role="img" aria-label="Cronograma: preparo out-nov/2026, crescimento dez/2026-jul/2027, manutenção ago/2027-jan/2028, colheita fev-mar/2028">'+g+'</svg>'+(compact?'':'<div class="legend">'+phases.map(function(p){return '<span><i style="background:'+p[3]+'"></i>'+p[0]+' · '+(p[2]-p[1])+' meses</span>'}).join('')+'</div>');
+    el.innerHTML='<svg viewBox="0 0 '+W+' '+H+'" role="img" aria-label="Ciclo: preparo out-nov/2026, crescimento dez/2026-jul/2027, manutenção ago/2027-jan/2028, colheita fev-mar/2028">'+g+'</svg>'+(c?'':'<div style="display:flex;flex-wrap:wrap;gap:4px 16px;font-size:12px;color:var(--a-ink-2);margin-top:6px">'+phases.map(function(p){return '<span style="display:inline-flex;align-items:center;gap:6px"><i style="width:10px;height:10px;background:'+p[3]+'"></i>'+p[0]+' · '+(p[2]-p[1])+' meses</span>'}).join('')+'</div>');
   });
 
-  /* categorias */
-  var cats=[['Mudas',4800,'var(--ph-harv)'],['Aragem',1200,'var(--ph-prep)'],['Correção',980,'var(--a-info)'],['Mão de obra',450,'var(--a-ink-3)']];
-  var tot=cats.reduce(function(s,c){return s+c[1]},0);
-  document.getElementById('stack').innerHTML=cats.map(function(c){return '<i style="flex:'+c[1]+';background:'+c[2]+'"></i>'}).join('');
-  document.getElementById('rank').innerHTML=cats.map(function(c){return '<div><i style="background:'+c[2]+'"></i><span>'+c[0]+'</span><span class="pc">'+pct(c[1]/tot*100)+'</span><span class="vl">'+brl(c[1])+'</span></div>'}).join('');
-
-  /* CEASAs com gráfico pequeno (curva ilustrativa que termina no valor real de 22/10) */
-  var ce=[['CEAGESP/SP','São Paulo',6.00,6.35,-0.5],['BH/MG','Belo Horizonte',5.00,5.10,0],['Campinas/SP','Campinas',4.59,4.75,0]];
+  /* CEASAs (gráfico pequeno ilustrativo; termina no valor real de 22/10) */
+  var ce=[['CEAGESP/SP',6.00,6.35,-0.5],['BH/MG',5.00,5.10,0],['Campinas/SP',4.59,4.75,0]];
   var seed=11; function rnd(){seed=(seed*9301+49297)%233280;return seed/233280}
   document.getElementById('ceasas').innerHTML=ce.map(function(c,k){
-    var a=[],v=c[3],n=30;for(var i=0;i<n;i++){a.push(v);v+=(c[2]-v)/(n-i)+(rnd()-.5)*.1}a[n-1]=c[2];
-    var lo=Math.min.apply(0,a),hi=Math.max.apply(0,a),W=150,H=30;
-    var d=a.map(function(v,i){return (i?'L':'M')+(i*(W-6)/(n-1)+1).toFixed(1)+' '+(3+(H-6)*(hi-v)/((hi-lo)||1)).toFixed(1)}).join(' ');
-    var ex=(W-5), ey=3+(H-6)*(hi-a[n-1])/((hi-lo)||1);
-    var svg='<svg class="spark" viewBox="0 0 '+W+' '+H+'" aria-hidden="true"><path d="'+d+'" fill="none" stroke="var(--a-ink-2)" stroke-width="1.4"/><rect x="'+(ex-2.5)+'" y="'+(ey-2.5)+'" width="5" height="5" fill="var(--a-leaf)"/></svg>';
-    var dv=c[4]<0?'<span class="dn">'+pct(c[4]).replace('-','−')+'</span>':'<span class="num" style="color:var(--a-ink-3)">0,0%</span>';
-    return '<tr><td><b>'+c[0]+'</b>'+(k===0?'<small><mark>maior preço hoje</mark></small>':'<small>'+c[1]+'</small>')+'</td><td>'+svg+'</td><td class="r">'+dv+'</td><td class="r m">'+brl(c[2])+'</td></tr>';
+    var a=[],v=c[2],n=30;for(var i=0;i<n;i++){a.push(v);v+=(c[1]-v)/(n-i)+(rnd()-.5)*.1}a[n-1]=c[1];
+    var lo=Math.min.apply(0,a),hi=Math.max.apply(0,a),W=92,H=26;
+    var d=a.map(function(v,i){return (i?'L':'M')+(i*(W-8)/(n-1)+1).toFixed(1)+' '+(3+(H-6)*(hi-v)/((hi-lo)||1)).toFixed(1)}).join(' ');
+    var ey=3+(H-6)*(hi-a[n-1])/((hi-lo)||1);
+    var svg='<svg class="spk" viewBox="0 0 '+W+' '+H+'" aria-hidden="true"><path d="'+d+'" fill="none" stroke="var(--a-ink-2)" stroke-width="1.3"/><rect x="'+(W-9.5)+'" y="'+(ey-2.5)+'" width="5" height="5" fill="var(--a-leaf)"/></svg>';
+    var dv=c[3]<0?'<span class="dn" style="font-size:11.5px">'+pct(c[3]).replace('-','−')+'</span>':'<span style="font:500 11.5px var(--mono);color:var(--a-ink-3)">0,0%</span>';
+    return '<div class="row"><span class="tx"><b style="font-size:14px">'+c[0]+'</b><small>'+(k===0?'<mark>maior preço hoje</mark>':'estável')+'</small></span>'+svg+'<span class="v">'+brl(c[1])+'<small>'+dv+'</small></span></div>';
   }).join('');
 
   /* simulador */
@@ -954,76 +899,77 @@ pre.code{margin:0;background:var(--sheet);border:1px solid var(--rule);padding:1
     ['Acesso','Login','E-mail, senha, mostrar senha, lembrar de mim','Mesmos campos, no novo visual'],
     ['Acesso','Esqueci minha senha','Link na tela de login','Mesmo lugar'],
     ['Acesso','Criar conta','Link na tela de login','Mesmo lugar'],
-    ['Geral','Aviso de teste grátis e Assinar','Faixa no topo da Início','Segunda linha da barra superior (no celular, faixa fina no topo)'],
-    ['Geral','Menu rápido','Ícone ☰ na Início: busca e 13 atalhos (Novo plantio, Mão de obra, Colheitas, Adubação, Irrigação, Propriedades, Lançar gasto, Vendas, Compra e venda, Relatórios, Calculadora, Configurações, Ajuda)','Busca Ctrl K, que abre qualquer tela; destinos também na linha de módulos'],
-    ['Geral','Buscar em tudo','Lupa no topo, abre tela própria','Busca na barra superior, em todas as telas'],
-    ['Geral','Notificações','Sino no topo; atalho para a Agenda','Sino na barra superior'],
-    ['Geral','Navegação principal','Menu lateral com 5 itens (só na tela inicial de cada área); barra inferior no celular','Barra superior com as 5 áreas e linha de módulos, em todas as telas; barra inferior mantida no celular'],
-    ['Início','Saudação e data','Faixa verde: "Boa noite, Meu" e data','Cabeçalho da página, com nome completo'],
-    ['Início','Tarefas do dia','Card: tarefas hoje, atrasadas, atividades programadas, Ver agenda','Faixa de números + quadro "Hoje"'],
-    ['Início','Atalhos','Novo plantio, Mão de obra, Colheitas, Financeiro, Agenda, Mais','Segunda linha da barra superior: + Lançar gasto, + Registrar colheita, + Novo plantio, + Diária, Todos os módulos'],
-    ['Início','Indicadores','Plantios ativos (limite do plano), Total de mudas, Custo por linha','Faixa de números no topo'],
-    ['Início','Meus plantios','Cards com fase e progresso, Novo plantio, Ver todos','Quadro do plantio com as linhas desenhadas e o cronograma'],
-    ['Início','Atividades','Lista do dia, Ver','Quadro "Hoje", com Novo lembrete'],
-    ['Início','Previsão do tempo','Busca de cidade','Campo de cidade no quadro "Hoje"'],
-    ['Início','Resumo financeiro','Filtro por plantio, Total investido, status, Gasto no mês, Receitas, Retorno estimado','Quadro "Dinheiro" com os mesmos valores e o mesmo filtro'],
-    ['Início','Botão Lançar (celular)','Botão flutuante','Mantido, acima da barra inferior, sem cobrir conteúdo'],
-    ['Lavoura','Plantios: lista','Busca, filtros Todos/Ativos/Colhidos/Encerrados, card com fases, menu por card, Novo plantio','Lavoura › Plantios, dentro da moldura'],
-    ['Lavoura','Plantio: cabeçalho','Nome, variedade, status, propriedade, barra de progresso','Cabeçalho + desenho das linhas + cronograma por mês'],
-    ['Lavoura','Plantio: indicadores','Mudas, Total investido, Receita, A recuperar','Faixa de 4 números'],
-    ['Lavoura','Plantio: abas de registros','Despesas, Insumos, Adubação, Colheita, Vendas, Anexos (com botão novo em cada)','Mesmas 6 abas, com contagem'],
-    ['Lavoura','Plano de manejo','Menu ⋮ do plantio','Link no quadro Ciclo do plantio'],
-    ['Lavoura','Editar plantio','Menu ⋮: nome, propriedade, variedade, safra, status, mudas, valor/muda, linhas, datas, observações, demarcar área no mapa (GPS)','Botão Editar no cabeçalho, mesmos campos no painel'],
-    ['Lavoura','Mudar status','Menu ⋮: 9 status, de Preparando terra a Encerrado','Botão Mudar status no cabeçalho'],
-    ['Lavoura','Lançar receita do plantio','Menu ⋮','Botão Lançar receita no cabeçalho'],
-    ['Lavoura','Linha do tempo','Menu ⋮','Quadro Manejo'],
-    ['Lavoura','Indução floral (TIF)','Menu ⋮; liberada em crescimento/manutenção','Quadro Manejo, com situação visível'],
-    ['Lavoura','Pragas e doenças','Menu ⋮; registrar ocorrência','Quadro Manejo, com situação visível'],
-    ['Lavoura','Vincular área','Menu ⋮; remover vínculo ou escolher área','Botão ⋯ do cabeçalho'],
-    ['Lavoura','Irrigação do plantio','Menu ⋮; abas Aplicações, Sistema, Plano, Produtos','Quadro Manejo'],
-    ['Lavoura','Correção de solo do plantio','Menu ⋮','Quadro Manejo'],
-    ['Lavoura','Análise da área','Menu ⋮; gerar análise, histórico','Quadro Manejo, botão Gerar'],
-    ['Lavoura','Excluir plantio','Menu ⋮','Botão ⋯ do cabeçalho, com confirmação'],
-    ['Lavoura','Mapa vivo','Acesso rápido da Lavoura; buscar talhão','Lavoura › Mapa vivo'],
+    ['Geral','Aviso de teste grátis e Assinar','Faixa no topo da Início','Faixa fina abaixo do título da Início'],
+    ['Geral','Menu rápido','Ícone ☰ na Início: busca e 13 atalhos (Novo plantio, Mão de obra, Colheitas, Adubação, Irrigação, Propriedades, Lançar gasto, Vendas, Compra e venda, Relatórios, Calculadora, Configurações, Ajuda)','Busca (lupa) que acha registros e telas; fileira "Lançar" na Início; módulos listados em cada aba'],
+    ['Geral','Buscar em tudo','Lupa no topo, abre tela própria','Lupa no topo das abas principais'],
+    ['Geral','Notificações','Sino no topo; atalho para a Agenda','Sino no topo das abas principais'],
+    ['Geral','Navegação principal','Barra de abas embaixo (Início, Lavoura, Financeiro, Comercial, Agenda)','Mesmas 5 abas embaixo; no computador, barra superior'],
+    ['Geral','Atualizar','Ícone de atualizar no topo de quase toda tela','Puxar a tela para baixo'],
+    ['Início','Saudação e data','Faixa verde: "Boa noite, Meu" e data','Título grande com nome completo e data'],
+    ['Início','Tarefas do dia','Card: tarefas hoje, atrasadas, atividades programadas, Ver agenda','Número "Tarefas hoje" + seção Hoje'],
+    ['Início','Atalhos','Novo plantio, Mão de obra, Colheitas, Financeiro, Agenda, Mais','Fileira "Lançar": gasto, colheita, diária, plantio; Financeiro e Agenda pelas abas'],
+    ['Início','Indicadores','Plantios ativos (limite do plano), Total de mudas, Custo por linha','Grade 2 × 2 de números'],
+    ['Início','Meus plantios','Cards com fase e progresso, Novo plantio, Ver todos','Seção Meus plantios: uma linha por plantio com o ciclo em miniatura'],
+    ['Início','Atividades','Lista do dia, Ver','Seção Hoje'],
+    ['Início','Previsão do tempo','Busca de cidade','Linha Previsão do tempo na seção Hoje'],
+    ['Início','Resumo financeiro','Filtro por plantio, Total investido, status, Gasto no mês, Receitas, Retorno estimado','Seção Dinheiro, com os mesmos valores e filtro'],
+    ['Início','Botão Lançar','Botão flutuante','Fileira "Lançar" no topo da Início'],
+    ['Lavoura','Módulos da Lavoura','Grade de 11 ícones','Lista agrupada (no campo, recursos, ferramentas) com um número em cada linha'],
+    ['Lavoura','Plantios: lista','Busca, filtros Todos/Ativos/Colhidos/Encerrados, card com fases, menu por card, Novo plantio','Busca, controle segmentado, linha com cronograma, botão fixo "Novo plantio"'],
+    ['Lavoura','Plantio: cabeçalho','Nome, variedade, status, propriedade, barra de progresso','Título grande, situação, botões e cronograma do ciclo'],
+    ['Lavoura','Plantio: indicadores','Mudas, Total investido, Receita, A recuperar','Grade 2 × 2'],
+    ['Lavoura','Plantio: abas de registros','Despesas, Insumos, Adubação, Colheita, Vendas, Anexos (com botão novo em cada)','Mesmas 6 abas, deslizantes, com contagem'],
+    ['Lavoura','Plano de manejo','Menu ⋮ do plantio','Botão abaixo do título'],
+    ['Lavoura','Editar plantio','Menu ⋮: nome, propriedade, variedade, safra, status, mudas, valor/muda, linhas, datas, observações, demarcar área no mapa (GPS)','Botão Editar abaixo do título, mesmos campos'],
+    ['Lavoura','Mudar status','Menu ⋮: 9 status, de Preparando terra a Encerrado','Botão abaixo do título, abre folha com os 9 status'],
+    ['Lavoura','Lançar receita do plantio','Menu ⋮','Botão fixo "Receita" embaixo'],
+    ['Lavoura','Linha do tempo','Menu ⋮','Seção Manejo'],
+    ['Lavoura','Indução floral (TIF)','Menu ⋮; liberada em crescimento/manutenção','Seção Manejo, com situação visível'],
+    ['Lavoura','Pragas e doenças','Menu ⋮; registrar ocorrência','Seção Manejo, com situação visível'],
+    ['Lavoura','Vincular área','Menu ⋮; remover vínculo ou escolher área','Menu ⋯ do topo'],
+    ['Lavoura','Irrigação do plantio','Menu ⋮; abas Aplicações, Sistema, Plano, Produtos','Seção Manejo'],
+    ['Lavoura','Correção de solo do plantio','Menu ⋮','Seção Manejo'],
+    ['Lavoura','Análise da área','Menu ⋮; gerar análise, histórico','Seção Manejo'],
+    ['Lavoura','Excluir plantio','Menu ⋮','Menu ⋯ do topo, com confirmação'],
+    ['Lavoura','Mapa vivo','Grade da Lavoura; buscar talhão','Lavoura › Mapa vivo'],
     ['Lavoura','Adubação','Indicadores (aplicações, total gasto, última), filtro por plantio, busca, ordenar, abas Histórico/Análise, Nova adubação','Lavoura › Adubação'],
     ['Lavoura','Correção de solo','Filtro por plantio, busca, análise da área, Nova correção','Lavoura › Correção de solo'],
     ['Lavoura','Irrigação','Escolha do plantio, Nova aplicação','Lavoura › Irrigação, sem tela azul própria'],
     ['Lavoura','Colheita','Lista, linha do tempo, atualizar, Registrar','Lavoura › Colheita'],
-    ['Lavoura','Propriedades','Lista com área e plantios, editar, Nova propriedade','Lavoura › Propriedades + troca rápida ao lado da logo'],
-    ['Lavoura','Mão de obra','Busca, Ativos/Inativos/Todos, Diária em lote, Novo trabalhador','Lavoura › Mão de obra'],
+    ['Lavoura','Propriedades','Lista com área e plantios, editar, Nova propriedade','Lavoura › Propriedades + troca rápida no topo da Início'],
+    ['Lavoura','Mão de obra','Busca, Ativos/Inativos/Todos, Diária em lote, Novo trabalhador','Lavoura › Mão de obra + "Diária" na fileira Lançar'],
     ['Lavoura','Estoque','Buscar insumo, Novo insumo','Lavoura › Estoque'],
-    ['Lavoura','Safras','Comparar safras (planos Profissional e Premium)','Lavoura › Safras, com aviso de plano'],
-    ['Lavoura','Calculadora de plantio','Área (m², hectare, linha, alqueire paulista, alqueire mineiro), espaçamento com 4 predefinições, financeiro opcional, Limpar','Lavoura › Calculadora'],
-    ['Financeiro','Resumo','Filtrar período, saldo, receitas × despesas, contagens','Financeiro › Resumo, com período no cabeçalho'],
-    ['Financeiro','Despesas','Busca, Nova despesa','Financeiro › Despesas'],
-    ['Financeiro','Nova despesa','Descrição, valor, categoria, plantio, forma de pagamento, responsável, data, conta a pagar, observações','Painel à direita com os mesmos campos'],
-    ['Financeiro','Receitas','Busca, Nova receita','Financeiro › Receitas'],
-    ['Financeiro','Vendas','Botão no Resumo; filtros Todos/Pendente/Recebido, Nova venda','Financeiro › Vendas'],
-    ['Financeiro','Lucratividade','Botão no Resumo','Financeiro › Lucratividade'],
-    ['Financeiro','Relatórios','Botão no Resumo; abas Financeiro, Por plantio, Produção, Insumos; período; Exportar PDF','Financeiro › Relatórios'],
-    ['Comercial','Painel comercial','Nova negociação; Resultado do mês (lucro líquido, bruto, margem, retorno); Compras; Vendas; Recebimentos (hoje, semana, mês, atrasado); Logística (hoje, agendados, pendentes, finalizados)','Comercial › Painel'],
-    ['Comercial','Mercado','CEASAs (média, CEAGESP, Campinas, BH), preço, caixeta, médias 7/30/90 dias, comparativo, histórico 30/90/180 dias, simulador, lançamento manual, sincronizar','Comercial › Mercado'],
+    ['Lavoura','Safras','Comparar safras (planos Profissional e Premium)','Lavoura › Comparar safras, com aviso de plano'],
+    ['Lavoura','Calculadora de plantio','Área (m², hectare, linha, alqueire paulista, alqueire mineiro), espaçamento com 4 predefinições, financeiro opcional, Limpar','Lavoura › Calculadora de plantio'],
+    ['Financeiro','Resumo','Filtrar período, saldo, receitas × despesas, contagens','Controle Resumo, período no topo, números e lançamentos'],
+    ['Financeiro','Despesas','Busca, Nova despesa','Controle Despesas; deslizar para editar ou excluir'],
+    ['Financeiro','Nova despesa','Descrição, valor, categoria, plantio, forma de pagamento, responsável, data, conta a pagar, observações','Folha que sobe de baixo, com os mesmos campos'],
+    ['Financeiro','Receitas','Busca, Nova receita','Controle Receitas + botão fixo "Receita"'],
+    ['Financeiro','Vendas','Quadradinho no Resumo; filtros Todos/Pendente/Recebido, Nova venda','Linha Vendas em "Mais no Financeiro"'],
+    ['Financeiro','Lucratividade','Quadradinho no Resumo','Linha Lucratividade'],
+    ['Financeiro','Relatórios','Quadradinho no Resumo; abas Financeiro, Por plantio, Produção, Insumos; período; Exportar PDF','Linha Relatórios'],
+    ['Comercial','Painel comercial','Nova negociação; Resultado do mês (lucro líquido, bruto, margem, retorno); Compras; Vendas; Recebimentos (hoje, semana, mês, atrasado); Logística (hoje, agendados, pendentes, finalizados)','Grade de números + listas Acompanhar e Ferramentas + botão fixo "Nova negociação"'],
+    ['Comercial','Mercado','CEASAs (média, CEAGESP, Campinas, BH), preço, caixeta, médias 7/30/90 dias, comparativo, histórico 30/90/180 dias, simulador, lançamento manual, sincronizar','Comercial › Mercado (sincronizar = puxar para baixo; lançamento manual no ⋯)'],
     ['Comercial','Negociações','Lista, Nova negociação','Comercial › Negociações'],
     ['Comercial','Carregamentos','Filtros de status, calendário do mês, ver lista','Comercial › Carregamentos'],
     ['Comercial','Recebimentos','Total em aberto, filtros (Todos, A receber, Parcial, Atrasados, Recebidos), Novo','Comercial › Recebimentos'],
     ['Comercial','Relatórios comerciais','11 relatórios: compras por produtor, despesas da compra, vendas por fornecedor, lucro por negociação, lucro por período, despesas da venda, recebimentos, antecipações, carregamentos, por motorista, por caminhão; período','Comercial › Relatórios'],
     ['Comercial','Cadastros','Abas Produtores, Fornecedores, Motoristas, Caminhões, Empresa','Comercial › Cadastros'],
     ['Comercial','Marcar tara','Nova contagem','Comercial › Marcar tara'],
-    ['Agenda','Lembretes','Lista, ver calendário, buscar, atualizar, Novo lembrete','Agenda, na barra superior (no celular, na barra inferior)'],
-    ['Conta','Perfil','Foto, editar dados, verificar e-mail, membro desde, propriedades, área total','Menu da conta (quadrado MP)'],
-    ['Conta','Meu plano','Plano gratuito, limites, Assinar agora','Menu da conta + aviso na segunda linha'],
-    ['Conta','Dados e segurança','Dados pessoais, Alterar senha, Notificações, Sincronização','Menu da conta'],
-    ['Conta','Usuários e permissões','Convidar equipe e definir permissões','Menu da conta'],
-    ['Conta','Provedor de mapa','Mapbox ou Google Maps','Menu da conta'],
-    ['Conta','Contar tara por blocos','Chave liga/desliga','Menu da conta'],
-    ['Conta','Ajuda','Como usar o app, Ajuda e glossário, Reportar problema, Novidades, Sobre','Menu da conta + busca'],
-    ['Conta','Sair e excluir conta','Fim da tela de conta','Menu da conta']
+    ['Agenda','Lembretes','Lista, ver calendário, buscar, atualizar, Novo lembrete','Aba Agenda (mantida), com botão fixo "Novo lembrete"'],
+    ['Conta','Perfil','Foto, editar dados, verificar e-mail, membro desde, propriedades, área total','Quadrado MP no topo da Início → Conta'],
+    ['Conta','Meu plano','Plano gratuito, limites, Assinar agora','Conta + faixa de aviso na Início'],
+    ['Conta','Dados e segurança','Dados pessoais, Alterar senha, Notificações, Sincronização','Conta'],
+    ['Conta','Usuários e permissões','Convidar equipe e definir permissões','Conta'],
+    ['Conta','Provedor de mapa','Mapbox ou Google Maps','Conta'],
+    ['Conta','Contar tara por blocos','Chave liga/desliga','Conta'],
+    ['Conta','Ajuda','Como usar o app, Ajuda e glossário, Reportar problema, Novidades, Sobre','Conta + busca'],
+    ['Conta','Sair e excluir conta','Fim da tela de conta','Conta']
   ];
   var areas=[]; I.forEach(function(r){if(areas.indexOf(r[0])<0)areas.push(r[0])});
   var sel=document.getElementById('inv-a');
   areas.forEach(function(a){var o=document.createElement('option');o.value=a;o.textContent=a;sel.appendChild(o)});
   document.getElementById('f-total').textContent=I.length;
-  document.getElementById('f-areas').textContent=areas.length;
   var esc=function(s){return s.replace(/&/g,'&amp;').replace(/</g,'&lt;')};
   var norm=function(s){return s.normalize('NFD').replace(/[̀-ͯ]/g,'').toLowerCase()};
   var qi=document.getElementById('inv-q'), body=document.getElementById('inv-b'), cnt=document.getElementById('inv-count');
