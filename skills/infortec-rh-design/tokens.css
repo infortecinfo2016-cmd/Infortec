@@ -1,0 +1,97 @@
+/* Infortec RH Design — tokens. Base do Infortec Design com o azul Infortec como cor do sistema.
+   Copie para o projeto ou mapeie para os tokens existentes (ver tailwind.md). */
+@import url("https://fonts.bunny.net/css?family=plus-jakarta-sans:400,500,600,700|jetbrains-mono:400,500,600,700&display=swap");
+
+:root {
+  /* superfícies (neutros cinza-azulados) */
+  --bg: #F4F6FA;
+  --card: #FFFFFF;
+  --muted: #F9FAFC;
+  --track: #EEF1F6;          /* trilha de gauge, barra de progresso, célula vazia de heatmap */
+  --border: #E2E6EE;
+  --border-soft: #ECEFF4;    /* divisor de linha, grade de gráfico */
+
+  /* texto */
+  --text: #151A23;
+  --text-muted: #667085;
+  --text-subtle: #8D94A5;
+
+  /* marca e ação (azul Infortec) */
+  --primary: #0036B0;
+  --primary-hover: #002B8C;
+  --primary-fg: #FFFFFF;
+  --brand: #0042D7;
+  --brand-soft: #DCE6FB;
+  --brand-border: #A9C1F5;
+
+  /* estados */
+  --ok: #25D366;             /* ativo, aprovado, presente */
+  --ok-soft: #D9F7E6;
+  --ok-fg: #0B7155;
+  --info: #8B5CF6;           /* férias, segunda série */
+  --info-soft: #EDE9FE;
+  --info-fg: #6D28D9;
+  --warn: #F59E0B;           /* pendente, atraso, vence em breve */
+  --warn-soft: #FEF0D9;
+  --warn-fg: #B45309;
+  --danger: #EF4444;         /* falta, recusado, vencido */
+  --danger-soft: #FEE2E2;
+  --danger-fg: #B42318;
+  --neutral: #64748B;        /* desligado, inativo, folga */
+  --neutral-soft: #EEF1F6;
+  --neutral-fg: #475467;
+
+  /* paleta categórica — use nesta ordem; ardósia sempre por último ("outros") */
+  --c1: #0042D7; /* azul Infortec */
+  --c2: #25D366; /* verde   */
+  --c3: #F59E0B; /* âmbar   */
+  --c4: #8B5CF6; /* violeta */
+  --c5: #EC4899; /* rosa    */
+  --c6: #14B8A6; /* teal    */
+  --c7: #EF4444; /* vermelho*/
+  --c8: #0EA5E9; /* céu     */
+  --c9: #A16207; /* marrom  */
+  --c10: #64748B;/* ardósia */
+
+  /* heatmap (menos → mais) */
+  --heat-0: #EEF1F6;
+  --heat-1: #C7D6F7;
+  --heat-2: #8FAEEF;
+  --heat-3: #4F7FE3;
+  --heat-4: #0042D7;
+
+  /* tipografia */
+  --font-sans: "Plus Jakarta Sans", ui-sans-serif, system-ui, "Segoe UI", sans-serif;
+  --font-mono: "JetBrains Mono", ui-monospace, "SFMono-Regular", Consolas, monospace;
+  --fs-h1: 24px;    /* título da página, 700, tracking -0.02em */
+  --fs-title: 14px; /* título de card, 600 */
+  --fs-body: 13px;
+  --fs-small: 12px; /* subtítulo de card, metadados */
+  --fs-label: 11px; /* rótulo MAIÚSCULO, tracking .04em, legendas de valor */
+  --fs-kpi: 20px;   /* valor de KPI, mono 700 */
+
+  /* forma */
+  --radius: 8px;     /* cards, ícone-bloco */
+  --radius-sm: 6px;  /* botões, inputs, segmentado */
+  --radius-xs: 4px;  /* badges, células, barras */
+  --control-h: 32px;
+  --gap: 12px;       /* entre cards */
+  --pad: 16px;       /* dentro do card */
+  --sidebar-w: 232px;
+  --shadow-xs: 0 1px 2px rgb(16 24 40 / 0.04);
+  --shadow-active: 0 1px 2px rgb(16 24 40 / 0.08); /* item ativo do segmentado */
+}
+
+body {
+  margin: 0;
+  background: var(--bg);
+  color: var(--text);
+  font-family: var(--font-sans);
+  font-size: var(--fs-body);
+  line-height: 1.45;
+  -webkit-font-smoothing: antialiased;
+}
+
+.num { font-family: var(--font-mono); font-variant-numeric: tabular-nums; }
+.label { font-size: var(--fs-label); text-transform: uppercase; letter-spacing: .04em; color: var(--text-muted); font-weight: 500; }
+:focus-visible { outline: 2px solid var(--brand); outline-offset: 2px; }
