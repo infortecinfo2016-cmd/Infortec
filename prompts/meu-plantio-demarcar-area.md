@@ -1,6 +1,8 @@
 # Prompt: Demarcar área com 4 modos no app Meu Plantio
 
-> Como usar: abra o projeto do app Meu Plantio no VS Code, abra o Claude Code e cole tudo abaixo da linha. Se a skill `meu-plantio-design` estiver instalada no projeto (`skills/instalar.sh --projeto CAMINHO_DO_APP`), o Claude Code vai usá-la para o visual. Para a Fase 0, ative o modo de planejamento (Shift+Tab até aparecer "plan mode").
+> Como usar: abra o projeto do app Meu Plantio no VS Code, abra o Claude Code e cole tudo abaixo da linha. Para a Fase 0, ative o modo de planejamento (Shift+Tab até aparecer "plan mode").
+>
+> **Não instale a skill `meu-plantio-design` no projeto para este trabalho.** Ela traz a proposta de visual novo, e o Claude Code a usaria sozinho em qualquer tela. Se ela já estiver em `.claude/skills/` ou `.agents/skills/` do projeto, ou em `~/.claude/skills/`, remova antes de começar: `skills/instalar.sh --remover` (e `--projeto CAMINHO` se foi instalada no projeto).
 
 ---
 
@@ -20,7 +22,7 @@ Nenhuma funcionalidade existente pode se perder: áreas já demarcadas continuam
 - Trabalhe em fases. Ao fim de cada fase: rode `flutter analyze` e `flutter test`, faça um commit na branch `feature/demarcar-area` com mensagem clara e me mostre um resumo curto (o que mudou, como testar no aparelho, o que ficou pendente).
 - **Pare e espere minha aprovação** ao fim da Fase 0, e sempre que precisar: adicionar um serviço pago ou uma chave de API; mudar o formato dos dados salvos no servidor; ou mexer em telas fora deste escopo.
 - Siga o código que já existe: mesmo gerenciamento de estado, mesma organização de pastas, mesmos nomes, mesma camada de dados e mesmo provedor de mapa (o app tem opção de Mapbox ou Google Maps nas configurações). Não troque bibliotecas que o projeto já usa.
-- Visual: siga a skill `meu-plantio-design` (padrão "Caderno de campo"). Se ela não estiver disponível, siga o padrão das telas existentes e as regras de interface no fim deste prompt.
+- **Visual: mantenha o app exatamente como está em produção.** Este trabalho acrescenta funções, não muda a aparência. As regras estão na seção "Visual: manter o que está em produção", no fim deste prompt. Se existir alguma skill ou guia de design novo no ambiente, ignore-o neste trabalho.
 - Textos da interface em português do Brasil.
 - Não invente dados. Onde depender de algo que você não encontrar no código (endpoint, tabela, regra), pergunte.
 
@@ -36,7 +38,8 @@ Investigue e me entregue um plano em `docs/demarcar-area/PLANO.md` com:
 4. Onde "Vincular área", "Mapa vivo" (busca de talhão) e "Análise da área" leem a área.
 5. Gerenciamento de estado, navegação (rotas), tema e padrão de testes do projeto.
 6. Versões de Flutter e Dart do projeto e as dependências relevantes já instaladas (geolocalização, arquivos, XML, zip, permissões).
-7. O plano das Fases 1 a 5 adaptado ao que você encontrou, com a lista de arquivos novos e alterados, as dependências que pretende adicionar (com o motivo de cada uma) e os riscos.
+7. **O padrão visual atual que as telas novas vão copiar:** arquivo do tema e cores usadas, fonte, como são a barra do topo (AppBar), os botões principais e secundários, os cards, os campos de formulário, as folhas que sobem de baixo (como "Nova Despesa" e "Mudar Status"), os diálogos, os estados vazios, os avisos (SnackBar ou banner) e o botão flutuante. Liste os widgets reutilizáveis que já existem para cada um.
+8. O plano das Fases 1 a 5 adaptado ao que você encontrou, com a lista de arquivos novos e alterados, as dependências que pretende adicionar (com o motivo de cada uma) e os riscos. Marque quais arquivos **existentes** vão ser alterados e por quê; nenhum deles pode ser de tema ou de estilo global.
 
 **Pare aqui e espere minha aprovação.**
 
@@ -66,22 +69,24 @@ Se o formato salvo no servidor precisar mudar, **pare e me pergunte**, mostrando
 Testes obrigatórios: um quadrado de 100 m × 100 m perto de Floresta do Araguaia (PA), cerca de 1,000 ha, com tolerância de 0,5%; um retângulo de 1 km × 500 m (50 ha); um polígono com buraco; simplificação que não aumenta a área em mais de 1%; e detecção de autointerseção.
 
 ### 1.3 Tela "Ajustar área" (comum aos 4 modos)
-- Mapa com o polígono: borda de 2px na cor de ação do tema e preenchimento em 15% de opacidade.
+Construa esta tela **a partir da tela atual de demarcação**, com a mesma aparência (barra do topo, botões, cores e estilo do polígono que ela já usa), acrescentando os recursos abaixo. Só crie uma tela nova se não der para estender a atual, e nesse caso copie o visual dela.
+- Mapa com o polígono, no mesmo estilo de cor e borda que a demarcação atual já usa.
 - Pontos arrastáveis nos vértices e um ponto menor no meio de cada lado: arrastar o ponto do meio cria um vértice novo. Toque longo num vértice remove o vértice.
 - Desfazer e refazer.
-- No topo, a área em hectares e o perímetro em metros, atualizados enquanto a pessoa mexe (números em fonte mono, formato pt-BR: `4,26 ha`, `842 m`).
-- Avisos em linha, sem bloquear: "O contorno cruza a si mesmo", "Área muito pequena (menos de 0,05 ha)".
-- Botão "Suavizar curvas" (aplica Chaikin) e botão "Simplificar" (reduz pontos).
-- Ação fixa embaixo: "Salvar área". Ao salvar, devolve a área ao fluxo que chamou (editar plantio, vincular área) e usa o caminho de persistência existente.
+- A área em hectares e o perímetro em metros, atualizados enquanto a pessoa mexe, no formato pt-BR (`4,26 ha`, `842 m`), usando os estilos de texto que o app já tem.
+- Avisos que não bloqueiam ("O contorno cruza a si mesmo", "Área muito pequena (menos de 0,05 ha)"), no mesmo componente de aviso que o app já usa.
+- Botão "Suavizar curvas" (aplica Chaikin) e botão "Simplificar" (reduz pontos), com o estilo de botão secundário existente.
+- Botão "Salvar área" no mesmo estilo e posição do botão de confirmar da demarcação atual. Ao salvar, devolve a área ao fluxo que chamou (editar plantio, vincular área) e usa o caminho de persistência existente.
 
-### 1.4 Tela de entrada "Demarcar área"
-Substitui a tela atual. É uma lista agrupada (não uma grade de ícones), com quatro linhas:
-- **Andar no contorno**: "Dê a volta no talhão com o celular. Grava as curvas sozinho."
-- **Desenhar com o dedo**: "Trace o contorno por cima da imagem de satélite."
-- **Tocar no talhão**: "O app tenta encontrar o contorno pela imagem de satélite." (mostra "beta" ou "indisponível" conforme a configuração da Fase 5)
-- **Importar KML ou KMZ**: "Arquivo do Google Earth, de drone ou de um técnico."
-
-Se já existe uma área, mostre um resumo no topo (mapa pequeno, área em ha, origem) com a ação "Ajustar área atual". Mantenha um caminho para o modo antigo, ponto por ponto: ele vira a própria tela de ajuste começando vazia (toque no mapa adiciona um vértice).
+### 1.4 Escolha do modo
+- **O botão "Demarcar área no mapa (GPS)" continua igual**: mesmo texto, ícone, lugar e estilo no formulário de editar plantio (e onde mais ele aparecer).
+- Ao tocar nele, abra uma escolha de modo usando o mesmo componente de escolha que o app já usa, por exemplo a folha que sobe de baixo de "Mudar Status" ou o diálogo de "Vincular Área". Copie o estilo dos itens dessa lista. Opções:
+  - **Andar no contorno**: "Dê a volta no talhão com o celular. Grava as curvas sozinho."
+  - **Desenhar com o dedo**: "Trace o contorno por cima da imagem de satélite."
+  - **Tocar no talhão**: "O app tenta encontrar o contorno pela imagem de satélite." (aparece como "Em breve" e desabilitado enquanto a Fase 5 estiver desligada)
+  - **Importar KML ou KMZ**: "Arquivo do Google Earth, de drone ou de um técnico."
+  - **Marcar ponto a ponto**: o modo de hoje, que continua disponível e funcionando como em produção.
+- Se o plantio já tem área, inclua no topo dessa escolha a opção "Ajustar área atual".
 
 Commit da Fase 1.
 
@@ -100,7 +105,7 @@ Commit da Fase 1.
   - `name`, `description` e `ExtendedData` → nome e observação;
   - `Folder` → agrupamento na lista.
 - Ignorar altitude. Corrigir latitude e longitude trocadas, avisando. Fechar anéis abertos.
-- Tela de conferência: o mapa com tudo o que foi encontrado e uma lista agrupada com uma linha por área (caixa de seleção, nome, área em ha). Botão "Usar esta área": com uma área selecionada, vai para "Ajustar área"; com várias, pergunta se quer juntar (união) ou escolher uma.
+- Tela de conferência, no visual das telas de lista existentes (como "Meus Plantios"): o mapa com tudo o que foi encontrado e uma lista com uma linha por área (caixa de seleção, nome, área em ha). Botão "Usar esta área": com uma área selecionada, vai para "Ajustar área"; com várias, pergunta se quer juntar (união) ou escolher uma.
 - Mensagens claras para: arquivo vazio, sem polígonos ("Este arquivo só tem linhas ou pontos. Desenhe a área ou use outro arquivo."), XML inválido e arquivo grande demais (acima de 10 MB).
 - Bônus, se couber sem risco: "Exportar KML" da área salva, pelo compartilhamento do sistema.
 
@@ -175,19 +180,23 @@ Commit da Fase 5.
 
 ---
 
-## Regras de interface (resumo da skill meu-plantio-design)
+## Visual: manter o que está em produção
 
-- Fundo `#F3F3EF`, grupos brancos com borda de 1px `#D8DBD4` e canto de 8px, sem sombra.
-- Cor de ação `#2F6B57` (botões principais, borda do polígono); atenção `#9A5F0E`; problema `#B3261E` (só erro e Excluir); marca-texto `#F5CF47` só para "hoje" ou valor calculado.
-- Fontes: Archivo no texto e JetBrains Mono nos números. Se o projeto ainda não tem essas fontes, mantenha as atuais e anote no resumo.
-- Listas agrupadas com rótulo em maiúsculas pequenas acima; nada de ícone dentro de quadradinho colorido.
-- A ação principal fica fixa embaixo, acima das abas, sem botão flutuante cobrindo o mapa.
-- Alvos de toque com pelo menos 48px. Textos nunca cortados com reticências.
-- Números no formato brasileiro: `4,26 ha`, `842 m`, `±4 m`.
+Este trabalho acrescenta funções. A aparência do app não muda.
+
+- **Não altere** o tema (`ThemeData`, `ColorScheme`, `TextTheme`), as cores, a fonte (Poppins), os ícones, nem widgets compartilhados de estilo. Se um widget compartilhado precisar de algo novo, acrescente um parâmetro opcional com padrão igual ao comportamento atual.
+- **Não altere** a aparência de nenhuma tela existente. A única mudança permitida em tela existente é o que o botão "Demarcar área no mapa (GPS)" abre ao ser tocado.
+- **As telas novas copiam o estilo das existentes**: a mesma barra do topo verde, os mesmos botões, cards, campos, folhas que sobem de baixo, diálogos, avisos e botão flutuante, reutilizando os widgets que você listou na Fase 0. Não crie paleta, fonte ou componente com estilo próprio.
+- Use as cores do tema (por exemplo `Theme.of(context).colorScheme`), nunca uma cor escrita direto no widget, a não ser que as telas existentes façam assim para aquele mesmo elemento.
+- Siga o mesmo tamanho de toque e o mesmo formato de números que o app já usa. Para área e distância, use o formato brasileiro: `4,26 ha`, `842 m`, `±4 m`.
+- Na dúvida sobre o visual de algum elemento novo, pare e me mostre duas opções baseadas em telas existentes.
 
 ## Critérios de aceite
 
-- [ ] Os 4 modos abrem pela nova tela "Demarcar área" e terminam em "Ajustar área".
+- [ ] Nenhuma tela existente mudou de aparência, e nenhum arquivo de tema ou de estilo global foi alterado (confira no `git diff` e liste no resumo final os arquivos existentes que foram tocados).
+- [ ] As telas novas parecem parte do app atual: mesma barra do topo, botões, cards, fonte e cores.
+- [ ] O botão "Demarcar área no mapa (GPS)" continua igual e abre a escolha com os 4 modos novos mais "Marcar ponto a ponto", que funciona como hoje.
+- [ ] Os 4 modos novos terminam em "Ajustar área".
 - [ ] Áreas antigas abrem, aparecem no Mapa vivo e funcionam em "Vincular área" e "Análise da área".
 - [ ] Área calculada com erro abaixo de 0,5% nos testes de referência.
 - [ ] Um KML do Google Earth com polígono importa corretamente; KMZ também.
