@@ -1,0 +1,198 @@
+# Prompt: Demarcar área com 4 modos no app Meu Plantio
+
+> Como usar: abra o projeto do app Meu Plantio no VS Code, abra o Claude Code e cole tudo abaixo da linha. Se a skill `meu-plantio-design` estiver instalada no projeto (`skills/instalar.sh --projeto CAMINHO_DO_APP`), o Claude Code vai usá-la para o visual. Para a Fase 0, ative o modo de planejamento (Shift+Tab até aparecer "plan mode").
+
+---
+
+## Contexto
+
+Este é o app **Meu Plantio**, de gestão de lavoura de abacaxi, feito em Flutter (Android, iOS e portal web no mesmo código). Hoje a função **"Demarcar área no mapa (GPS)"** (no formulário de editar plantio, e usada também por "Vincular área", "Mapa vivo" e "Análise da área") obriga o produtor a tocar ponto por ponto no mapa. Quero trocar isso por uma tela com **4 jeitos de criar a área**, todos terminando na mesma tela de ajuste:
+
+1. **Andar no contorno**: o produtor dá a volta no talhão com o celular e o GPS grava o caminho, com as curvas do terreno.
+2. **Desenhar com o dedo**: o produtor traça o contorno por cima da imagem de satélite e o app suaviza a linha.
+3. **Tocar no talhão**: o produtor toca dentro da lavoura e um serviço detecta o contorno pela imagem de satélite.
+4. **Importar KML/KMZ**: o produtor importa um arquivo do Google Earth, do Google My Maps, de drone ou de um técnico.
+
+Nenhuma funcionalidade existente pode se perder: áreas já demarcadas continuam abrindo, e "Vincular área", "Mapa vivo" e "Análise da área" continuam funcionando com as áreas novas.
+
+## Como quero que você trabalhe
+
+- Trabalhe em fases. Ao fim de cada fase: rode `flutter analyze` e `flutter test`, faça um commit na branch `feature/demarcar-area` com mensagem clara e me mostre um resumo curto (o que mudou, como testar no aparelho, o que ficou pendente).
+- **Pare e espere minha aprovação** ao fim da Fase 0, e sempre que precisar: adicionar um serviço pago ou uma chave de API; mudar o formato dos dados salvos no servidor; ou mexer em telas fora deste escopo.
+- Siga o código que já existe: mesmo gerenciamento de estado, mesma organização de pastas, mesmos nomes, mesma camada de dados e mesmo provedor de mapa (o app tem opção de Mapbox ou Google Maps nas configurações). Não troque bibliotecas que o projeto já usa.
+- Visual: siga a skill `meu-plantio-design` (padrão "Caderno de campo"). Se ela não estiver disponível, siga o padrão das telas existentes e as regras de interface no fim deste prompt.
+- Textos da interface em português do Brasil.
+- Não invente dados. Onde depender de algo que você não encontrar no código (endpoint, tabela, regra), pergunte.
+
+---
+
+## Fase 0: Entender o código e planejar (sem escrever código)
+
+Investigue e me entregue um plano em `docs/demarcar-area/PLANO.md` com:
+
+1. Onde está hoje a tela "Demarcar área no mapa (GPS)": arquivos, widgets e como recebe e devolve os pontos.
+2. Como a área é salva: modelo, formato (lista de pontos? GeoJSON?), onde é persistida (API própria, Firebase, Supabase, banco local) e como é sincronizada offline, se for.
+3. Como o app lida com os dois provedores de mapa (Mapbox e Google Maps): existe uma abstração? Quais pacotes e versões?
+4. Onde "Vincular área", "Mapa vivo" (busca de talhão) e "Análise da área" leem a área.
+5. Gerenciamento de estado, navegação (rotas), tema e padrão de testes do projeto.
+6. Versões de Flutter e Dart do projeto e as dependências relevantes já instaladas (geolocalização, arquivos, XML, zip, permissões).
+7. O plano das Fases 1 a 5 adaptado ao que você encontrou, com a lista de arquivos novos e alterados, as dependências que pretende adicionar (com o motivo de cada uma) e os riscos.
+
+**Pare aqui e espere minha aprovação.**
+
+---
+
+## Fase 1: Núcleo de geometria, modelo e tela de ajuste
+
+### 1.1 Modelo
+Crie (ou adapte o existente para) um modelo de área com:
+- `anel externo` (lista de lat/lon, sentido anti-horário, fechado) e `buracos` opcionais;
+- `origem`: `gps`, `desenho`, `deteccao`, `kml` ou `manual` (as áreas antigas viram `manual`);
+- `areaHa`, `perimetroM`, `centro`, `precisaoEstimadaM` (opcional) e `criadaEm`;
+- serialização para **GeoJSON** (ordem `[longitude, latitude]`), lendo também o formato antigo para não quebrar áreas já salvas.
+
+Se o formato salvo no servidor precisar mudar, **pare e me pergunte**, mostrando a migração proposta.
+
+### 1.2 Utilitários de geometria (Dart puro, sem depender de Flutter, com testes)
+- Área geodésica em hectares (excesso esférico ou fórmula equivalente; erro abaixo de 0,5% em talhões de até 500 ha).
+- Perímetro (haversine) e centro.
+- Projeção local em metros (equiretangular em torno do centro) para os cálculos abaixo.
+- Simplificação Douglas-Peucker com tolerância em metros.
+- Suavização Chaikin (2 a 3 iterações), preservando os pontos de início e fim quando a linha não está fechada.
+- Fechar o anel, corrigir a orientação, remover pontos duplicados ou colados.
+- Detectar autointerseção (o contorno cruzando a si mesmo).
+- Detectar latitude e longitude trocadas (ponto fora do Brasil: latitude entre −34 e 6, longitude entre −74 e −34).
+
+Testes obrigatórios: um quadrado de 100 m × 100 m perto de Floresta do Araguaia (PA), cerca de 1,000 ha, com tolerância de 0,5%; um retângulo de 1 km × 500 m (50 ha); um polígono com buraco; simplificação que não aumenta a área em mais de 1%; e detecção de autointerseção.
+
+### 1.3 Tela "Ajustar área" (comum aos 4 modos)
+- Mapa com o polígono: borda de 2px na cor de ação do tema e preenchimento em 15% de opacidade.
+- Pontos arrastáveis nos vértices e um ponto menor no meio de cada lado: arrastar o ponto do meio cria um vértice novo. Toque longo num vértice remove o vértice.
+- Desfazer e refazer.
+- No topo, a área em hectares e o perímetro em metros, atualizados enquanto a pessoa mexe (números em fonte mono, formato pt-BR: `4,26 ha`, `842 m`).
+- Avisos em linha, sem bloquear: "O contorno cruza a si mesmo", "Área muito pequena (menos de 0,05 ha)".
+- Botão "Suavizar curvas" (aplica Chaikin) e botão "Simplificar" (reduz pontos).
+- Ação fixa embaixo: "Salvar área". Ao salvar, devolve a área ao fluxo que chamou (editar plantio, vincular área) e usa o caminho de persistência existente.
+
+### 1.4 Tela de entrada "Demarcar área"
+Substitui a tela atual. É uma lista agrupada (não uma grade de ícones), com quatro linhas:
+- **Andar no contorno**: "Dê a volta no talhão com o celular. Grava as curvas sozinho."
+- **Desenhar com o dedo**: "Trace o contorno por cima da imagem de satélite."
+- **Tocar no talhão**: "O app tenta encontrar o contorno pela imagem de satélite." (mostra "beta" ou "indisponível" conforme a configuração da Fase 5)
+- **Importar KML ou KMZ**: "Arquivo do Google Earth, de drone ou de um técnico."
+
+Se já existe uma área, mostre um resumo no topo (mapa pequeno, área em ha, origem) com a ação "Ajustar área atual". Mantenha um caminho para o modo antigo, ponto por ponto: ele vira a própria tela de ajuste começando vazia (toque no mapa adiciona um vértice).
+
+Commit da Fase 1.
+
+---
+
+## Fase 2: Importar KML/KMZ
+
+- Escolher arquivo com o seletor do sistema (`.kml` e `.kmz`), funcionando no Android, no iOS e na web (na web, ler os bytes).
+- KMZ: abrir o zip e ler o `doc.kml` (ou o primeiro `.kml` encontrado).
+- Ler com um parser XML (pacote `xml`), tolerando namespaces e prefixos (`kml:`).
+- Extrair:
+  - `Polygon` (outerBoundaryIs + innerBoundaryIs) → área candidata;
+  - `MultiGeometry` → desdobrar em várias candidatas;
+  - `LineString` → mostrar como linha de referência (não vira área);
+  - `Point` → mostrar como ponto de referência;
+  - `name`, `description` e `ExtendedData` → nome e observação;
+  - `Folder` → agrupamento na lista.
+- Ignorar altitude. Corrigir latitude e longitude trocadas, avisando. Fechar anéis abertos.
+- Tela de conferência: o mapa com tudo o que foi encontrado e uma lista agrupada com uma linha por área (caixa de seleção, nome, área em ha). Botão "Usar esta área": com uma área selecionada, vai para "Ajustar área"; com várias, pergunta se quer juntar (união) ou escolher uma.
+- Mensagens claras para: arquivo vazio, sem polígonos ("Este arquivo só tem linhas ou pontos. Desenhe a área ou use outro arquivo."), XML inválido e arquivo grande demais (acima de 10 MB).
+- Bônus, se couber sem risco: "Exportar KML" da área salva, pelo compartilhamento do sistema.
+
+Testes com arquivos de exemplo em `test/fixtures/kml/`: polígono simples, polígono com buraco, MultiGeometry, KMZ, coordenadas trocadas e arquivo só com pontos.
+
+Commit da Fase 2.
+
+---
+
+## Fase 3: Desenhar com o dedo
+
+- Na tela do mapa, alternância "Mover mapa" / "Desenhar". No modo Desenhar, o gesto de um dedo traça a linha e o mapa não se move (dois dedos continuam dando zoom).
+- Capturar os pontos da tela durante o gesto e converter para lat/lon com o controlador do provedor de mapa em uso (Google Maps e Mapbox). Se o app não tem abstração de mapa, crie uma interface mínima para essa conversão, com as duas implementações.
+- Ao soltar o dedo: fechar o contorno, simplificar (tolerância de uns 2 m), suavizar com Chaikin e ir para "Ajustar área".
+- Botão "Apagar e desenhar de novo".
+- Camada de satélite ligada por padrão nesse modo.
+
+Commit da Fase 3.
+
+---
+
+## Fase 4: Andar no contorno (GPS)
+
+### Captura
+- Use o pacote de localização já usado no app (ou `geolocator`), com precisão máxima e filtro de distância de 1 a 2 m.
+- Antes de começar, mostre a precisão atual ("GPS: ±4 m") e só libere "Iniciar" quando estiver em ±15 m ou melhor. Se não chegar lá, explique: "Vá para um lugar aberto e espere alguns segundos".
+- Botões: Iniciar, Pausar/Continuar (para atravessar cerca ou porteira) e Concluir.
+- Tela durante a gravação: o mapa com o rastro sendo desenhado, a distância percorrida, a área parcial (fechando o contorno até o início), o tempo e a precisão do GPS.
+- Fechamento automático: quando a pessoa já andou mais de 50 m e volta para menos de 8 m do início, sugerir "Fechar contorno aqui?".
+- Manter a tela acesa durante a gravação (`wakelock_plus` ou o equivalente que o projeto use).
+
+### Limpeza do rastro
+- Descartar pontos com precisão pior que 15 m, saltos impossíveis (acima de 15 m/s a pé ou de carro na lavoura) e pontos repetidos.
+- Suavizar com média móvel de 3 a 5 pontos e depois simplificar (Douglas-Peucker, uns 1,5 m).
+- Guardar `precisaoEstimadaM` (mediana da precisão dos pontos aceitos).
+
+### Plataforma
+- **Android:** gravar com a tela bloqueada usando um serviço em primeiro plano com notificação ("Meu Plantio está gravando o contorno do talhão"). Use `foregroundServiceType="location"` e as permissões `FOREGROUND_SERVICE` e `FOREGROUND_SERVICE_LOCATION` (Android 14+). Não peça `ACCESS_BACKGROUND_LOCATION`: o serviço em primeiro plano basta e evita a exigência extra da Google Play.
+- **iOS:** `NSLocationWhenInUseUsageDescription` em pt-BR ("Usamos sua localização para gravar o contorno do talhão enquanto você caminha."), `UIBackgroundModes` com `location` e `showsBackgroundLocationIndicator` ativo, para continuar com a tela bloqueada durante a gravação.
+- **Web:** esconda este modo no computador; no navegador do celular, permita só com a tela aberta e avise que bloquear a tela interrompe a gravação.
+- **Segurança contra perda:** salve o rastro em andamento localmente a cada poucos segundos. Se o app fechar, ao reabrir ofereça "Continuar gravação" ou "Descartar".
+
+### Testes
+- Testes de unidade da limpeza do rastro com uma sequência simulada que inclua ruído, um salto e uma pausa.
+- Deixe um modo de simulação, só em debug, que reproduza um rastro GPX/GeoJSON de exemplo, para testar sem sair andando.
+
+Commit da Fase 4.
+
+---
+
+## Fase 5: Tocar no talhão (detecção automática)
+
+A detecção precisa de um servidor, porque o modelo de IA roda sobre imagens de satélite. Nesta fase, faça a parte do app e deixe o servidor especificado. **Não contrate nem configure serviço pago sem me perguntar.**
+
+### No app
+- Interface `DetectorDeTalhao` com `Future<List<AreaCandidata>> detectar(LatLng ponto)`.
+- Implementação `DetectorServidor`, que chama `POST {baseUrl}/talhoes/detectar` com `{ "lat": ..., "lon": ... }` e recebe `{ "talhoes": [GeoJSON Polygon...], "fonte": "...", "dataImagem": "AAAA-MM-DD", "confianca": 0-1 }`. Use o cliente HTTP e a autenticação que o app já tem.
+- Implementação `DetectorFalso`, usada em debug e nos testes, que devolve um polígono em volta do ponto.
+- Chave de configuração (feature flag ou config remota, conforme o padrão do projeto) para ligar e desligar. Desligado: a linha aparece com "Em breve" e não abre.
+- Fluxo: tocar no mapa → indicador "Procurando o contorno…" → mostrar o resultado com a confiança. Se a área for menor que 3 ha, avisar: "Áreas pequenas podem vir com erro. Confira o contorno antes de salvar." Depois, ir para "Ajustar área".
+- Erros: sem internet ("A detecção precisa de internet. Use Andar no contorno ou Desenhar.") e nada encontrado ("Não encontramos um talhão aqui. Tente tocar mais no meio da lavoura ou desenhe.").
+
+### Especificação do servidor (só documento)
+Crie `docs/demarcar-area/deteccao-servidor.md` com:
+- O contrato da API acima.
+- Opção A, própria: modelos abertos do projeto Fields of The World (`ftw-tools`) sobre imagens Sentinel-2 (gratuitas, 10 m). Inclua as etapas: buscar a cena mais recente sem nuvem em volta do ponto, rodar a segmentação, vetorizar, escolher o polígono que contém o ponto e simplificar.
+- Opção B, serviço pago (ex.: EOSDA), com o que precisaria ser contratado.
+- Limitações: resolução de 10 m, talhões pequenos, nuvens.
+- Regra: **não usar imagens do Google Maps ou do Mapbox para a detecção**, porque os termos de uso não permitem.
+
+Commit da Fase 5.
+
+---
+
+## Regras de interface (resumo da skill meu-plantio-design)
+
+- Fundo `#F3F3EF`, grupos brancos com borda de 1px `#D8DBD4` e canto de 8px, sem sombra.
+- Cor de ação `#2F6B57` (botões principais, borda do polígono); atenção `#9A5F0E`; problema `#B3261E` (só erro e Excluir); marca-texto `#F5CF47` só para "hoje" ou valor calculado.
+- Fontes: Archivo no texto e JetBrains Mono nos números. Se o projeto ainda não tem essas fontes, mantenha as atuais e anote no resumo.
+- Listas agrupadas com rótulo em maiúsculas pequenas acima; nada de ícone dentro de quadradinho colorido.
+- A ação principal fica fixa embaixo, acima das abas, sem botão flutuante cobrindo o mapa.
+- Alvos de toque com pelo menos 48px. Textos nunca cortados com reticências.
+- Números no formato brasileiro: `4,26 ha`, `842 m`, `±4 m`.
+
+## Critérios de aceite
+
+- [ ] Os 4 modos abrem pela nova tela "Demarcar área" e terminam em "Ajustar área".
+- [ ] Áreas antigas abrem, aparecem no Mapa vivo e funcionam em "Vincular área" e "Análise da área".
+- [ ] Área calculada com erro abaixo de 0,5% nos testes de referência.
+- [ ] Um KML do Google Earth com polígono importa corretamente; KMZ também.
+- [ ] Desenhar com o dedo funciona com os dois provedores de mapa (Google e Mapbox).
+- [ ] Andar no contorno grava com a tela bloqueada no Android e no iOS e sobrevive ao app ser fechado.
+- [ ] Tocar no talhão funciona com o `DetectorFalso` e fica desligado em produção até eu configurar o servidor.
+- [ ] `flutter analyze` sem avisos novos; `flutter test` passando.
+- [ ] Ao final, um `docs/demarcar-area/COMO-TESTAR.md` com o roteiro de teste manual em aparelho (Android e iPhone), incluindo andar em volta de uma área real.
