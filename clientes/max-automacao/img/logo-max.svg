@@ -1,0 +1,10 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 366 333" role="img" aria-label="Max Automação">
+  <defs>
+    <linearGradient id="topo" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#C9232B"/>
+      <stop offset=".22" stop-color="#E3262F"/>
+    </linearGradient>
+  </defs>
+  <path fill="url(#topo)" d="M10 58 98 10l85 48 85-48 88 48v202l-88-47V110l-85 48-85-48v105l-88 47z"/>
+  <path fill="#A8262E" d="M15 270 183 178l169 92-84 53-85-48-85 48z"/>
+</svg>
