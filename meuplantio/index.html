@@ -1,0 +1,640 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Meu Plantio · Gestão da lavoura de abacaxi</title>
+<meta name="description" content="App de gestão para produtor de abacaxi: custo por talhão, indução floral (TIF), colheita classificada G/M/P e venda da carga. Funciona sem internet. 14 dias grátis.">
+<link rel="icon" href="img/logo.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Schibsted+Grotesk:ital,wght@0,400;0,500;0,600;0,700;0,800;1,400&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --paper:#F5F3EC;
+    --white:#FFFFFF;
+    --ink:#15201A;
+    --ink-2:#4B5750;
+    --ink-3:#7A847E;
+    --line:#DDD9CD;
+    --line-2:#E9E6DC;
+    --green:#0F3F26;
+    --green-2:#17603A;
+    --leaf:#2E8B4E;
+    --pine:#F2B51D;
+    --pine-soft:#FBEBC0;
+    --wrap:1160px;
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  html{scroll-behavior:smooth;-webkit-text-size-adjust:100%}
+  body{font-family:"Schibsted Grotesk",system-ui,sans-serif;background:var(--paper);color:var(--ink);font-size:17px;line-height:1.55}
+  img{display:block;max-width:100%}
+  a{color:inherit}
+  .wrap{max-width:var(--wrap);margin:0 auto;padding:0 24px}
+  h1,h2,h3{line-height:1.08;letter-spacing:-.025em;font-weight:800}
+  h2{font-size:clamp(30px,4.2vw,48px)}
+  .lead{font-size:clamp(18px,1.6vw,20px);color:var(--ink-2);max-width:56ch}
+  .num{font-variant-numeric:lining-nums;letter-spacing:-.02em}
+
+  /* botões */
+  .btn{display:inline-flex;align-items:center;gap:10px;height:52px;padding:0 22px;border-radius:10px;font-weight:700;font-size:16px;text-decoration:none;border:1.5px solid transparent;cursor:pointer;font-family:inherit;white-space:nowrap}
+  .btn-main{background:var(--green);color:#fff}
+  .btn-main:hover{background:var(--green-2)}
+  .btn-line{border-color:var(--ink);color:var(--ink);background:transparent}
+  .btn-line:hover{background:var(--ink);color:#fff}
+  .btn-pine{background:var(--pine);color:var(--green)}
+  .btn-pine:hover{background:#FFC93A}
+  .btn svg{width:18px;height:18px;flex:none}
+
+  /* topo */
+  .top{position:sticky;top:0;z-index:20;background:rgb(245 243 236 / .94);backdrop-filter:saturate(1.4) blur(8px);border-bottom:1px solid var(--line)}
+  .top .wrap{display:flex;align-items:center;gap:32px;height:68px}
+  .brand{display:flex;align-items:center;gap:10px;text-decoration:none;font-weight:800;font-size:19px;letter-spacing:-.02em}
+  .brand img{width:34px;height:34px}
+  .nav{display:flex;gap:26px;margin-left:auto;font-size:15px;font-weight:500}
+  .nav a{text-decoration:none;color:var(--ink-2)}
+  .nav a:hover{color:var(--ink)}
+  .top .btn{height:42px;font-size:15px;padding:0 16px}
+  .menu-btn{display:none;margin-left:auto;background:none;border:0;padding:8px;cursor:pointer}
+  .menu-btn svg{width:26px;height:26px}
+
+  /* hero */
+  .hero{padding:72px 0 0;overflow:hidden}
+  .hero .wrap{display:grid;grid-template-columns:minmax(0,1.15fr) minmax(0,.85fr);gap:48px;align-items:end}
+  .hero-text{padding-bottom:88px}
+  .kicker{display:inline-block;font-size:14px;font-weight:600;color:var(--green-2);margin-bottom:22px}
+  .kicker b{background:var(--pine-soft);padding:2px 8px;border-radius:4px;color:var(--green);font-weight:700;margin-right:6px}
+  .hero h1{font-size:clamp(40px,6.2vw,76px);letter-spacing:-.035em}
+  .hero h1 em{font-style:normal;background:linear-gradient(transparent 62%,var(--pine) 62%,var(--pine) 92%,transparent 92%)}
+  .hero .lead{margin-top:24px}
+  .hero-ctas{display:flex;flex-wrap:wrap;gap:12px;margin-top:34px}
+  .hero-note{margin-top:18px;font-size:14px;color:var(--ink-3)}
+  .hero-phones{position:relative;height:560px}
+  .phone{position:absolute;width:270px;border-radius:30px;overflow:hidden;border:7px solid #0D1410;background:#0D1410;box-shadow:0 30px 60px -30px rgb(15 63 38 / .45)}
+  .phone img{width:100%}
+  .phone.a{right:190px;top:30px;z-index:2}
+  .phone.b{right:-20px;top:100px;width:250px}
+  .tag{position:absolute;z-index:3;background:var(--white);border:1px solid var(--line);border-radius:10px;padding:10px 14px;font-size:13px;line-height:1.3;color:var(--ink-2)}
+  .tag strong{display:block;font-size:20px;color:var(--ink)}
+  .tag.t1{left:-30px;top:330px}
+  .tag.t2{right:40px;top:40px}
+
+  /* faixa de fatos */
+  .facts{background:var(--green);color:#E6EFE8}
+  .facts ul{list-style:none;display:grid;grid-template-columns:repeat(4,minmax(0,1fr))}
+  .facts li{padding:22px 24px 22px 0;font-size:15px;line-height:1.4}
+  .facts li+li{padding-left:24px;border-left:1px solid rgb(255 255 255 / .14)}
+  .facts strong{display:block;color:#fff;font-size:16px}
+
+  section{padding:110px 0}
+  .sec-head{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:48px;align-items:end;margin-bottom:56px}
+  .sec-head .lead{justify-self:end}
+
+  /* antes e depois */
+  .compare{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);border-top:2px solid var(--ink)}
+  .compare h3{font-size:15px;font-weight:700;padding:16px 0;border-bottom:1px solid var(--line);color:var(--ink-3)}
+  .compare h3.now{color:var(--green-2)}
+  .compare > div + div{padding-left:40px;border-left:1px solid var(--line)}
+  .compare > div:first-child{padding-right:40px}
+  .compare p{padding:18px 0;border-bottom:1px solid var(--line);font-size:18px}
+  .compare .before p{color:var(--ink-2)}
+  .compare .now-col p{font-weight:600}
+
+  /* ciclo */
+  .cycle{background:var(--white);border-top:1px solid var(--line);border-bottom:1px solid var(--line)}
+  .ruler{position:relative;margin:0 0 40px}
+  .ruler-bar{display:grid;grid-template-columns:2fr 9fr 2fr 4fr 2fr;height:14px;border-radius:7px;overflow:hidden}
+  .ruler-bar span:nth-child(1){background:#B8D8B8}
+  .ruler-bar span:nth-child(2){background:#6FB27D}
+  .ruler-bar span:nth-child(3){background:var(--pine)}
+  .ruler-bar span:nth-child(4){background:var(--leaf)}
+  .ruler-bar span:nth-child(5){background:var(--green)}
+  .ruler-months{display:flex;justify-content:space-between;margin-top:10px;font-size:13px;color:var(--ink-3)}
+  .phases{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:0}
+  .phase{padding:0 28px 0 0}
+  .phase + .phase{padding-left:28px;border-left:1px solid var(--line-2)}
+  .phase .when{font-size:13px;font-weight:600;color:var(--ink-3)}
+  .phase h3{font-size:26px;margin:6px 0 18px}
+  .phase ul{list-style:none}
+  .phase li{padding:12px 0;border-top:1px solid var(--line-2);font-size:15.5px;color:var(--ink-2);line-height:1.45}
+  .phase li strong{color:var(--ink);font-weight:700;display:block;font-size:16px}
+  .mark{display:inline-block;font-size:11px;font-weight:700;background:var(--pine-soft);color:#7A5300;padding:1px 6px;border-radius:4px;margin-left:6px;vertical-align:2px}
+  .cycle-note{margin-top:36px;font-size:14px;color:var(--ink-3)}
+
+  /* telas */
+  .screens{display:grid;grid-auto-flow:column;grid-auto-columns:minmax(190px,1fr);gap:20px;overflow-x:auto;scroll-snap-type:x mandatory;padding-bottom:12px}
+  .screens figure{scroll-snap-align:start}
+  .screens .shot{border-radius:18px;overflow:hidden;border:1px solid var(--line);background:#fff;aspect-ratio:9/15}
+  .screens .shot img{width:100%;height:100%;object-fit:cover;object-position:top}
+  .screens figcaption{margin-top:14px;font-size:15px;color:var(--ink-2);line-height:1.45}
+  .screens figcaption strong{display:block;color:var(--ink);font-size:16px}
+
+  /* gps */
+  .gps{background:var(--green);color:#fff}
+  .gps .wrap{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1.1fr);gap:64px;align-items:center}
+  .gps .lead{color:#C9DCCD}
+  .gps ol{list-style:none;margin-top:32px;counter-reset:s}
+  .gps li{counter-increment:s;display:grid;grid-template-columns:36px 1fr;gap:12px;padding:16px 0;border-top:1px solid rgb(255 255 255 / .14);color:#C9DCCD;font-size:16px}
+  .gps li::before{content:counter(s);font-weight:800;color:var(--pine);font-size:18px}
+  .gps li strong{color:#fff}
+  .map{border-radius:16px;overflow:hidden;border:1px solid rgb(255 255 255 / .15)}
+  .map svg{display:block;width:100%;height:auto}
+
+  /* safra exemplo + ceasa */
+  .two{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:24px}
+  .sheet{background:var(--white);border:1px solid var(--line);border-radius:14px;padding:32px}
+  .sheet h3{font-size:22px}
+  .sheet .sub{font-size:14px;color:var(--ink-3);margin-top:4px}
+  .rows{margin-top:22px}
+  .row{display:flex;justify-content:space-between;align-items:baseline;gap:16px;padding:14px 0;border-top:1px solid var(--line-2);font-size:16px;color:var(--ink-2)}
+  .row b{font-size:22px;color:var(--ink);font-weight:700}
+  .row.total{border-top:2px solid var(--ink)}
+  .row.total b{color:var(--green-2);font-size:28px}
+
+  /* preços */
+  .pricing{background:var(--white);border-top:1px solid var(--line)}
+  .bill{display:inline-flex;border:1px solid var(--line);border-radius:10px;padding:4px;background:var(--paper);margin-bottom:28px}
+  .bill button{border:0;background:none;font:inherit;font-size:15px;font-weight:600;padding:8px 16px;border-radius:7px;cursor:pointer;color:var(--ink-2)}
+  .bill button[aria-pressed="true"]{background:var(--white);color:var(--ink);box-shadow:0 1px 2px rgb(0 0 0 / .08)}
+  .bill small{color:var(--green-2);font-weight:700}
+  .trial{display:flex;flex-wrap:wrap;gap:16px;justify-content:space-between;align-items:center;padding:20px 24px;border:1.5px dashed var(--green-2);border-radius:12px;background:#F1F7F2;margin-bottom:24px}
+  .trial p{font-size:17px}
+  .trial p strong{font-weight:800}
+  .plans{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);border:1px solid var(--line);border-radius:14px;overflow:hidden}
+  .plan{padding:32px}
+  .plan + .plan{border-left:1px solid var(--line)}
+  .plan.pick{background:#FBFAF5}
+  .plan-top{display:flex;justify-content:space-between;align-items:center;gap:12px}
+  .plan h3{font-size:24px}
+  .plan .who{color:var(--ink-3);font-size:15px;margin-top:4px}
+  .price{margin:22px 0 4px;font-size:52px;font-weight:800;letter-spacing:-.04em;line-height:1}
+  .price small{font-size:17px;font-weight:500;color:var(--ink-3);letter-spacing:0}
+  .price-note{font-size:14px;color:var(--ink-3);min-height:21px}
+  .plan ul{list-style:none;margin:24px 0 28px}
+  .plan li{padding:9px 0 9px 26px;border-top:1px solid var(--line-2);font-size:15.5px;position:relative}
+  .plan li::before{content:"";position:absolute;left:2px;top:15px;width:12px;height:7px;border-left:2px solid var(--leaf);border-bottom:2px solid var(--leaf);transform:rotate(-45deg)}
+  .plan li.inherit{font-weight:700}
+  .plan li.inherit::before{display:none}
+  .plan li.inherit{padding-left:0}
+  .pay{margin-top:20px;font-size:14px;color:var(--ink-3)}
+
+  /* quem faz */
+  .about .wrap{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:64px;align-items:center}
+  .photo-slot{aspect-ratio:4/3;border-radius:14px;border:1.5px dashed var(--ink-3);display:grid;place-items:center;text-align:center;padding:24px;color:var(--ink-3);font-size:15px;background:repeating-linear-gradient(135deg,transparent 0 14px,rgb(0 0 0 / .025) 14px 28px)}
+  .about p{margin-top:18px;color:var(--ink-2)}
+  .quote{margin-top:32px;padding-left:20px;border-left:3px solid var(--pine);font-size:19px;color:var(--ink)}
+  .quote cite{display:block;margin-top:8px;font-style:normal;font-size:14px;color:var(--ink-3)}
+
+  /* dúvidas */
+  .faq{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);column-gap:56px}
+  .faq details{border-top:1px solid var(--line);padding:20px 0}
+  .faq summary{list-style:none;cursor:pointer;font-weight:700;font-size:18px;display:flex;justify-content:space-between;gap:16px}
+  .faq summary::-webkit-details-marker{display:none}
+  .faq summary::after{content:"+";font-weight:400;font-size:24px;line-height:1;color:var(--ink-3)}
+  .faq details[open] summary::after{content:"−"}
+  .faq details p{margin-top:10px;color:var(--ink-2);font-size:16px}
+
+  /* final */
+  .final{background:var(--green);color:#fff;padding:90px 0}
+  .final .wrap{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:48px;align-items:center}
+  .final h2{max-width:16ch}
+  .final p{color:#C9DCCD;margin-top:16px;font-size:18px}
+  .final .ctas{display:flex;flex-wrap:wrap;gap:12px;margin-top:30px}
+  .final .btn-line{border-color:#fff;color:#fff}
+  .final .btn-line:hover{background:#fff;color:var(--green)}
+  .qr{background:#fff;border-radius:14px;padding:16px;text-align:center;color:var(--ink-2);font-size:13px;width:180px}
+  .qr img{width:148px;margin:0 auto 8px}
+  .ios{margin-top:16px;font-size:14px;color:#9FBFA8}
+
+  footer{padding:48px 0 40px;font-size:14px;color:var(--ink-3)}
+  footer .wrap{display:flex;flex-wrap:wrap;gap:20px 40px;justify-content:space-between;align-items:center}
+  footer nav{display:flex;flex-wrap:wrap;gap:22px}
+  footer a{text-decoration:none}
+  footer a:hover{color:var(--ink)}
+
+  .wa{position:fixed;right:20px;bottom:20px;z-index:30;display:flex;align-items:center;gap:8px;background:#1FA855;color:#fff;text-decoration:none;font-weight:700;font-size:14px;height:46px;padding:0 16px 0 12px;border-radius:23px;box-shadow:0 6px 20px -6px rgb(0 0 0 / .35)}
+  .wa svg{width:22px;height:22px}
+
+  @media (max-width:960px){
+    .nav,.top .btn{display:none}
+    .menu-btn{display:block}
+    .top.open .nav{display:flex;position:absolute;top:68px;left:0;right:0;flex-direction:column;gap:0;background:var(--paper);border-bottom:1px solid var(--line);padding:8px 24px 20px}
+    .top.open .nav a{padding:12px 0;border-bottom:1px solid var(--line-2);font-size:17px}
+    .hero{padding-top:44px}
+    .hero .wrap{grid-template-columns:minmax(0,1fr);gap:8px}
+    .hero-text{padding-bottom:0}
+    .hero-phones{height:440px;margin:24px auto 0;width:100%;max-width:440px}
+    .phone{width:210px;border-width:6px;border-radius:26px}
+    .phone.a{right:auto;left:8%;top:10px}
+    .phone.b{width:190px;right:4%;top:70px}
+    .tag.t1{left:0;top:auto;bottom:40px}
+    .tag.t2{display:none}
+    .facts ul{grid-template-columns:repeat(2,minmax(0,1fr))}
+    .facts li:nth-child(3){padding-left:0;border-left:0}
+    .facts li:nth-child(n+3){border-top:1px solid rgb(255 255 255 / .14)}
+    section{padding:80px 0}
+    .sec-head{grid-template-columns:minmax(0,1fr);gap:16px;margin-bottom:40px}
+    .sec-head .lead{justify-self:start}
+    .phases{grid-template-columns:repeat(2,minmax(0,1fr));row-gap:40px}
+    .phase:nth-child(3){padding-left:0;border-left:0}
+    .gps .wrap,.about .wrap,.two{grid-template-columns:minmax(0,1fr);gap:40px}
+    .final .wrap{grid-template-columns:minmax(0,1fr)}
+    .qr{display:none}
+  }
+  @media (max-width:640px){
+    body{font-size:16px}
+    .wrap{padding:0 16px}
+    .hero-ctas .btn{flex:1 1 100%;justify-content:center}
+    .hero-phones{height:380px}
+    .phone{width:180px}
+    .phone.b{width:165px;top:60px}
+    .facts ul{grid-template-columns:minmax(0,1fr)}
+    .facts li,.facts li+li{padding:16px 0;border-left:0}
+    .facts li+li{border-top:1px solid rgb(255 255 255 / .14)}
+    .compare{grid-template-columns:minmax(0,1fr)}
+    .compare > div:first-child{padding-right:0}
+    .compare > div + div{padding-left:0;border-left:0;margin-top:28px}
+    .phases{grid-template-columns:minmax(0,1fr)}
+    .phase,.phase + .phase{padding:0;border-left:0}
+    .screens{grid-auto-columns:72%}
+    .sheet,.plan{padding:24px}
+    .plans{grid-template-columns:minmax(0,1fr)}
+    .plan + .plan{border-left:0;border-top:1px solid var(--line)}
+    .price{font-size:44px}
+    .faq{grid-template-columns:minmax(0,1fr)}
+    .final .ctas .btn{flex:1 1 100%;justify-content:center}
+    .wa span{display:none}
+    .wa{padding:0 12px}
+  }
+</style>
+</head>
+<body>
+
+<header class="top" id="top">
+  <div class="wrap">
+    <a class="brand" href="#"><img src="img/logo.png" alt="">Meu Plantio</a>
+    <nav class="nav" id="nav">
+      <a href="#ciclo">O que o app faz</a>
+      <a href="#telas">Telas</a>
+      <a href="#precos">Preços</a>
+      <a href="#duvidas">Dúvidas</a>
+      <a href="https://appmeuplantio.com.br/app">Entrar</a>
+    </nav>
+    <a class="btn btn-main" href="#precos">Testar grátis</a>
+    <button class="menu-btn" aria-label="Abrir menu" aria-expanded="false" id="menuBtn">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M4 7h16M4 12h16M4 17h16"/></svg>
+    </button>
+  </div>
+</header>
+
+<main>
+<section class="hero" style="padding-bottom:0">
+  <div class="wrap">
+    <div class="hero-text">
+      <span class="kicker"><b>Só abacaxi</b>Feito para quem planta Pérola, Smooth Cayenne e Vitória</span>
+      <h1>Saiba quanto custou cada talhão <em>antes</em> de vender a carga.</h1>
+      <p class="lead">Lance gastos, TIF, adubação e colheita pelo celular, mesmo sem sinal na roça. O Meu Plantio soma tudo e mostra o custo por linha, o que já foi recebido e quanto sobrou da safra.</p>
+      <div class="hero-ctas">
+        <a class="btn btn-main" href="#precos">Testar 14 dias grátis
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 6l6 6-6 6"/></svg></a>
+        <a class="btn btn-line" href="#telas">Ver as telas do app</a>
+      </div>
+      <p class="hero-note">Sem cartão de crédito. Android (APK) e navegador.</p>
+    </div>
+    <div class="hero-phones" aria-hidden="true">
+      <div class="phone a"><img src="img/shot-talhao.jpg" alt=""></div>
+      <div class="phone b"><img src="img/shot-vendas.jpg" alt=""></div>
+      <div class="tag t1"><strong class="num">R$ 0,07</strong>custo por muda</div>
+      <div class="tag t2"><strong class="num">10.700</strong>frutos na carga</div>
+    </div>
+  </div>
+</section>
+
+<div class="facts">
+  <div class="wrap">
+    <ul>
+      <li><strong>Funciona offline</strong>Lança no talhão, sincroniza quando pegar sinal.</li>
+      <li><strong>TIF por talhão</strong>Produto, dose, data e previsão de colheita.</li>
+      <li><strong>Colheita G, M e P</strong>Carga separada por tamanho, com preço de cada.</li>
+      <li><strong>PIX, sem fidelidade</strong>Paga e libera na hora. Cancela pelo app.</li>
+    </ul>
+  </div>
+</div>
+
+<section id="problema">
+  <div class="wrap">
+    <div class="sec-head">
+      <h2>O caderno da lavoura, só que fazendo as contas.</h2>
+      <p class="lead">Muito produtor controla a safra em caderno, planilha e na memória. Funciona, até a hora de saber se o talhão deu lucro.</p>
+    </div>
+    <div class="compare">
+      <div class="before">
+        <h3>Como costuma ser</h3>
+        <p>O custo do talhão aparece só depois da colheita, se aparecer.</p>
+        <p>A data do TIF fica anotada no caderno de quem aplicou.</p>
+        <p>A carga é vendida sem saber quanto saiu de G, M e P.</p>
+        <p>Diária de trabalhador anotada em papel solto.</p>
+      </div>
+      <div class="now-col">
+        <h3 class="now">Com o Meu Plantio</h3>
+        <p>Custo por linha e por muda atualizado a cada lançamento.</p>
+        <p>TIF registrado por talhão, com aviso da colheita prevista.</p>
+        <p>Venda separada por tamanho, com preço e total de cada.</p>
+        <p>Saldo a pagar de cada trabalhador na tela.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="cycle" id="ciclo">
+  <div class="wrap">
+    <div class="sec-head">
+      <h2>Acompanha o ciclo inteiro, do plantio à carga.</h2>
+      <p class="lead">O app monta o cronograma pela cultivar que você plantou e lembra do manejo na época certa.</p>
+    </div>
+
+    <div class="ruler" aria-hidden="true">
+      <div class="ruler-bar"><span></span><span></span><span></span><span></span><span></span></div>
+      <div class="ruler-months"><span>mês 0</span><span>mês 6</span><span>mês 12</span><span>mês 18</span></div>
+    </div>
+
+    <div class="phases">
+      <div class="phase">
+        <span class="when">Antes de plantar</span>
+        <h3>Planejar</h3>
+        <ul>
+          <li><strong>Mapa por GPS</strong>Desenhe o talhão no satélite. Hectares e linhas saem na hora.</li>
+          <li><strong>Plantios e talhões</strong>Cultivar, quantidade de mudas, espaçamento e situação.</li>
+          <li><strong>Várias propriedades</strong>Cada fazenda com seus números, ou tudo somado.</li>
+        </ul>
+      </div>
+      <div class="phase">
+        <span class="when">Da muda à flor</span>
+        <h3>Cultivar</h3>
+        <ul>
+          <li><strong>Indução floral (TIF)<span class="mark">só aqui</span></strong>Produto, dose e data por talhão. A previsão de colheita se ajusta sozinha.</li>
+          <li><strong>Adubação e irrigação</strong>Dose por fase, com baixa automática no estoque.</li>
+          <li><strong>Pragas e doenças</strong>Fusariose, cochonilha e broca, com foto e tratamento.</li>
+          <li><strong>Mão de obra</strong>Diárias, trabalhadores e quanto falta pagar.</li>
+        </ul>
+      </div>
+      <div class="phase">
+        <span class="when">Hora de tirar</span>
+        <h3>Colher</h3>
+        <ul>
+          <li><strong>Colheita G, M e P</strong>Frutos por tamanho, por planta e aproveitamento do talhão.</li>
+          <li><strong>Agenda e alertas</strong>Lembretes de manejo e colheita gerados pelo ciclo.</li>
+          <li><strong>Diário do talhão</strong>Tudo o que aconteceu, em ordem de data.</li>
+        </ul>
+      </div>
+      <div class="phase">
+        <span class="when">Depois da colheita</span>
+        <h3>Vender</h3>
+        <ul>
+          <li><strong>Comercial</strong>Negociação, contagem por tara, carta frete e recebimento.</li>
+          <li><strong>Financeiro</strong>Receitas, despesas e contas a pagar por safra.</li>
+          <li><strong>Lucro por talhão</strong>Margem e retorno de cada área, lado a lado.</li>
+        </ul>
+      </div>
+    </div>
+    <p class="cycle-note">A barra mostra um ciclo típico de abacaxi. O tempo real muda com a cultivar, a região e a data do TIF.</p>
+  </div>
+</section>
+
+<section id="telas">
+  <div class="wrap">
+    <div class="sec-head">
+      <h2>As telas, do jeito que aparecem no celular.</h2>
+      <p class="lead">Nada de imagem ilustrativa. Estas são capturas do app com dados de uma lavoura de teste.</p>
+    </div>
+    <div class="screens">
+      <figure><div class="shot"><img src="img/shot-dashboard.jpg" alt="Tela inicial do app com resumo da lavoura" loading="lazy"></div>
+        <figcaption><strong>Início</strong>Plantios ativos, mudas, custo por linha, tarefas do dia e previsão do tempo.</figcaption></figure>
+      <figure><div class="shot"><img src="img/shot-talhao.jpg" alt="Tela de um plantio com custo por muda" loading="lazy"></div>
+        <figcaption><strong>Plantio</strong>Quanto foi investido, quanto falta recuperar e o custo de cada muda.</figcaption></figure>
+      <figure><div class="shot"><img src="img/shot-vendas.jpg" alt="Tela de vendas com carga separada por tamanho" loading="lazy"></div>
+        <figcaption><strong>Vendas</strong>Carga separada em pequeno, médio e grande, cada um com seu preço.</figcaption></figure>
+      <figure><div class="shot"><img src="img/shot-comercial.jpg" alt="Tela comercial com lucro do mês" loading="lazy"></div>
+        <figcaption><strong>Comercial</strong>Lucro do mês, recebimentos e carregamentos.</figcaption></figure>
+      <figure><div class="shot"><img src="img/shot-relatorios.jpg" alt="Tela de relatórios com receita e despesa" loading="lazy"></div>
+        <figcaption><strong>Relatórios</strong>Receita contra despesa e retorno por talhão, com PDF para imprimir.</figcaption></figure>
+    </div>
+  </div>
+</section>
+
+<section class="gps" id="gps">
+  <div class="wrap">
+    <div>
+      <h2>Desenhe o talhão no mapa. A área sai pronta.</h2>
+      <p class="lead" style="margin-top:20px">Ande pela borda com o celular ou marque os pontos no satélite. O app fecha a área e calcula hectares e linhas de plantio.</p>
+      <ol>
+        <li><span><strong>Marque os cantos</strong> andando ou tocando no mapa (Mapbox ou Google).</span></li>
+        <li><span><strong>Feche a área</strong> e veja hectares e linhas na hora.</span></li>
+        <li><span><strong>Acompanhe no mapa</strong> todos os talhões coloridos pela fase.</span></li>
+      </ol>
+    </div>
+    <div class="map">
+      <svg viewBox="0 0 600 440" role="img" aria-label="Talhão demarcado no mapa com 2,38 hectares">
+        <defs>
+          <pattern id="rows" width="14" height="14" patternUnits="userSpaceOnUse" patternTransform="rotate(-24)">
+            <rect width="14" height="14" fill="#2D5A2F"/>
+            <rect width="14" height="6" fill="#3F7A3C"/>
+          </pattern>
+          <pattern id="rows2" width="12" height="12" patternUnits="userSpaceOnUse" patternTransform="rotate(18)">
+            <rect width="12" height="12" fill="#5B6B38"/>
+            <rect width="12" height="5" fill="#6F8045"/>
+          </pattern>
+        </defs>
+        <rect width="600" height="440" fill="#4B5A33"/>
+        <polygon points="0,0 260,0 230,180 0,210" fill="url(#rows2)"/>
+        <polygon points="0,230 220,200 250,440 0,440" fill="#6E5F3E"/>
+        <polygon points="270,0 600,0 600,440 280,440 250,200" fill="url(#rows)"/>
+        <path d="M245 0 L232 190 L268 440" stroke="#BFA77A" stroke-width="10" fill="none"/>
+        <polygon points="330,70 520,52 556,250 470,380 318,330" fill="rgb(242 181 29 / .18)" stroke="#F2B51D" stroke-width="3"/>
+        <g fill="#fff" stroke="#F2B51D" stroke-width="3">
+          <circle cx="330" cy="70" r="7"/><circle cx="520" cy="52" r="7"/><circle cx="556" cy="250" r="7"/><circle cx="470" cy="380" r="7"/><circle cx="318" cy="330" r="7"/>
+        </g>
+        <g font-family="Schibsted Grotesk, sans-serif" font-size="13" font-weight="700" fill="#fff">
+          <text x="312" y="62">P1</text><text x="530" y="46">P2</text><text x="566" y="254">P3</text><text x="480" y="400">P4</text><text x="288" y="346">P5</text>
+        </g>
+        <g font-family="Schibsted Grotesk, sans-serif">
+          <rect x="24" y="364" width="250" height="52" rx="10" fill="#fff"/>
+          <text x="40" y="388" font-size="12" fill="#7A847E">Talhão 3 · Pérola</text>
+          <text x="40" y="406" font-size="16" font-weight="800" fill="#15201A">2,38 ha · 7,89 linhas</text>
+        </g>
+      </svg>
+    </div>
+  </div>
+</section>
+
+<section id="numeros">
+  <div class="wrap">
+    <div class="sec-head">
+      <h2>Os números que aparecem desde a primeira semana.</h2>
+      <p class="lead">Exemplo de uma safra cadastrada no app de demonstração, e o preço do abacaxi nos CEASAs para conferir antes de negociar.</p>
+    </div>
+    <div class="two">
+      <div class="sheet">
+        <h3>Safra de exemplo</h3>
+        <p class="sub">3 plantios, Fazenda Sol Nascente (dados de demonstração)</p>
+        <div class="rows">
+          <div class="row">Mudas plantadas<b class="num">446.400</b></div>
+          <div class="row">Custo por linha<b class="num">R$ 1.625</b></div>
+          <div class="row">Custo por muda<b class="num">R$ 0,07</b></div>
+          <div class="row total">Resultado da safra<b class="num">+R$ 401 mil</b></div>
+        </div>
+      </div>
+      <div class="sheet">
+        <h3>Preço nos CEASAs</h3>
+        <p class="sub">Abacaxi, por unidade. No app a cotação é atualizada.</p>
+        <div class="rows">
+          <div class="row">CEAGESP · São Paulo<b class="num">R$ 7,84</b></div>
+          <div class="row">CEASA Campinas<b class="num">R$ 5,04</b></div>
+          <div class="row">CEASA Belo Horizonte<b class="num">R$ 4,17</b></div>
+          <div class="row" style="font-size:14px;color:var(--ink-3)">Valores de exemplo, para mostrar como aparece no app.<span></span></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="pricing" id="precos">
+  <div class="wrap">
+    <div class="sec-head">
+      <h2>Use 14 dias de graça. Depois, escolha o plano.</h2>
+      <p class="lead">No teste tudo fica liberado. Se não servir, é só não assinar: não pedimos cartão.</p>
+    </div>
+
+    <div class="bill" role="group" aria-label="Forma de cobrança">
+      <button type="button" aria-pressed="true" data-bill="mes">Mensal</button>
+      <button type="button" aria-pressed="false" data-bill="ano">Anual <small>−20%</small></button>
+    </div>
+
+    <div class="trial">
+      <p><strong>Teste grátis por 14 dias.</strong> App completo, sem cartão de crédito.</p>
+      <a class="btn btn-main" href="https://appmeuplantio.com.br/app">Criar minha conta</a>
+    </div>
+
+    <div class="plans">
+      <div class="plan pick">
+        <div class="plan-top"><h3>Básico</h3><span class="mark" style="font-size:12px">mais escolhido</span></div>
+        <p class="who">Para quem tem até 5 plantios.</p>
+        <p class="price num"><span data-mes="R$ 99" data-ano="R$ 79">R$ 99</span> <small>/mês</small></p>
+        <p class="price-note" data-mes="" data-ano="R$ 949 cobrados uma vez por ano"></p>
+        <ul>
+          <li>Até 5 plantios e 3 propriedades</li>
+          <li>Mapa por GPS</li>
+          <li>Financeiro e colheita</li>
+          <li>Adubação, mão de obra e estoque</li>
+          <li>Agenda, clima e comparação de safras</li>
+        </ul>
+        <a class="btn btn-main" href="https://appmeuplantio.com.br/app">Assinar o Básico</a>
+      </div>
+      <div class="plan">
+        <div class="plan-top"><h3>Premium</h3></div>
+        <p class="who">Para quem vende a carga e quer o lucro por talhão.</p>
+        <p class="price num"><span data-mes="R$ 199" data-ano="R$ 158">R$ 199</span> <small>/mês</small></p>
+        <p class="price-note" data-mes="" data-ano="R$ 1.899 cobrados uma vez por ano"></p>
+        <ul>
+          <li class="inherit">Tudo do Básico, e mais:</li>
+          <li>Plantios e propriedades sem limite</li>
+          <li>Vendas, comercial e lucro por talhão</li>
+          <li>Contas a pagar e a receber</li>
+          <li>Irrigação e monitoramento de pragas</li>
+          <li>Preços CEASA e calculadora</li>
+          <li>Relatórios em PDF e suporte prioritário</li>
+        </ul>
+        <a class="btn btn-line" href="https://appmeuplantio.com.br/app">Assinar o Premium</a>
+      </div>
+    </div>
+    <p class="pay">Pagamento por PIX, liberado assim que confirma. Sem fidelidade: cancele pelo próprio app quando quiser.</p>
+  </div>
+</section>
+
+<section class="about" id="sobre">
+  <div class="wrap">
+    <div class="photo-slot">[ Foto real: produtor usando o app no talhão, ou a equipe da Infortec numa visita à lavoura ]</div>
+    <div>
+      <h2>Quem atende o suporte é quem faz o app.</h2>
+      <p>O Meu Plantio é da Infortec Sistemas e foi feito junto com produtores de abacaxi. Não tem central terceirizada: a sua dúvida chega em quem programa, e as próximas funções saem dos pedidos de quem usa.</p>
+      <blockquote class="quote">
+        [ Depoimento real de quem usa, com as próprias palavras ]
+        <cite>[ Nome · cidade/UF · tamanho da área ]</cite>
+      </blockquote>
+    </div>
+  </div>
+</section>
+
+<section id="duvidas" style="padding-top:0">
+  <div class="wrap">
+    <h2 style="margin-bottom:40px">Dúvidas</h2>
+    <div class="faq">
+      <div>
+        <details><summary>Funciona sem internet?</summary><p>Sim, todas as funções. Você lança no campo e o app sincroniza sozinho quando o celular pegar sinal.</p></details>
+        <details><summary>Preciso pagar para começar?</summary><p>Não. São 14 dias com tudo liberado e sem cartão. Depois disso, para continuar, é preciso assinar um plano.</p></details>
+        <details><summary>Serve para outra cultura?</summary><p>Não. O app é só para abacaxi: tem TIF, cronograma por cultivar e classificação G, M e P.</p></details>
+      </div>
+      <div>
+        <details><summary>Posso perder os dados?</summary><p>Os dados ficam no celular e no servidor, com criptografia e cópia automática. Trocou de aparelho, é só entrar com a sua conta.</p></details>
+        <details><summary>Como cancelo?</summary><p>Pelo próprio app, sem multa. Seus dados ficam guardados por 60 dias depois do cancelamento.</p></details>
+        <details><summary>Tenho mais de uma fazenda.</summary><p>Pode cadastrar várias. Cada uma tem áreas, plantios e financeiro separados, e os relatórios podem juntar tudo.</p></details>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="final" id="baixar">
+  <div class="wrap">
+    <div>
+      <h2>Comece pela próxima safra.</h2>
+      <p>Cadastre a fazenda, desenhe um talhão e lance o primeiro gasto. Leva uns 5 minutos.</p>
+      <div class="ctas">
+        <a class="btn btn-pine" href="https://appmeuplantio.com.br/download">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 4v11M7 10l5 5 5-5M5 20h14"/></svg>
+          Baixar para Android</a>
+        <a class="btn btn-line" href="https://appmeuplantio.com.br/app">Usar no navegador</a>
+      </div>
+      <p class="ios">No iPhone, por enquanto, use pelo navegador.</p>
+    </div>
+    <div class="qr"><img src="img/qr-apk.png" alt="QR code para baixar o app">Aponte a câmera para baixar o APK</div>
+  </div>
+</section>
+</main>
+
+<footer>
+  <div class="wrap">
+    <a class="brand" href="#" style="font-size:16px;color:var(--ink)"><img src="img/logo.png" alt="" style="width:26px;height:26px">Meu Plantio</a>
+    <nav>
+      <a href="#ciclo">O que faz</a>
+      <a href="#precos">Preços</a>
+      <a href="#duvidas">Dúvidas</a>
+      <a href="https://appmeuplantio.com.br/privacidade">Privacidade</a>
+      <a href="https://appmeuplantio.com.br/termos">Termos</a>
+      <a href="https://instagram.com/">Instagram</a>
+    </nav>
+    <span>© 2026 Meu Plantio · Infortec Sistemas</span>
+  </div>
+</footer>
+
+<a class="wa" href="https://wa.me/" aria-label="Falar no WhatsApp">
+  <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2a10 10 0 0 0-8.6 15.1L2 22l5-1.3A10 10 0 1 0 12 2Zm0 18.2c-1.5 0-3-.4-4.3-1.2l-.3-.2-3 .8.8-2.9-.2-.3A8.2 8.2 0 1 1 12 20.2Zm4.5-6.1c-.2-.1-1.5-.7-1.7-.8-.2-.1-.4-.1-.6.1l-.8 1c-.1.2-.3.2-.5.1a6.7 6.7 0 0 1-3.3-2.9c-.3-.4.3-.4.7-1.4.1-.2 0-.3 0-.5l-.8-1.8c-.2-.5-.4-.4-.6-.4h-.5c-.2 0-.5.1-.7.3-.2.3-.9.9-.9 2.2s.9 2.5 1 2.7c.1.2 1.8 2.8 4.4 3.9 1.6.7 2.3.8 3.1.6.5-.1 1.5-.6 1.7-1.2.2-.6.2-1.1.2-1.2-.1-.1-.3-.2-.5-.3Z"/></svg>
+  <span>WhatsApp</span>
+</a>
+
+<script>
+  const header = document.getElementById('top');
+  const menuBtn = document.getElementById('menuBtn');
+  menuBtn.addEventListener('click', () => {
+    const open = header.classList.toggle('open');
+    menuBtn.setAttribute('aria-expanded', open);
+  });
+  document.querySelectorAll('#nav a').forEach(a => a.addEventListener('click', () => header.classList.remove('open')));
+
+  document.querySelectorAll('[data-bill]').forEach(btn => btn.addEventListener('click', () => {
+    const mode = btn.dataset.bill;
+    document.querySelectorAll('[data-bill]').forEach(b => b.setAttribute('aria-pressed', b === btn));
+    document.querySelectorAll('[data-mes]').forEach(el => { el.textContent = el.dataset[mode]; });
+  }));
+</script>
+</body>
+</html>
