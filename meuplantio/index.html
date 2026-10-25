@@ -1,0 +1,782 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Meu Plantio · Gestão da lavoura de abacaxi</title>
+<meta name="description" content="App de gestão para produtor de abacaxi: custo por talhão, indução floral (TIF), colheita classificada G/M/P e venda da carga. Funciona sem internet. 14 dias grátis.">
+<meta name="theme-color" content="#06110B">
+<link rel="icon" href="img/logo.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Funnel+Display:wght@400;600;700;800&family=Funnel+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bg:#06110B;
+    --bg-2:#0A1A11;
+    --card:#0E2016;
+    --card-2:#132A1D;
+    --line:rgb(255 255 255 / .08);
+    --line-2:rgb(255 255 255 / .14);
+    --text:#F1F5EF;
+    --text-2:#A9B9AE;
+    --text-3:#6E8275;
+    --pine:#FFC531;
+    --pine-2:#FFD86B;
+    --leaf:#3DDC84;
+    --leaf-2:#1F9E5A;
+    --red:#FF6B5B;
+    --blue:#5AA9FF;
+    --wrap:1200px;
+    --display:"Funnel Display",system-ui,sans-serif;
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  html{scroll-behavior:smooth;-webkit-text-size-adjust:100%}
+  body{font-family:"Funnel Sans",system-ui,sans-serif;background:var(--bg);color:var(--text);font-size:17px;line-height:1.55;overflow-x:hidden}
+  img{display:block;max-width:100%}
+  a{color:inherit;text-decoration:none}
+  .wrap{max-width:var(--wrap);margin:0 auto;padding:0 24px}
+  h1,h2,h3{font-family:var(--display);line-height:1.02;letter-spacing:-.035em;font-weight:700}
+  h2{font-size:clamp(36px,5.4vw,68px)}
+  .hl{color:var(--pine)}
+  .lead{font-size:clamp(17px,1.5vw,20px);color:var(--text-2);max-width:54ch}
+  .label{display:inline-flex;align-items:center;gap:8px;font-size:14px;font-weight:600;color:var(--leaf);margin-bottom:18px}
+  .label::before{content:"";width:6px;height:6px;border-radius:50%;background:currentColor;box-shadow:0 0 0 4px rgb(61 220 132 / .15)}
+
+  .btn{display:inline-flex;align-items:center;justify-content:center;gap:10px;height:54px;padding:0 26px;border-radius:999px;font-weight:700;font-size:16px;border:1px solid transparent;cursor:pointer;font-family:inherit;white-space:nowrap;transition:transform .2s,background .2s,border-color .2s}
+  .btn:hover{transform:translateY(-1px)}
+  .btn svg{width:18px;height:18px;flex:none;transition:transform .2s}
+  .btn:hover svg{transform:translateX(3px)}
+  .btn-pine{background:var(--pine);color:#1A1300}
+  .btn-pine:hover{background:var(--pine-2)}
+  .btn-ghost{border-color:var(--line-2);color:var(--text);background:rgb(255 255 255 / .03)}
+  .btn-ghost:hover{border-color:rgb(255 255 255 / .35)}
+
+  /* nav flutuante */
+  .nav-shell{position:fixed;top:14px;left:0;right:0;z-index:50;padding:0 16px}
+  .nav{max-width:980px;margin:0 auto;display:flex;align-items:center;gap:24px;height:60px;padding:0 10px 0 18px;border-radius:999px;background:rgb(10 26 17 / .72);backdrop-filter:blur(16px) saturate(1.5);-webkit-backdrop-filter:blur(16px) saturate(1.5);border:1px solid var(--line)}
+  .brand{display:flex;align-items:center;gap:10px;font-family:var(--display);font-weight:700;font-size:19px;letter-spacing:-.02em}
+  .brand img{width:30px;height:30px}
+  .links{display:flex;gap:4px;margin-left:auto;font-size:15px}
+  .links a{padding:8px 14px;border-radius:999px;color:var(--text-2);transition:color .2s,background .2s}
+  .links a:hover{color:var(--text);background:rgb(255 255 255 / .06)}
+  .nav .btn{height:42px;padding:0 18px;font-size:15px}
+  .menu-btn{display:none;margin-left:auto;background:none;border:0;color:var(--text);padding:8px;cursor:pointer}
+  .menu-btn svg{width:24px;height:24px}
+
+  /* hero */
+  .hero{position:relative;padding:150px 0 0;text-align:center;overflow:hidden}
+  .hero::before{content:"";position:absolute;inset:0;background:
+      radial-gradient(60% 50% at 50% 62%,rgb(61 220 132 / .22),transparent 70%),
+      radial-gradient(30% 25% at 50% 55%,rgb(255 197 49 / .12),transparent 70%);pointer-events:none}
+  .rows-bg{position:absolute;left:50%;bottom:0;width:2400px;height:520px;transform:translateX(-50%) perspective(600px) rotateX(62deg);transform-origin:bottom;background:repeating-linear-gradient(90deg,rgb(61 220 132 / .14) 0 2px,transparent 2px 64px);mask-image:linear-gradient(to top,#000 10%,transparent 85%);-webkit-mask-image:linear-gradient(to top,#000 10%,transparent 85%);pointer-events:none}
+  .hero .wrap{position:relative}
+  .pill{display:inline-flex;align-items:center;gap:10px;padding:6px 14px 6px 6px;border-radius:999px;border:1px solid var(--line-2);background:rgb(255 255 255 / .04);font-size:14px;color:var(--text-2);margin-bottom:28px}
+  .pill b{background:var(--pine);color:#1A1300;padding:3px 10px;border-radius:999px;font-size:12.5px}
+  .hero h1{font-size:clamp(46px,8.4vw,112px);max-width:12ch;margin:0 auto;letter-spacing:-.045em;font-weight:800}
+  .hero .lead{margin:26px auto 0;text-align:center}
+  .hero-ctas{display:flex;flex-wrap:wrap;gap:12px;justify-content:center;margin-top:36px}
+  .hero-note{margin-top:16px;font-size:14px;color:var(--text-3)}
+
+  .stage{position:relative;height:640px;margin-top:64px;perspective:1400px}
+  .ph{position:absolute;left:50%;top:0;width:300px;border-radius:44px;padding:9px;background:linear-gradient(160deg,#2A3A30,#0B140F 40%,#1C2A22);box-shadow:0 0 0 1px rgb(255 255 255 / .08) inset,0 50px 100px -30px rgb(0 0 0 / .8)}
+  .ph .scr{border-radius:36px;overflow:hidden;aspect-ratio:9/16;background:#fff;position:relative}
+  .ph .scr img{width:100%;height:100%;object-fit:cover;object-position:top}
+  .ph.c{transform:translateX(-50%);z-index:3}
+  .ph.l,.ph.r{width:260px;top:70px;opacity:.9;transition:transform .1s linear}
+  .ph.l{transform:translateX(calc(-50% - 260px * var(--spread,1))) rotateY(calc(22deg * var(--spread,1))) scale(.94)}
+  .ph.r{transform:translateX(calc(-50% + 260px * var(--spread,1))) rotateY(calc(-22deg * var(--spread,1))) scale(.94)}
+  .chip{position:absolute;z-index:5;display:flex;align-items:center;gap:10px;padding:10px 14px 10px 10px;border-radius:16px;background:rgb(14 32 22 / .82);backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);border:1px solid var(--line-2);font-size:13.5px;text-align:left;line-height:1.3;color:var(--text-2);animation:float 6s ease-in-out infinite}
+  .chip strong{display:block;color:var(--text);font-size:15px}
+  .chip i{width:34px;height:34px;border-radius:10px;display:grid;place-items:center;flex:none}
+  .chip i svg{width:18px;height:18px}
+  .chip.a{left:calc(50% - 470px);top:120px}
+  .chip.b{left:calc(50% + 200px);top:40px;animation-delay:-2s}
+  .chip.c2{left:calc(50% + 230px);top:400px;animation-delay:-4s}
+  @keyframes float{0%,100%{translate:0 0}50%{translate:0 -10px}}
+  .stage-fade{position:absolute;left:0;right:0;bottom:0;height:200px;background:linear-gradient(transparent,var(--bg));z-index:6}
+
+  /* ticker */
+  .ticker{border-top:1px solid var(--line);border-bottom:1px solid var(--line);overflow:hidden;background:var(--bg-2)}
+  .track{display:flex;width:max-content;animation:tick 40s linear infinite}
+  .ticker:hover .track{animation-play-state:paused}
+  .track span{display:flex;align-items:center;gap:10px;padding:18px 28px;font-size:15px;color:var(--text-2);white-space:nowrap;border-right:1px solid var(--line)}
+  .track b{color:var(--text);font-weight:600}
+  .track .up{color:var(--leaf);font-size:13px}
+  .track .down{color:var(--red);font-size:13px}
+  @keyframes tick{to{transform:translateX(-50%)}}
+
+  section{padding:130px 0}
+  .head{max-width:760px;margin-bottom:64px}
+  .head .lead{margin-top:20px}
+  .center{text-align:center;margin-left:auto;margin-right:auto}
+  .center .lead{margin-left:auto;margin-right:auto}
+
+  /* scroll das telas */
+  .story{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:64px}
+  .steps{padding:10vh 0 20vh}
+  .step{min-height:68vh;display:flex;flex-direction:column;justify-content:center;opacity:.28;transition:opacity .4s}
+  .step.on{opacity:1}
+  .step .n{font-family:var(--display);font-size:15px;color:var(--pine);font-weight:600;margin-bottom:14px}
+  .step h3{font-size:clamp(30px,3.4vw,44px)}
+  .step p{margin-top:16px;color:var(--text-2);font-size:18px;max-width:42ch}
+  .step ul{list-style:none;margin-top:22px;display:flex;flex-wrap:wrap;gap:8px}
+  .step li{font-size:14px;padding:6px 12px;border-radius:999px;border:1px solid var(--line-2);color:var(--text-2)}
+  .step .mob{display:none}
+  .sticky{position:sticky;top:0;height:100vh;display:grid;place-items:center}
+  .sticky .ph{position:relative;left:auto;transform:none;width:330px}
+  .sticky .scr img{position:absolute;inset:0;opacity:0;transform:scale(1.04);transition:opacity .5s,transform .7s}
+  .sticky .scr img.on{opacity:1;transform:none}
+  .sticky .glow{position:absolute;width:520px;height:520px;border-radius:50%;background:radial-gradient(circle,rgb(61 220 132 / .2),transparent 65%);z-index:-1}
+  .dots{position:absolute;right:0;top:50%;transform:translateY(-50%);display:flex;flex-direction:column;gap:10px}
+  .dots span{width:6px;height:6px;border-radius:3px;background:var(--line-2);transition:height .3s,background .3s}
+  .dots span.on{height:26px;background:var(--pine)}
+
+  /* bento */
+  .bento{display:grid;grid-template-columns:repeat(6,minmax(0,1fr));gap:16px}
+  .box{position:relative;background:var(--card);border:1px solid var(--line);border-radius:28px;padding:30px;overflow:hidden;transition:border-color .3s}
+  .box:hover{border-color:var(--line-2)}
+  .box h3{font-size:24px;letter-spacing:-.025em}
+  .box p{color:var(--text-2);font-size:15.5px;margin-top:8px;max-width:40ch}
+  .box .tag{display:inline-block;font-size:12px;font-weight:700;color:#1A1300;background:var(--pine);padding:3px 9px;border-radius:999px;margin-bottom:14px}
+  .s4{grid-column:span 4}.s2{grid-column:span 2}.s3{grid-column:span 3}
+  .box.map{padding:0;min-height:440px;display:flex;flex-direction:column;justify-content:flex-end}
+  .box.map svg{position:absolute;inset:0;width:100%;height:100%}
+  .box.map .txt{position:relative;padding:30px;background:linear-gradient(transparent,rgb(6 17 11 / .92) 45%)}
+  .poly{stroke-dasharray:1;stroke-dashoffset:1;transition:stroke-dashoffset 2.2s cubic-bezier(.6,0,.2,1)}
+  .poly-fill{opacity:0;transition:opacity .8s 2s}
+  .pt{opacity:0;transform-box:fill-box;transform-origin:center;transform:scale(0);transition:opacity .3s,transform .4s cubic-bezier(.3,1.6,.5,1)}
+  .in .poly{stroke-dashoffset:0}
+  .in .poly-fill{opacity:1}
+  .in .pt{opacity:1;transform:scale(1)}
+  .area-chip{position:absolute;top:24px;left:24px;z-index:2;padding:12px 16px;border-radius:16px;background:rgb(6 17 11 / .8);backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px);border:1px solid var(--line-2)}
+  .area-chip small{display:block;color:var(--text-3);font-size:12.5px}
+  .area-chip strong{font-family:var(--display);font-size:28px;letter-spacing:-.03em}
+
+  .tif{margin-top:28px}
+  .tif-line{position:relative;height:4px;border-radius:2px;background:var(--line-2);margin:38px 22px 16px}
+  .tif-line::before{content:"";position:absolute;left:0;top:0;height:100%;width:var(--w,0%);border-radius:2px;background:linear-gradient(90deg,var(--leaf),var(--pine));transition:width 1.6s cubic-bezier(.6,0,.2,1)}
+  .in .tif-line{--w:58%}
+  .tif-line i{position:absolute;top:50%;width:14px;height:14px;border-radius:50%;transform:translate(-50%,-50%);background:var(--card);border:3px solid var(--line-2)}
+  .tif-line i.done{border-color:var(--leaf)}
+  .tif-line i.now{border-color:var(--pine);box-shadow:0 0 0 6px rgb(255 197 49 / .18)}
+  .tif-line i em{position:absolute;bottom:18px;left:50%;transform:translateX(-50%);font-style:normal;font-size:12px;color:var(--text-3);white-space:nowrap}
+  .tif-legend{display:flex;justify-content:space-between;font-size:13px;color:var(--text-3)}
+  .tif-legend b{display:block;color:var(--text);font-size:15px}
+
+  .sync{margin-top:26px;display:flex;flex-direction:column;gap:8px}
+  .sync-status{display:flex;align-items:center;gap:10px;padding:12px 14px;border-radius:14px;background:var(--card-2);font-size:14.5px;font-weight:600}
+  .sync-status i{width:10px;height:10px;border-radius:50%;background:var(--red);flex:none;transition:background .3s}
+  .sync-status[data-s="1"] i{background:var(--pine);animation:pulse 1s infinite}
+  .sync-status[data-s="2"] i{background:var(--leaf)}
+  @keyframes pulse{50%{opacity:.3}}
+  .sync-row{display:flex;justify-content:space-between;font-size:13.5px;color:var(--text-2);padding:9px 14px;border-radius:12px;border:1px dashed var(--line-2);transition:border-color .3s,color .3s}
+  .sync-row span:last-child{color:var(--text-3)}
+  .sync[data-s="2"] .sync-row{border-style:solid;border-color:rgb(61 220 132 / .3)}
+  .sync[data-s="2"] .sync-row span:last-child{color:var(--leaf)}
+
+  .gmp{margin-top:28px}
+  .gmp-bar{display:flex;height:16px;border-radius:8px;overflow:hidden;gap:3px}
+  .gmp-bar span{width:0;transition:width 1.4s cubic-bezier(.6,0,.2,1)}
+  .gmp-bar span:nth-child(1){background:var(--leaf);transition-delay:.1s}
+  .gmp-bar span:nth-child(2){background:var(--pine);transition-delay:.25s}
+  .gmp-bar span:nth-child(3){background:var(--blue);transition-delay:.4s}
+  .in .gmp-bar span:nth-child(1){width:9.3%}
+  .in .gmp-bar span:nth-child(2){width:11.2%}
+  .in .gmp-bar span:nth-child(3){width:79.5%}
+  .gmp-rows{margin-top:16px;display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px}
+  .gmp-rows div{font-size:13px;color:var(--text-3)}
+  .gmp-rows b{display:block;font-family:var(--display);font-size:22px;color:var(--text);letter-spacing:-.02em}
+  .gmp-rows div::before{content:"";display:inline-block;width:8px;height:8px;border-radius:2px;margin-right:6px;vertical-align:1px}
+  .gmp-rows div:nth-child(1)::before{background:var(--leaf)}
+  .gmp-rows div:nth-child(2)::before{background:var(--pine)}
+  .gmp-rows div:nth-child(3)::before{background:var(--blue)}
+  .gmp-total{margin-top:18px;padding-top:16px;border-top:1px solid var(--line);display:flex;justify-content:space-between;align-items:baseline;color:var(--text-2);font-size:14px}
+  .gmp-total b{font-family:var(--display);font-size:28px;color:var(--leaf);letter-spacing:-.03em}
+
+  .bars{display:flex;align-items:flex-end;gap:10px;height:130px;margin-top:28px}
+  .bars div{flex:1;display:flex;flex-direction:column;align-items:center;gap:8px;height:100%;justify-content:flex-end}
+  .bars span{width:100%;border-radius:8px 8px 4px 4px;background:var(--card-2);height:0;transition:height 1.2s cubic-bezier(.6,0,.2,1)}
+  .bars div.best span{background:linear-gradient(var(--pine),#C98F00)}
+  .bars small{font-size:12px;color:var(--text-3)}
+  .in .bars span{height:var(--h)}
+
+  .pix{display:flex;flex-direction:column;justify-content:space-between}
+  .pix-big{font-family:var(--display);font-size:64px;font-weight:800;letter-spacing:-.05em;line-height:1;margin-top:24px;color:var(--leaf)}
+  .pix-big small{font-size:18px;color:var(--text-2);font-weight:500;letter-spacing:0}
+
+  /* números */
+  .nums{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));border-top:1px solid var(--line);border-bottom:1px solid var(--line)}
+  .nums div{padding:44px 32px}
+  .nums div+div{border-left:1px solid var(--line)}
+  .nums strong{display:block;white-space:nowrap;font-family:var(--display);font-size:clamp(40px,4.6vw,64px);font-weight:800;letter-spacing:-.05em;line-height:1}
+  .nums > div > span{display:block;margin-top:12px;color:var(--text-2)}
+  .nums-note{margin-top:18px;font-size:13.5px;color:var(--text-3)}
+
+  /* planos */
+  .bill{display:inline-flex;padding:5px;border-radius:999px;background:var(--card);border:1px solid var(--line);margin:0 auto 40px}
+  .bill button{border:0;background:none;font:inherit;font-size:15px;font-weight:600;padding:10px 20px;border-radius:999px;cursor:pointer;color:var(--text-2);transition:background .2s,color .2s}
+  .bill button[aria-pressed="true"]{background:var(--text);color:var(--bg)}
+  .bill small{color:var(--leaf);font-weight:700;margin-left:4px}
+  .bill button[aria-pressed="true"] small{color:var(--leaf-2)}
+  .plans{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:16px;text-align:left}
+  .plan{background:var(--card);border:1px solid var(--line);border-radius:28px;padding:32px;display:flex;flex-direction:column}
+  .plan.pick{background:linear-gradient(180deg,#183424,var(--card) 60%);border-color:rgb(255 197 49 / .45);position:relative}
+  .plan.pick::before{content:"Mais escolhido";position:absolute;top:-12px;left:32px;background:var(--pine);color:#1A1300;font-size:12.5px;font-weight:700;padding:4px 12px;border-radius:999px}
+  .plan h3{font-size:22px}
+  .plan .who{color:var(--text-3);font-size:14.5px;margin-top:4px;min-height:44px}
+  .price{font-family:var(--display);font-size:56px;font-weight:800;letter-spacing:-.05em;line-height:1;margin-top:20px}
+  .price small{font-family:"Funnel Sans",sans-serif;font-size:16px;font-weight:500;color:var(--text-3);letter-spacing:0}
+  .price-note{font-size:13.5px;color:var(--text-3);min-height:20px;margin-top:6px}
+  .plan ul{list-style:none;margin:24px 0 28px;display:flex;flex-direction:column;gap:12px;flex:1}
+  .plan li{font-size:15px;color:var(--text-2);padding-left:28px;position:relative}
+  .plan li::before{content:"";position:absolute;left:0;top:3px;width:18px;height:18px;border-radius:50%;background:rgb(61 220 132 / .14) url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%233DDC84' stroke-width='3' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M6 12.5l4 4 8-9'/%3E%3C/svg%3E") center/12px no-repeat}
+  .plan li.inherit{color:var(--text);font-weight:600;padding-left:0}
+  .plan li.inherit::before{display:none}
+  .plan .btn{width:100%}
+  .pay{margin-top:24px;font-size:14px;color:var(--text-3)}
+
+  /* quem faz */
+  .about{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:16px}
+  .photo-slot{border-radius:28px;border:1.5px dashed var(--line-2);min-height:420px;display:grid;place-items:center;text-align:center;padding:32px;color:var(--text-3);font-size:15px;background:repeating-linear-gradient(135deg,transparent 0 16px,rgb(255 255 255 / .02) 16px 32px)}
+  .about .box{display:flex;flex-direction:column;justify-content:space-between;gap:32px;padding:40px}
+  .about h2{font-size:clamp(32px,3.8vw,48px)}
+  .about p{font-size:17px;max-width:none}
+  .quote{font-family:var(--display);font-size:22px;line-height:1.35;letter-spacing:-.01em;color:var(--text)}
+  .quote cite{display:block;margin-top:12px;font-family:"Funnel Sans",sans-serif;font-style:normal;font-size:14px;color:var(--text-3)}
+
+  /* dúvidas */
+  .faq{max-width:820px;margin:0 auto}
+  .faq details{border-bottom:1px solid var(--line)}
+  .faq summary{list-style:none;cursor:pointer;padding:26px 0;font-family:var(--display);font-weight:600;font-size:21px;letter-spacing:-.015em;display:flex;justify-content:space-between;align-items:center;gap:20px}
+  .faq summary::-webkit-details-marker{display:none}
+  .faq summary i{width:32px;height:32px;border-radius:50%;border:1px solid var(--line-2);flex:none;position:relative;transition:transform .3s,background .3s}
+  .faq summary i::before,.faq summary i::after{content:"";position:absolute;left:50%;top:50%;width:12px;height:1.5px;background:var(--text);transform:translate(-50%,-50%)}
+  .faq summary i::after{transform:translate(-50%,-50%) rotate(90deg)}
+  .faq details[open] summary i{transform:rotate(45deg);background:rgb(255 255 255 / .06)}
+  .faq details p{padding:0 52px 26px 0;color:var(--text-2)}
+
+  /* final */
+  .final{position:relative;padding:150px 0 140px;text-align:center;overflow:hidden;border-top:1px solid var(--line)}
+  .final::before{content:"";position:absolute;left:50%;bottom:-300px;width:1100px;height:600px;transform:translateX(-50%);background:radial-gradient(closest-side,rgb(255 197 49 / .2),transparent);pointer-events:none}
+  .final h2{font-size:clamp(44px,8vw,104px);font-weight:800;letter-spacing:-.05em;position:relative}
+  .final .lead{margin:24px auto 0;position:relative}
+  .final .hero-ctas{position:relative}
+  .final .qr{display:inline-flex;align-items:center;gap:16px;margin-top:44px;padding:12px 20px 12px 12px;border-radius:20px;background:var(--card);border:1px solid var(--line);text-align:left;font-size:14px;color:var(--text-2);position:relative}
+  .final .qr img{width:86px;border-radius:10px;background:#fff;padding:6px}
+  .final .qr strong{display:block;color:var(--text);font-size:15px}
+
+  footer{border-top:1px solid var(--line);padding:40px 0;font-size:14px;color:var(--text-3)}
+  footer .wrap{display:flex;flex-wrap:wrap;gap:20px 40px;justify-content:space-between;align-items:center}
+  footer nav{display:flex;flex-wrap:wrap;gap:24px}
+  footer a:hover{color:var(--text)}
+
+  .wa{position:fixed;right:20px;bottom:20px;z-index:40;width:56px;height:56px;border-radius:50%;display:grid;place-items:center;background:#25D366;color:#fff;box-shadow:0 10px 30px -8px rgb(37 211 102 / .55);transition:transform .2s}
+  .wa:hover{transform:scale(1.06)}
+  .wa svg{width:28px;height:28px}
+
+  /* revelar ao rolar */
+  .rv{opacity:0;transform:translateY(24px);transition:opacity .8s cubic-bezier(.2,.7,.2,1),transform .8s cubic-bezier(.2,.7,.2,1)}
+  .rv.in{opacity:1;transform:none}
+
+  @media (prefers-reduced-motion:reduce){
+    *,*::before,*::after{animation:none!important;transition:none!important}
+    .rv{opacity:1;transform:none}
+  }
+
+  @media (max-width:1000px){
+    .links,.nav .btn{display:none}
+    .menu-btn{display:block}
+    .nav-shell.open .nav{border-radius:24px 24px 0 0}
+    .nav-shell.open .links{display:flex;position:absolute;left:16px;right:16px;top:74px;flex-direction:column;gap:0;padding:8px;background:rgb(10 26 17 / .96);border:1px solid var(--line);border-top:0;border-radius:0 0 24px 24px;max-width:980px;margin:0 auto}
+    .nav-shell.open .links a{padding:14px 12px;font-size:17px}
+    .chip.a{left:2%;top:60px}
+    .chip.b{display:none}
+    .chip.c2{left:auto;right:2%;top:360px}
+    .story{grid-template-columns:minmax(0,1fr)}
+    .sticky,.dots{display:none}
+    .steps{padding:0}
+    .step{min-height:0;opacity:1;padding:40px 0;border-top:1px solid var(--line)}
+    .step .mob{display:block;margin-top:28px;width:260px;border-radius:28px;border:6px solid #1C2A22;overflow:hidden;aspect-ratio:9/16}
+    .step .mob img{width:100%;height:100%;object-fit:cover;object-position:top}
+    .bento{grid-template-columns:repeat(2,minmax(0,1fr))}
+    .s4,.s3{grid-column:span 2}.s2{grid-column:span 1}
+    .plans{grid-template-columns:minmax(0,1fr);max-width:520px;margin:0 auto}
+    .about{grid-template-columns:minmax(0,1fr)}
+    .photo-slot{min-height:280px}
+  }
+  @media (max-width:640px){
+    body{font-size:16px}
+    .wrap{padding:0 16px}
+    section{padding:90px 0}
+    .hero{padding-top:120px}
+    .hero-ctas .btn{flex:1 1 100%}
+    .stage{height:520px;margin-top:48px}
+    .ph{width:240px;border-radius:36px;padding:7px}
+    .ph .scr{border-radius:30px}
+    .ph.l,.ph.r{width:200px;top:60px;opacity:.55}
+    .ph.l{transform:translateX(calc(-50% - 120px)) rotateY(18deg) scale(.9)}
+    .ph.r{transform:translateX(calc(-50% + 120px)) rotateY(-18deg) scale(.9)}
+    .chip{font-size:12.5px;padding:8px 12px 8px 8px}
+    .chip i{width:28px;height:28px}
+    .chip.a{left:0;top:30px}
+    .chip.c2{right:0;top:330px}
+    .bento{grid-template-columns:minmax(0,1fr)}
+    .s4,.s3,.s2{grid-column:span 1}
+    .box{padding:24px;border-radius:24px}
+    .box.map{min-height:360px}
+    .nums{grid-template-columns:minmax(0,1fr)}
+    .nums div{padding:32px 0}
+    .nums div+div{border-left:0;border-top:1px solid var(--line)}
+    .faq summary{font-size:18px}
+    .faq details p{padding-right:0}
+    .about .box{padding:28px}
+    .final .qr{display:none}
+  }
+</style>
+</head>
+<body>
+
+<div class="nav-shell" id="navShell">
+  <nav class="nav">
+    <a class="brand" href="#"><img src="img/logo.png" alt="">Meu Plantio</a>
+    <div class="links" id="links">
+      <a href="#telas">O app</a>
+      <a href="#recursos">Recursos</a>
+      <a href="#precos">Preços</a>
+      <a href="#duvidas">Dúvidas</a>
+      <a href="https://appmeuplantio.com.br/app">Entrar</a>
+    </div>
+    <a class="btn btn-pine" href="#precos">Testar grátis</a>
+    <button class="menu-btn" id="menuBtn" aria-label="Abrir menu" aria-expanded="false">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M4 8h16M4 16h16"/></svg>
+    </button>
+  </nav>
+</div>
+
+<main>
+<header class="hero">
+  <div class="rows-bg" aria-hidden="true"></div>
+  <div class="wrap">
+    <span class="pill"><b>Novo</b> Preços dos CEASAs dentro do app</span>
+    <h1>Sua lavoura de abacaxi, <span class="hl">em números.</span></h1>
+    <p class="lead">Custo por talhão, TIF, colheita G·M·P e venda da carga num app só. Funciona no meio da roça, sem sinal.</p>
+    <div class="hero-ctas">
+      <a class="btn btn-pine" href="#precos">Testar 14 dias grátis
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 6l6 6-6 6"/></svg></a>
+      <a class="btn btn-ghost" href="#telas">Ver o app por dentro</a>
+    </div>
+    <p class="hero-note">Sem cartão de crédito · Android e navegador</p>
+
+    <div class="stage" id="stage" aria-hidden="true">
+      <div class="ph l"><div class="scr"><img src="img/shot-talhao.jpg" alt=""></div></div>
+      <div class="ph c"><div class="scr"><img src="img/shot-dashboard.jpg" alt=""></div></div>
+      <div class="ph r"><div class="scr"><img src="img/shot-vendas.jpg" alt=""></div></div>
+      <div class="chip a"><i style="background:rgb(255 197 49 / .16);color:var(--pine)"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22c4-3 7-6.5 7-11a7 7 0 0 0-14 0c0 4.5 3 8 7 11Z"/><circle cx="12" cy="11" r="2.5"/></svg></i><span><strong>TIF aplicado</strong>Talhão 3 · colheita prevista</span></div>
+      <div class="chip b"><i style="background:rgb(61 220 132 / .16);color:var(--leaf)"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg></i><span><strong>Sincronizado</strong>12 lançamentos do campo</span></div>
+      <div class="chip c2"><i style="background:rgb(90 169 255 / .16);color:var(--blue)"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 17l6-6 4 4 8-8M15 7h6v6"/></svg></i><span><strong>+R$ 45.045</strong>carga recebida via PIX</span></div>
+      <div class="stage-fade"></div>
+    </div>
+  </div>
+</header>
+
+<div class="ticker" aria-label="Exemplo de cotações do abacaxi">
+  <div class="track">
+    <span>CEAGESP · SP <b>R$ 7,84</b><em class="up">▲ 2,1%</em></span>
+    <span>CEASA Campinas <b>R$ 5,04</b><em class="down">▼ 0,8%</em></span>
+    <span>CEASA BH <b>R$ 4,17</b><em class="up">▲ 1,4%</em></span>
+    <span>Funciona offline <b>sincroniza depois</b></span>
+    <span>Pagamento <b>PIX, libera na hora</b></span>
+    <span>Feito para <b>Pérola, Smooth Cayenne e Vitória</b></span>
+    <span>CEAGESP · SP <b>R$ 7,84</b><em class="up">▲ 2,1%</em></span>
+    <span>CEASA Campinas <b>R$ 5,04</b><em class="down">▼ 0,8%</em></span>
+    <span>CEASA BH <b>R$ 4,17</b><em class="up">▲ 1,4%</em></span>
+    <span>Funciona offline <b>sincroniza depois</b></span>
+    <span>Pagamento <b>PIX, libera na hora</b></span>
+    <span>Feito para <b>Pérola, Smooth Cayenne e Vitória</b></span>
+  </div>
+</div>
+
+<section id="telas">
+  <div class="wrap">
+    <div class="head rv">
+      <span class="label">O app por dentro</span>
+      <h2>Do plantio à carga vendida, <span class="hl">tela por tela.</span></h2>
+    </div>
+    <div class="story">
+      <div class="steps">
+        <div class="step on" data-i="0">
+          <span class="n">01 · Início</span>
+          <h3>A fazenda inteira numa tela.</h3>
+          <p>Plantios ativos, mudas no campo, custo por linha, as tarefas de hoje e a previsão do tempo. Abriu o app, já sabe o que fazer.</p>
+          <ul><li>Tarefas do dia</li><li>Clima</li><li>Custo por linha</li></ul>
+          <div class="mob"><img src="img/shot-dashboard.jpg" alt="Tela inicial do app" loading="lazy"></div>
+        </div>
+        <div class="step" data-i="1">
+          <span class="n">02 · Plantio</span>
+          <h3>Cada talhão com o próprio caixa.</h3>
+          <p>Todo gasto lançado no talhão: adubo, diária, insumo. O app mostra o total investido, quanto falta recuperar e o custo de cada muda.</p>
+          <ul><li>Custo por muda</li><li>A recuperar</li><li>Área no mapa</li></ul>
+          <div class="mob"><img src="img/shot-talhao.jpg" alt="Tela de plantio" loading="lazy"></div>
+        </div>
+        <div class="step" data-i="2">
+          <span class="n">03 · Vendas</span>
+          <h3>A carga separada em G, M e P.</h3>
+          <p>Quantos frutos de cada tamanho, o preço de cada um e o total. Recebido e pendente separados, sem conta de cabeça.</p>
+          <ul><li>G · M · P</li><li>PIX ou prazo</li><li>Recebido × pendente</li></ul>
+          <div class="mob"><img src="img/shot-vendas.jpg" alt="Tela de vendas" loading="lazy"></div>
+        </div>
+        <div class="step" data-i="3">
+          <span class="n">04 · Comercial</span>
+          <h3>Negociação, frete e recebimento.</h3>
+          <p>Lucro do mês, cargas negociadas, contagem por tara e carta frete. Tudo o que acontece depois que o caminhão sai.</p>
+          <ul><li>Carta frete</li><li>Tara</li><li>Lucro do mês</li></ul>
+          <div class="mob"><img src="img/shot-comercial.jpg" alt="Tela comercial" loading="lazy"></div>
+        </div>
+        <div class="step" data-i="4">
+          <span class="n">05 · Relatórios</span>
+          <h3>Qual talhão deu mais lucro.</h3>
+          <p>Receita contra despesa e retorno de cada área, lado a lado. Exporta em PDF para levar ao banco ou à cooperativa.</p>
+          <ul><li>Retorno por talhão</li><li>PDF</li><li>Comparar safras</li></ul>
+          <div class="mob"><img src="img/shot-relatorios.jpg" alt="Tela de relatórios" loading="lazy"></div>
+        </div>
+      </div>
+      <div class="sticky" aria-hidden="true">
+        <div class="glow"></div>
+        <div class="ph"><div class="scr" id="storyScr">
+          <img class="on" src="img/shot-dashboard.jpg" alt="">
+          <img src="img/shot-talhao.jpg" alt="">
+          <img src="img/shot-vendas.jpg" alt="">
+          <img src="img/shot-comercial.jpg" alt="">
+          <img src="img/shot-relatorios.jpg" alt="">
+        </div></div>
+        <div class="dots" id="dots"><span class="on"></span><span></span><span></span><span></span><span></span></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section id="recursos" style="padding-top:40px">
+  <div class="wrap">
+    <div class="head rv">
+      <span class="label">Recursos</span>
+      <h2>Feito só para abacaxi. <span class="hl">E dá pra ver.</span></h2>
+      <p class="lead">Nada de sistema genérico adaptado. TIF, ciclo por cultivar e classificação G·M·P já vêm prontos.</p>
+    </div>
+
+    <div class="bento">
+      <div class="box map s4 rv" id="mapBox">
+        <svg viewBox="0 0 800 440" preserveAspectRatio="xMaxYMid slice" aria-hidden="true">
+          <defs>
+            <pattern id="r1" width="16" height="16" patternUnits="userSpaceOnUse" patternTransform="rotate(-22)"><rect width="16" height="16" fill="#123A22"/><rect width="16" height="6" fill="#1C5532"/></pattern>
+            <pattern id="r2" width="14" height="14" patternUnits="userSpaceOnUse" patternTransform="rotate(30)"><rect width="14" height="14" fill="#2B3A1E"/><rect width="14" height="5" fill="#3A4C28"/></pattern>
+          </defs>
+          <rect width="800" height="440" fill="#1A2A16"/>
+          <polygon points="0,0 330,0 300,200 0,230" fill="url(#r2)"/>
+          <polygon points="0,250 290,220 320,440 0,440" fill="#3B3220"/>
+          <polygon points="345,0 800,0 800,440 350,440 318,210" fill="url(#r1)"/>
+          <path d="M318 0 L305 210 L338 440" stroke="#8C7A55" stroke-width="12" fill="none" opacity=".7"/>
+          <polygon class="poly-fill" points="420,80 660,58 712,260 600,380 404,330" fill="rgb(255 197 49 / .16)"/>
+          <polygon class="poly" pathLength="1" points="420,80 660,58 712,260 600,380 404,330 420,80" fill="none" stroke="#FFC531" stroke-width="3.5" stroke-linejoin="round"/>
+          <g fill="#06110B" stroke="#FFC531" stroke-width="3.5">
+            <circle class="pt" style="transition-delay:.1s" cx="420" cy="80" r="8"/>
+            <circle class="pt" style="transition-delay:.55s" cx="660" cy="58" r="8"/>
+            <circle class="pt" style="transition-delay:1s" cx="712" cy="260" r="8"/>
+            <circle class="pt" style="transition-delay:1.45s" cx="600" cy="380" r="8"/>
+            <circle class="pt" style="transition-delay:1.9s" cx="404" cy="330" r="8"/>
+          </g>
+        </svg>
+        <div class="area-chip"><small>Talhão 3 · Pérola</small><strong><span data-count="2.38" data-dec="2">0</span> ha</strong></div>
+        <div class="txt">
+          <h3>Desenhe o talhão. A área sai pronta.</h3>
+          <p>Ande pela borda ou marque os pontos no satélite. Hectares e linhas calculados na hora, com Mapbox ou Google.</p>
+        </div>
+      </div>
+
+      <div class="box s2 rv">
+        <span class="tag">Só aqui</span>
+        <h3>Indução floral (TIF)</h3>
+        <p>Produto, dose e data por talhão. A previsão de colheita se ajusta sozinha.</p>
+        <div class="tif">
+          <div class="tif-line">
+            <i class="done" style="left:0"><em>Plantio</em></i>
+            <i class="done" style="left:38%"><em>TIF</em></i>
+            <i class="now" style="left:58%"><em>Hoje</em></i>
+            <i style="left:100%"><em>Colheita</em></i>
+          </div>
+          <div class="tif-legend"><span><b>142 dias</b>desde o TIF</span><span style="text-align:right"><b>~38 dias</b>para colher</span></div>
+        </div>
+      </div>
+
+      <div class="box s2 rv">
+        <h3>Funciona sem sinal</h3>
+        <p>Lança no talhão. Quando o celular pegar rede, tudo sobe sozinho.</p>
+        <div class="sync" id="sync" data-s="0">
+          <div class="sync-status" id="syncStatus" data-s="0"><i></i><span id="syncText">Sem sinal · salvando no celular</span></div>
+          <div class="sync-row"><span>Adubação · Talhão 2</span><span>aguardando</span></div>
+          <div class="sync-row"><span>Diária · Pedro</span><span>aguardando</span></div>
+        </div>
+      </div>
+
+      <div class="box s2 rv">
+        <h3>Colheita G·M·P</h3>
+        <p>A carga classificada por tamanho, cada um com o seu preço.</p>
+        <div class="gmp">
+          <div class="gmp-bar"><span></span><span></span><span></span></div>
+          <div class="gmp-rows">
+            <div>Pequeno<b>1.000</b></div>
+            <div>Médio<b>1.200</b></div>
+            <div>Grande<b>8.500</b></div>
+          </div>
+          <div class="gmp-total">Total da carga<b>R$ 45.045</b></div>
+        </div>
+      </div>
+
+      <div class="box s2 rv">
+        <h3>Lucro por talhão</h3>
+        <p>Margem de cada área lado a lado. Dá pra ver onde vale investir.</p>
+        <div class="bars">
+          <div><span style="--h:46%"></span><small>T1</small></div>
+          <div><span style="--h:68%"></span><small>T2</small></div>
+          <div class="best"><span style="--h:94%"></span><small>T3</small></div>
+          <div><span style="--h:57%"></span><small>T4</small></div>
+          <div><span style="--h:30%"></span><small>T5</small></div>
+        </div>
+      </div>
+
+      <div class="box s3 rv pix">
+        <div>
+          <h3>Mão de obra e estoque</h3>
+          <p>Diárias, trabalhadores e saldo a pagar. Adubo e defensivo com baixa automática e aviso de estoque baixo.</p>
+        </div>
+        <div class="pix-big">R$ 1.240 <small>a pagar esta semana</small></div>
+      </div>
+
+      <div class="box s3 rv pix">
+        <div>
+          <h3>Pragas e doenças</h3>
+          <p>Fusariose, cochonilha e broca registradas com foto, local e tratamento aplicado. O histórico fica no diário do talhão.</p>
+        </div>
+        <div class="pix-big" style="color:var(--pine)">3 <small>ocorrências em acompanhamento</small></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section style="padding-top:20px">
+  <div class="wrap">
+    <div class="nums rv">
+      <div><strong data-count="446400">0</strong><span>mudas acompanhadas</span></div>
+      <div><strong>R$ <span data-count="1625">0</span></strong><span>custo por linha, calculado sozinho</span></div>
+      <div><strong class="hl">+R$ <span data-count="401">0</span> mil</strong><span>resultado da safra</span></div>
+    </div>
+    <p class="nums-note">Números de uma safra de demonstração cadastrada no app.</p>
+  </div>
+</section>
+
+<section id="precos" style="text-align:center">
+  <div class="wrap">
+    <div class="head center rv">
+      <span class="label">Preços</span>
+      <h2>Comece grátis. <span class="hl">Assine quando fizer sentido.</span></h2>
+    </div>
+    <div class="bill" role="group" aria-label="Forma de cobrança">
+      <button type="button" aria-pressed="true" data-bill="mes">Mensal</button>
+      <button type="button" aria-pressed="false" data-bill="ano">Anual<small>−20%</small></button>
+    </div>
+    <div class="plans">
+      <div class="plan rv">
+        <h3>Teste grátis</h3>
+        <p class="who">Para conhecer o app com tudo liberado.</p>
+        <p class="price">R$ 0</p>
+        <p class="price-note">por 14 dias, sem cartão</p>
+        <ul>
+          <li>Todas as funções do Premium</li>
+          <li>Seus dados continuam se assinar</li>
+          <li>Sem compromisso</li>
+        </ul>
+        <a class="btn btn-ghost" href="https://appmeuplantio.com.br/app">Começar agora</a>
+      </div>
+      <div class="plan pick rv">
+        <h3>Básico</h3>
+        <p class="who">Para quem tem até 5 plantios.</p>
+        <p class="price"><span data-mes="R$ 99" data-ano="R$ 79">R$ 99</span><small> /mês</small></p>
+        <p class="price-note" data-mes="cobrado todo mês" data-ano="R$ 949 cobrados por ano">cobrado todo mês</p>
+        <ul>
+          <li>Até 5 plantios e 3 propriedades</li>
+          <li>Mapa por GPS</li>
+          <li>Financeiro e colheita</li>
+          <li>Adubação, mão de obra e estoque</li>
+          <li>Agenda, clima e comparação de safras</li>
+        </ul>
+        <a class="btn btn-pine" href="https://appmeuplantio.com.br/app">Assinar o Básico</a>
+      </div>
+      <div class="plan rv">
+        <h3>Premium</h3>
+        <p class="who">Para quem vende a carga e quer o lucro por talhão.</p>
+        <p class="price"><span data-mes="R$ 199" data-ano="R$ 158">R$ 199</span><small> /mês</small></p>
+        <p class="price-note" data-mes="cobrado todo mês" data-ano="R$ 1.899 cobrados por ano">cobrado todo mês</p>
+        <ul>
+          <li class="inherit">Tudo do Básico, e mais:</li>
+          <li>Plantios e propriedades sem limite</li>
+          <li>Vendas, comercial e lucro por talhão</li>
+          <li>Contas a pagar e a receber</li>
+          <li>Irrigação e pragas</li>
+          <li>Preços CEASA e calculadora</li>
+          <li>Relatórios em PDF e suporte prioritário</li>
+        </ul>
+        <a class="btn btn-ghost" href="https://appmeuplantio.com.br/app">Assinar o Premium</a>
+      </div>
+    </div>
+    <p class="pay">Pagamento por PIX, liberado na hora. Sem fidelidade: cancele pelo app quando quiser.</p>
+  </div>
+</section>
+
+<section style="padding-top:0">
+  <div class="wrap">
+    <div class="about">
+      <div class="photo-slot rv">[ Foto real: produtor usando o app no talhão, ou a equipe da Infortec numa visita à lavoura ]</div>
+      <div class="box rv">
+        <div>
+          <span class="label">Quem faz</span>
+          <h2>Quem atende o suporte é quem programa o app.</h2>
+          <p style="margin-top:16px">O Meu Plantio é da Infortec Sistemas e foi feito junto com produtores de abacaxi. Sem central terceirizada, e as próximas funções saem dos pedidos de quem usa.</p>
+        </div>
+        <blockquote class="quote">“[ Depoimento real de quem usa, com as próprias palavras ]”
+          <cite>[ Nome · cidade/UF · tamanho da área ]</cite>
+        </blockquote>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section id="duvidas" style="padding-top:0">
+  <div class="wrap">
+    <div class="head center rv"><h2>Dúvidas</h2></div>
+    <div class="faq">
+      <details><summary>Funciona sem internet?<i></i></summary><p>Sim, todas as funções. Você lança no campo e o app sincroniza sozinho quando o celular pegar sinal.</p></details>
+      <details><summary>Preciso pagar para começar?<i></i></summary><p>Não. São 14 dias com tudo liberado e sem cartão. Depois, para continuar, é preciso assinar um plano.</p></details>
+      <details><summary>Serve para outra cultura?<i></i></summary><p>Não. O app é só para abacaxi: tem TIF, cronograma por cultivar e classificação G, M e P.</p></details>
+      <details><summary>Posso perder os dados?<i></i></summary><p>Os dados ficam no celular e no servidor, com criptografia e cópia automática. Trocou de aparelho, é só entrar com a sua conta.</p></details>
+      <details><summary>Como cancelo?<i></i></summary><p>Pelo próprio app, sem multa. Seus dados ficam guardados por 60 dias depois do cancelamento.</p></details>
+      <details><summary>Tenho mais de uma fazenda. Funciona?<i></i></summary><p>Sim. Cada fazenda tem áreas, plantios e financeiro separados, e os relatórios podem juntar tudo.</p></details>
+    </div>
+  </div>
+</section>
+
+<section class="final" id="baixar">
+  <div class="wrap">
+    <h2 class="rv">A próxima safra,<br><span class="hl">com cada número no lugar.</span></h2>
+    <p class="lead rv">Cadastre a fazenda, desenhe um talhão e lance o primeiro gasto. Leva uns 5 minutos.</p>
+    <div class="hero-ctas rv">
+      <a class="btn btn-pine" href="https://appmeuplantio.com.br/download">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M12 4v11M7 10l5 5 5-5M5 20h14"/></svg>
+        Baixar para Android</a>
+      <a class="btn btn-ghost" href="https://appmeuplantio.com.br/app">Usar no navegador</a>
+    </div>
+    <div class="qr rv"><img src="img/qr-apk.png" alt="QR code para baixar o app"><span><strong>Aponte a câmera</strong>e baixe o APK direto no celular.<br>No iPhone, use pelo navegador.</span></div>
+  </div>
+</section>
+</main>
+
+<footer>
+  <div class="wrap">
+    <a class="brand" href="#" style="font-size:16px"><img src="img/logo.png" alt="" style="width:24px;height:24px">Meu Plantio</a>
+    <nav>
+      <a href="#telas">O app</a>
+      <a href="#precos">Preços</a>
+      <a href="#duvidas">Dúvidas</a>
+      <a href="https://appmeuplantio.com.br/privacidade">Privacidade</a>
+      <a href="https://appmeuplantio.com.br/termos">Termos</a>
+      <a href="https://instagram.com/">Instagram</a>
+    </nav>
+    <span>© 2026 Meu Plantio · Infortec Sistemas</span>
+  </div>
+</footer>
+
+<a class="wa" href="https://wa.me/" aria-label="Falar no WhatsApp">
+  <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2a10 10 0 0 0-8.6 15.1L2 22l5-1.3A10 10 0 1 0 12 2Zm0 18.2c-1.5 0-3-.4-4.3-1.2l-.3-.2-3 .8.8-2.9-.2-.3A8.2 8.2 0 1 1 12 20.2Zm4.5-6.1c-.2-.1-1.5-.7-1.7-.8-.2-.1-.4-.1-.6.1l-.8 1c-.1.2-.3.2-.5.1a6.7 6.7 0 0 1-3.3-2.9c-.3-.4.3-.4.7-1.4.1-.2 0-.3 0-.5l-.8-1.8c-.2-.5-.4-.4-.6-.4h-.5c-.2 0-.5.1-.7.3-.2.3-.9.9-.9 2.2s.9 2.5 1 2.7c.1.2 1.8 2.8 4.4 3.9 1.6.7 2.3.8 3.1.6.5-.1 1.5-.6 1.7-1.2.2-.6.2-1.1.2-1.2-.1-.1-.3-.2-.5-.3Z"/></svg>
+</a>
+
+<script>
+  const reduce = matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+  // menu
+  const shell = document.getElementById('navShell');
+  const menuBtn = document.getElementById('menuBtn');
+  menuBtn.addEventListener('click', () => {
+    const open = shell.classList.toggle('open');
+    menuBtn.setAttribute('aria-expanded', open);
+  });
+  document.querySelectorAll('#links a').forEach(a => a.addEventListener('click', () => shell.classList.remove('open')));
+
+  // contadores
+  const fmt = (v, dec) => v.toLocaleString('pt-BR', { minimumFractionDigits: dec, maximumFractionDigits: dec });
+  function countUp(el) {
+    const end = parseFloat(el.dataset.count), dec = +(el.dataset.dec || 0);
+    if (reduce) { el.textContent = fmt(end, dec); return; }
+    const t0 = performance.now(), dur = 1600;
+    const step = now => {
+      const k = Math.min((now - t0) / dur, 1), e = 1 - Math.pow(1 - k, 3);
+      el.textContent = fmt(end * e, dec);
+      if (k < 1) requestAnimationFrame(step);
+    };
+    requestAnimationFrame(step);
+  }
+
+  // revelar ao rolar
+  const io = new IntersectionObserver(entries => entries.forEach(en => {
+    if (!en.isIntersecting) return;
+    en.target.classList.add('in');
+    en.target.querySelectorAll('[data-count]').forEach(countUp);
+    io.unobserve(en.target);
+  }), { threshold: .25 });
+  document.querySelectorAll('.rv').forEach(el => io.observe(el));
+
+  // telas que trocam com a rolagem
+  const shots = document.querySelectorAll('#storyScr img');
+  const dots = document.querySelectorAll('#dots span');
+  const steps = document.querySelectorAll('.step');
+  const stepIO = new IntersectionObserver(entries => entries.forEach(en => {
+    if (!en.isIntersecting) return;
+    const i = +en.target.dataset.i;
+    steps.forEach(s => s.classList.toggle('on', s === en.target));
+    shots.forEach((s, j) => s.classList.toggle('on', j === i));
+    dots.forEach((d, j) => d.classList.toggle('on', j === i));
+  }), { rootMargin: '-45% 0px -45% 0px' });
+  steps.forEach(s => stepIO.observe(s));
+
+  // celulares do topo se alinham ao rolar
+  const stage = document.getElementById('stage');
+  let ticking = false;
+  addEventListener('scroll', () => {
+    if (ticking || reduce || innerWidth < 640) return;
+    ticking = true;
+    requestAnimationFrame(() => {
+      const p = Math.min(Math.max(scrollY / 500, 0), 1);
+      stage.style.setProperty('--spread', (1 - p * .35).toFixed(3));
+      ticking = false;
+    });
+  }, { passive: true });
+
+  // cartão offline
+  const sync = document.getElementById('sync'), syncStatus = document.getElementById('syncStatus'), syncText = document.getElementById('syncText');
+  const states = ['Sem sinal · salvando no celular', 'Sinal voltou · enviando', 'Tudo salvo no servidor'];
+  const rowTxt = ['aguardando', 'enviando…', 'enviado ✓'];
+  let s = 0;
+  setInterval(() => {
+    s = (s + 1) % 3;
+    sync.dataset.s = syncStatus.dataset.s = s;
+    syncText.textContent = states[s];
+    sync.querySelectorAll('.sync-row span:last-child').forEach(el => el.textContent = rowTxt[s]);
+  }, reduce ? 4000 : 2400);
+
+  // mensal / anual
+  document.querySelectorAll('[data-bill]').forEach(btn => btn.addEventListener('click', () => {
+    const mode = btn.dataset.bill;
+    document.querySelectorAll('[data-bill]').forEach(b => b.setAttribute('aria-pressed', b === btn));
+    document.querySelectorAll('[data-mes]').forEach(el => { el.textContent = el.dataset[mode]; });
+  }));
+</script>
+</body>
+</html>
